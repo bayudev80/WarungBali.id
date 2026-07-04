@@ -1,0 +1,25 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+body {
+    background: #f8f8f8;
+    font-family: "Poppins", sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+.card {
+    border: none;
+    border-radius: 18px;
+}
+
+.btn-warning {
+    background: #ffb400;
+    border: none;
+}
+
+.btn-warning:hover {
+    background: #ff9800;
+}
