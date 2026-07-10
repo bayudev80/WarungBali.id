@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
+use App\Models\Warung;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        $warung = DB::table('warung')->get();
+        $warung = Warung::with('menu')->get();
 
         return view('home', compact('warung'));
     }

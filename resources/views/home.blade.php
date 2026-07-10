@@ -336,44 +336,60 @@ Lihat Detail
                     </div>
 
                     <!-- MENU -->
-                    <div class="tab-pane fade"
-                        id="menu{{ $item->id_warung }}">
+                    <!-- MENU -->
+<div class="tab-pane fade"
+    id="menu{{ $item->id_warung }}">
 
-                        <div class="mt-3">
+    <div class="row g-4 mt-3">
 
-                            <div class="border rounded-4 p-3 mb-3">
+        @forelse($item->menu as $menu)
 
-                                <h5>Nasi Campur Bali</h5>
+        <div class="col-md-6">
 
-                                <strong class="text-warning">
-                                    Rp35.000
-                                </strong>
+            <div class="card border-0 shadow-sm rounded-4 h-100">
 
-                            </div>
+                <img src="{{ asset('images/menu/'.$menu->foto_menu) }}"
+                    class="card-img-top"
+                    style="height:180px;object-fit:cover;"
+                    alt="{{ $menu->nama_menu }}">
 
-                            <div class="border rounded-4 p-3 mb-3">
+                <div class="card-body">
 
-                                <h5>Babi Guling</h5>
+                    <h5 class="fw-bold">
+                        {{ $menu->nama_menu }}
+                    </h5>
 
-                                <strong class="text-warning">
-                                    Rp55.000
-                                </strong>
+                    <p class="text-secondary">
+                        {{ $menu->deskripsi }}
+                    </p>
 
-                            </div>
+                    <h5 class="text-warning fw-bold">
+                        Rp{{ number_format($menu->harga,0,',','.') }}
+                    </h5>
 
-                            <div class="border rounded-4 p-3">
+                </div>
 
-                                <h5>Es Kelapa</h5>
+            </div>
 
-                                <strong class="text-warning">
-                                    Rp10.000
-                                </strong>
+        </div>
 
-                            </div>
+        @empty
 
-                        </div>
+        <div class="col-12">
 
-                    </div>
+            <div class="alert alert-warning text-center rounded-4">
+
+                Belum ada menu untuk warung ini.
+
+            </div>
+
+        </div>
+
+        @endforelse
+
+    </div>
+
+</div>
 
                     <!-- ULASAN -->
                     <div class="tab-pane fade"
