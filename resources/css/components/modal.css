@@ -1,0 +1,12 @@
+.modal-content {
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.modal-header {
+    border: none;
+}
+
+.modal-body {
+    padding: 2rem;
+}

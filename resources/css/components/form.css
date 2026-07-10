@@ -1,0 +1,32 @@
+.hero-search {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 50px;
+}
+
+.hero-search input {
+    width: 700px;
+    height: 70px;
+    border: none;
+    border-radius: 50px;
+    padding-left: 30px;
+    font-size: 22px;
+    transition: 0.3s;
+}
+
+.hero-search input:focus {
+    outline: none;
+    transform: scale(1.02);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+}
+
+.hero-search button {
+    width: 130px;
+    border: none;
+    border-radius: 25px;
+    background: #cc612e;
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+}

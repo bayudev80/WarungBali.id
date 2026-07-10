@@ -20,7 +20,7 @@
             </h1>
 
             <h2>
-                Pulau Dewata
+                 Pulau Dewata
             </h2>
 
             <p>
@@ -29,10 +29,12 @@
                 menghadirkan kehangatan budaya Pulau Dewata.
             </p>
 
-            <form class="hero-search">
+            <form class="hero-search" method="GET" action="{{ route('home') }}">
 
                 <input
                     type="text"
+                    name="search"
+                    value="{{ request('search') }}"
                     placeholder="Cari warung, makanan, atau lokasi...">
 
                 <button>
@@ -106,9 +108,30 @@ Kategori Populer
 <div class="container">
 
 <h2 class="fw-bold mb-5">
-Warung Populer
+
+    @if(request('search'))
+        Hasil Pencarian
+    @else
+        Warung Populer
+    @endif
 </h2>
 
+@if(request('search'))
+
+<div class="alert alert-warning border-0 rounded-4 shadow-sm mb-4">
+
+    <h5 class="mb-1">
+        🔍 Hasil pencarian untuk:
+        <strong>"{{ request('search') }}"</strong>
+    </h5>
+
+    <small class="text-secondary">
+        Ditemukan <strong>{{ $warung->count() }}</strong> warung
+    </small>
+
+</div>
+
+@endif
 <div class="row">
 
 @foreach($warung as $item)
@@ -203,10 +226,12 @@ Lihat Detail
                     <div class="d-flex flex-wrap gap-4">
 
                         <div>
-                            ⭐⭐⭐⭐⭐
-                            <strong>4.9</strong>
-                            <span class="text-light">(312)</span>
-                        </div>
+                        ⭐
+                        <strong>{{ $item->average_rating }}</strong>
+                        <span class="text-light">
+                            ({{ $item->total_review }} Ulasan)
+                        </span>
+                    </div>
 
                         <div>
                             🕒
@@ -336,7 +361,6 @@ Lihat Detail
                     </div>
 
                     <!-- MENU -->
-                    <!-- MENU -->
 <div class="tab-pane fade"
     id="menu{{ $item->id_warung }}">
 
@@ -395,47 +419,57 @@ Lihat Detail
                     <div class="tab-pane fade"
                         id="review{{ $item->id_warung }}">
 
-                        <div class="mt-3">
+                       <div class="mt-3">
 
-                            <div class="border rounded-4 p-3 mb-3">
+    @forelse($item->review as $review)
 
-                                ⭐⭐⭐⭐⭐
+    <div class="border rounded-4 p-4 mb-3">
 
-                                <p class="mt-2 mb-1">
-                                    Makanan sangat enak dan khas Bali.
-                                </p>
+        <div class="d-flex justify-content-between align-items-center mb-2">
 
-                                <small class="text-secondary">
-                                    - Made
-                                </small>
+            <strong>
+                👤 {{ $review->user->nama }}
+            </strong>
 
-                            </div>
-
-                            <div class="border rounded-4 p-3">
-
-                                ⭐⭐⭐⭐☆
-
-                                <p class="mt-2 mb-1">
-                                    Tempat nyaman, pelayanan cepat.
-                                </p>
-
-                                <small class="text-secondary">
-                                    - Putu
-                                </small>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
+            <small class="text-secondary">
+                {{ date('d M Y', strtotime($review->created_at)) }}
+            </small>
 
         </div>
 
+        <div class="mb-2">
+
+            @for($i = 1; $i <= 5; $i++)
+
+                @if($i <= $review->rating)
+
+                    <span class="text-warning fs-5">★</span>
+
+                @else
+
+                    <span class="text-secondary fs-5">☆</span>
+
+                @endif
+
+            @endfor
+
+        </div>
+
+        <p class="mb-0">
+            {{ $review->komentar }}
+        </p>
+
     </div>
+
+    @empty
+
+    <div class="alert alert-warning rounded-4">
+
+        Belum ada ulasan untuk warung ini.
+
+    </div>
+
+    @endforelse
 
 </div>
 

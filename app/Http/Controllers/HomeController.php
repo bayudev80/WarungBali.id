@@ -6,10 +6,22 @@ use App\Models\Warung;
 
 class HomeController extends Controller
 {
-    public function index()
-    {
-        $warung = Warung::with('menu')->get();
+ public function index()
+{
+    $search = request('search');
 
-        return view('home', compact('warung'));
-    }
+    $warung = Warung::with(['menu','review.user'])
+
+        ->when($search, function($query) use ($search){
+
+            $query->where('nama_warung','like',"%{$search}%")
+                  ->orWhere('alamat','like',"%{$search}%")
+                  ->orWhere('deskripsi','like',"%{$search}%");
+
+        })
+
+        ->get();
+
+    return view('home', compact('warung'));
+}
 }

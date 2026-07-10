@@ -31,4 +31,18 @@ class Warung extends Model
     {
         return $this->hasMany(Menu::class, 'id_warung', 'id_warung');
     }
+
+    public function review()
+    {
+        return $this->hasMany(Review::class, 'id_warung', 'id_warung');
+    }
+    public function getAverageRatingAttribute()
+    {
+    return round($this->review->avg('rating') ?? 0, 1);
+    }
+
+    public function getTotalReviewAttribute()
+    {
+    return $this->review->count();
+    }
 }
