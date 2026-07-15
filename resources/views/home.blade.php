@@ -139,12 +139,46 @@
 
       @foreach($warung as $item)
 
+      @php
+    $isFavorit = auth()->check() &&
+        $item->favorit->where('id_user', auth()->user()->id_user)->count() > 0;
+      @endphp
+
       <div class="col-lg-4 mb-4">
 
         <div class="card border-0 shadow h-100">
 
-          <img src="{{ asset('images/warung/'.$item->foto) }}" class="card-img-top"
-            style="height:220px;object-fit:cover;">
+          <div class="position-relative">
+
+    <img src="{{ asset('images/warung/'.$item->foto) }}"
+        class="card-img-top"
+        style="height:220px;object-fit:cover;">
+
+
+<<button
+    class="btn btn-light rounded-circle shadow favorite-btn position-absolute top-0 end-0 m-2"
+    data-id="{{ $item->id_warung }}"
+    data-login="{{ auth()->check() ? 'true' : 'false' }}"
+    style="width:45px;height:45px;">
+
+    @auth
+
+        @if($isFavorit)
+            <i class="fa-solid fa-heart text-danger"></i>
+        @else
+            <i class="fa-regular fa-heart"></i>
+        @endif
+
+    @else
+
+        <i class="fa-regular fa-heart"></i>
+
+    @endauth
+
+</button>
+
+
+</div>
 
           <div class="card-body">
 
@@ -347,7 +381,7 @@
                   </div>
 
                 </div>
-
+                
                 <!-- MENU -->
                 <div class="tab-pane fade" id="menu{{ $item->id_warung }}">
 
@@ -455,12 +489,75 @@
 
                   </div>
 
-                  @endforeach
-
                 </div>
+                <!-- /tab-pane review -->
 
               </div>
+              <!-- /tab-content -->
+
+            </div>
+            <!-- /modal-body -->
+
+          </div>
+          <!-- /modal-content -->
+
+        </div>
+        <!-- /modal-dialog -->
+
+      </div>
+      <!-- /modal fade -->
+
+      @endforeach
+
+    </div>
+    <!-- /row -->
+
+  </div>
+  <!-- /container -->
 
 </section>
+<script>
 
+document.querySelectorAll('.favorite-btn').forEach(button => {
+
+    button.addEventListener('click', function () {
+
+        let btn = this;
+
+        fetch('/favorit/' + btn.dataset.id, {
+
+            method: 'POST',
+
+            headers: {
+
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+
+            }
+
+        })
+
+        .then(res => res.json())
+
+        .then(data => {
+
+            if(data.favorit){
+
+                btn.innerHTML =
+                '<i class="fa-solid fa-heart text-danger"></i>';
+
+            }else{
+
+                btn.innerHTML =
+                '<i class="fa-regular fa-heart"></i>';
+
+            }
+
+        });
+
+    });
+
+});
+
+</script>
 @endsection

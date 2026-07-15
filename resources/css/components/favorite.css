@@ -1,0 +1,16 @@
+.btn-love {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #fff;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-love:hover {
+    transform: scale(1.1);
+}
+
+.btn-love i {
+    font-size: 20px;
+}

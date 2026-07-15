@@ -45,4 +45,9 @@ class Warung extends Model
     {
     return $this->review->count();
     }
-}
+    public function favorit()
+    {
+    return $this->hasMany(Favorit::class, 'id_warung', 'id_warung');
+    }
+    }
+

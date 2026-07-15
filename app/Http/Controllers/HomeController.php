@@ -10,7 +10,11 @@ class HomeController extends Controller
 {
     $search = request('search');
 
-    $warung = Warung::with(['menu','review.user'])
+    $warung = Warung::with([
+    'menu',
+    'review.user',
+    'favorit'
+])
 
         ->when($search, function($query) use ($search){
 

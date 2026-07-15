@@ -21,3 +21,5 @@
 
 /* Responsive */
 @import "./responsive/responsive.css";
+
+@import "./components/favorite.css";

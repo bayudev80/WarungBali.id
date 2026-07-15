@@ -73,25 +73,52 @@
 
             </ul>
 
-            <!-- Tombol -->
-            <div class="d-flex">
+          <!-- Tombol -->
+<div class="d-flex align-items-center">
 
-                <a href="#"
-                    class="btn btn-light border rounded-4 px-4 me-3">
+    @guest
 
-                    Masuk
+        <a href="{{ route('login') }}"
+            class="btn btn-light border rounded-4 px-4 me-3">
 
-                </a>
+            Masuk
 
-                <a href="#"
-                    class="btn rounded-4 text-white px-4"
-                    style="background:#C85C2E;">
+        </a>
 
-                    Daftarkan Warung
+        <a href="{{ route('register') }}"
+            class="btn rounded-4 text-white px-4"
+            style="background:#C85C2E;">
 
-                </a>
+            Daftar
 
-            </div>
+        </a>
+
+    @endguest
+
+    @auth
+
+        <span class="me-3 fw-semibold">
+
+            👋 {{ Auth::user()->nama }}
+
+        </span>
+
+        <form action="{{ route('logout') }}" method="POST">
+
+            @csrf
+
+            <button type="submit"
+                class="btn btn-danger rounded-4">
+
+                Logout
+
+            </button>
+
+        </form>
+
+    @endauth
+
+</div>
 
         </div>
 
