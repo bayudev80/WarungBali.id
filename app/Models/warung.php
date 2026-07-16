@@ -49,5 +49,9 @@ class Warung extends Model
     {
     return $this->hasMany(Favorit::class, 'id_warung', 'id_warung');
     }
+    public function kategori()
+    {
+    return $this->belongsTo(Kategori::class, 'id_kategori', 'id_kategori');
+    }
     }
 

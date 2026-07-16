@@ -12,7 +12,8 @@
     <div class="hero-content text-center">
 
       <span class="hero-badge">
-        🌴 Temukan Cita Rasa Asli Bali
+        🌴 Temukan Berbagai Jenis Warung di Bali |
+          Warung Makan • Minuman • Sembako • Oleh-Oleh • Herbal • ATK • Pulsa
       </span>
 
       <h1>
@@ -32,7 +33,7 @@
       <form class="hero-search" method="GET" action="{{ route('home') }}">
 
         <input type="text" name="search" value="{{ request('search') }}"
-          placeholder="Cari warung, makanan, atau lokasi...">
+          placeholder="Cari warung, kategori, atau lokasi...">
 
         <button>
           Cari
@@ -42,13 +43,13 @@
 
       <div class="hero-tags">
 
-        <span>Babi Guling</span>
+      <span>🍛 Warung Makan</span>
 
-        <span>Nasi Campur</span>
+      <span>🥤 Warung Minuman</span>
 
-        <span>Sate Lilit</span>
+      <span>🛒 Warung Sembako</span>
 
-        <span>Bebek Betutu</span>
+      <span>🎁 Oleh-Oleh Bali</span>
 
       </div>
 
@@ -69,41 +70,46 @@
 
     <div class="row g-4 text-center">
 
-      <div class="col-lg-2 col-md-4 col-6">
-        <div class="card border-0 shadow-sm p-3">🍚<h6>Nasi Campur</h6>
-        </div>
-      </div>
+    @php
+        $icons = [
+            'Warung Makan' => '🍛',
+            'Warung Minuman' => '🥤',
+            'Warung Sembako' => '🛒',
+            'Oleh-Oleh Bali' => '🎁',
+            'Warung Buah & Sayur' => '🥬',
+            'Warung Herbal' => '🌿',
+            'Warung Pulsa & PPOB' => '📱',
+            'Warung ATK & Fotokopi' => '📚',
+        ];
+    @endphp
 
-      <div class="col-lg-2 col-md-4 col-6">
-        <div class="card border-0 shadow-sm p-3">🐖<h6>Babi Guling</h6>
-        </div>
-      </div>
+    @foreach($kategori as $item)
 
-      <div class="col-lg-2 col-md-4 col-6">
-        <div class="card border-0 shadow-sm p-3">🍢<h6>Sate Lilit</h6>
-        </div>
-      </div>
+        <div class="col-lg-3 col-md-4 col-6">
 
-      <div class="col-lg-2 col-md-4 col-6">
-        <div class="card border-0 shadow-sm p-3">🦆<h6>Bebek Betutu</h6>
-        </div>
-      </div>
+            <div class="card border-0 shadow-sm p-3 h-100">
 
-      <div class="col-lg-2 col-md-4 col-6">
-        <div class="card border-0 shadow-sm p-3">🥗<h6>Lawar</h6>
-        </div>
-      </div>
+                <div style="font-size:40px;">
+                    {{ $icons[$item->nama_kategori] ?? '🏪' }}
+                </div>
 
-      <div class="col-lg-2 col-md-4 col-6">
-        <div class="card border-0 shadow-sm p-3">🍰<h6>Jajan Bali</h6>
-        </div>
-      </div>
+                <h6 class="mt-2">
+                    {{ $item->nama_kategori }}
+                </h6>
 
-    </div>
+            </div>
+
+        </div>
+
+    @endforeach
+
+</div>
 
   </div>
 
 </section>
+
+
 
 <!-- WARUNG -->
 <section class="py-5" id="warung">
@@ -155,7 +161,7 @@
         style="height:220px;object-fit:cover;">
 
 
-<<button
+<button
     class="btn btn-light rounded-circle shadow favorite-btn position-absolute top-0 end-0 m-2"
     data-id="{{ $item->id_warung }}"
     data-login="{{ auth()->check() ? 'true' : 'false' }}"
@@ -516,48 +522,5 @@
   <!-- /container -->
 
 </section>
-<script>
 
-document.querySelectorAll('.favorite-btn').forEach(button => {
-
-    button.addEventListener('click', function () {
-
-        let btn = this;
-
-        fetch('/favorit/' + btn.dataset.id, {
-
-            method: 'POST',
-
-            headers: {
-
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-
-            }
-
-        })
-
-        .then(res => res.json())
-
-        .then(data => {
-
-            if(data.favorit){
-
-                btn.innerHTML =
-                '<i class="fa-solid fa-heart text-danger"></i>';
-
-            }else{
-
-                btn.innerHTML =
-                '<i class="fa-regular fa-heart"></i>';
-
-            }
-
-        });
-
-    });
-
-});
-
-</script>
 @endsection

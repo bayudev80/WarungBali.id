@@ -3,29 +3,47 @@
 namespace App\Http\Controllers;
 
 use App\Models\Warung;
+use App\Models\Kategori;
 
 class HomeController extends Controller
 {
  public function index()
 {
     $search = request('search');
+    $kategoriFilter = request('kategori');
 
     $warung = Warung::with([
     'menu',
     'review.user',
-    'favorit'
+    'favorit',
+    'kategori'
 ])
 
-        ->when($search, function($query) use ($search){
+        ->when($search, function ($query) use ($search) {
 
-            $query->where('nama_warung','like',"%{$search}%")
-                  ->orWhere('alamat','like',"%{$search}%")
-                  ->orWhere('deskripsi','like',"%{$search}%");
+    $query->where(function ($q) use ($search) {
+        $q->where('nama_warung', 'like', "%{$search}%")
+          ->orWhere('alamat', 'like', "%{$search}%")
+          ->orWhere('deskripsi', 'like', "%{$search}%");
+    });
 
-        })
+})
 
-        ->get();
+->when($kategoriFilter, function ($query) use ($kategoriFilter) {
+    $query->where('id_kategori', $kategoriFilter);
+})
 
-    return view('home', compact('warung'));
+        ->inRandomOrder()->get();
+            $kategori = Kategori::orderBy('nama_kategori')->get();
+            
+            $warungPilihan = Warung::with([
+                    'menu',
+                    'review.user',
+                    'favorit',
+                    'kategori'
+                ])->inRandomOrder()->take(6)->get();
+
+
+     return view('home', compact('warung', 'kategori', 'warungPilihan'));
 }
 }
