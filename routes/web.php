@@ -7,6 +7,7 @@ use App\Http\Controllers\FavoritController;
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/warung/random', [HomeController::class, 'randomWarung'])->name('warung.random');
 
 // Dashboard
 Route::get('/dashboard', function () {

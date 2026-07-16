@@ -83,21 +83,45 @@
         ];
     @endphp
 
+    <div class="col-lg-3 col-md-4 col-6">
+
+        <a href="{{ route('home', array_filter(['search' => request('search')])) }}" class="text-decoration-none text-dark">
+
+            <div class="card border-0 shadow-sm p-3 h-100 {{ !request('kategori') ? 'border border-warning border-2' : '' }}">
+
+                <div style="font-size:40px;">
+                    🏪
+                </div>
+
+                <h6 class="mt-2">
+                    Semua
+                </h6>
+
+            </div>
+
+        </a>
+
+    </div>
+
     @foreach($kategori as $item)
 
         <div class="col-lg-3 col-md-4 col-6">
 
-            <div class="card border-0 shadow-sm p-3 h-100">
+            <a href="{{ route('home', array_filter(['search' => request('search'), 'kategori' => $item->id_kategori])) }}" class="text-decoration-none text-dark">
 
-                <div style="font-size:40px;">
-                    {{ $icons[$item->nama_kategori] ?? '🏪' }}
+                <div class="card border-0 shadow-sm p-3 h-100 {{ request('kategori') == $item->id_kategori ? 'border border-warning border-2' : '' }}">
+
+                    <div style="font-size:40px;">
+                        {{ $icons[$item->nama_kategori] ?? '🏪' }}
+                    </div>
+
+                    <h6 class="mt-2">
+                        {{ $item->nama_kategori }}
+                    </h6>
+
                 </div>
 
-                <h6 class="mt-2">
-                    {{ $item->nama_kategori }}
-                </h6>
-
-            </div>
+            </a>
 
         </div>
 
