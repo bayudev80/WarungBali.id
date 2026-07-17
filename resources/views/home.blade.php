@@ -41,17 +41,6 @@
 
       </form>
 
-      <div class="hero-tags">
-
-      <span>🍛 Warung Makan</span>
-
-      <span>🥤 Warung Minuman</span>
-
-      <span>🛒 Warung Sembako</span>
-
-      <span>🎁 Oleh-Oleh Bali</span>
-
-      </div>
 
     </div>
 
@@ -59,6 +48,30 @@
 
 </section>
 
+ <section class="statistik">
+    <div class="container">
+        <div class="statistik-wrapper">
+
+        <div class="stat-item">
+            <h2>{{ $totalWarung }}+</h2>
+            <p>Warung Terdaftar</p>
+        </div>
+
+        <div class="stat-item">
+            <h2>{{ $totalUlasan }}+</h2>
+            <p>Ulasan Pengguna</p>
+        </div>
+
+        <div class="stat-item">
+            <h2>{{ $totalKabupaten }}</h2>
+            <p>Kabupaten/Kota</p>
+        </div>
+
+        <div class="stat-item">
+            <h2>32.000+</h2>
+            <p>Pengunjung/Bulan</p>
+        </div>
+</section>
 <!-- KATEGORI -->
 <section class="py-5 bg-light">
 
@@ -151,6 +164,9 @@
 
     @if(request('search'))
 
+    </div>
+</section>
+
     <div class="alert alert-warning border-0 rounded-4 shadow-sm mb-4">
 
       <h5 class="mb-1">
@@ -167,7 +183,7 @@
     @endif
     <div class="row">
 
-      @foreach($warung as $item)
+      @foreach($warungPilihan as $item)
 
       @php
     $isFavorit = auth()->check() &&

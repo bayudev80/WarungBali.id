@@ -2,3 +2,41 @@ body {
     background: #f8f4ed;
     font-family: "Segoe UI", sans-serif;
 }
+
+/* ===========================
+   STATISTIK
+=========================== */
+
+.statistik {
+    background: #fff4e6;
+    padding: 50px 0;
+}
+
+.statistik-wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-item h2 {
+    font-size: 50px;
+    font-weight: 700;
+    color: #d97706;
+    margin-bottom: 8px;
+}
+
+.stat-item p {
+    margin: 0;
+    color: #666;
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .statistik-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
