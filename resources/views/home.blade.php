@@ -48,11 +48,9 @@
         Pulau Dewata
       </h2>
 
-      <p>
-        Temukan cita rasa autentik Bali melalui warung-warung lokal terbaik.
-        Jelajahi kuliner khas, lokasi favorit, dan pengalaman makan yang
-        menghadirkan kehangatan budaya Pulau Dewata.
-      </p>
+      <p> <br>
+        Setiap warung memiliki cerita dan potensi untuk berkembang. WarungBali.id hadir sebagai jembatan yang menghubungkan masyarakat dengan berbagai warung lokal di Bali, membantu pelaku UMKM menjangkau lebih banyak pelanggan sekaligus memperkenalkan kekayaan usaha lokal kepada lebih banyak orang.
+      </p> </br>
 
       <form class="hero-search" method="GET" action="{{ route('home') }}">
 
@@ -306,6 +304,32 @@
 
 </section>
 
+<!-- CTA DAFTARKAN WARUNG -->
+<section class="cta-warung">
+
+    <div class="container">
+
+        <div class="cta-warung-box">
+
+            <h2 class="fw-bold">
+                Punya Warung di Bali?
+            </h2>
+
+            <p>
+                Daftarkan warung Anda secara gratis dan jangkau ribuan
+                wisatawan setiap bulan.
+            </p>
+
+            <a href="{{ route('register') }}" class="btn btn-warning fw-bold px-4 py-2 rounded-pill">
+                Daftarkan Warung Saya
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
 <style>
     /* ===== Slider warung per kategori ===== */
     .warung-slider-wrapper {
@@ -402,6 +426,34 @@
         background: #ffc107;
         color: #fff;
         font-weight: 600;
+    }
+
+    /* ===== CTA Daftarkan Warung ===== */
+    .cta-warung {
+        padding: 60px 0;
+    }
+    .cta-warung-box {
+        background: linear-gradient(rgba(30,20,15,.75), rgba(30,20,15,.75)),
+                    url('{{ asset('images/cta-warung.jpeg') }}') center/cover no-repeat;
+        border-radius: 24px;
+        padding: 60px 50px;
+        color: #fff;
+        max-width: 650px;
+    }
+    .cta-warung-box h2 {
+        font-size: 2rem;
+        margin-bottom: 12px;
+    }
+    .cta-warung-box p {
+        font-size: 1.05rem;
+        margin-bottom: 24px;
+        opacity: .9;
+    }
+    @media (max-width: 768px) {
+        .cta-warung-box {
+            padding: 40px 25px;
+            max-width: 100%;
+        }
     }
 </style>
 
