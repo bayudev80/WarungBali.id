@@ -414,6 +414,65 @@
         track.scrollBy({ left: arah * (jarak + 16), behavior: 'smooth' });
     }
 
+  // ==========================
+// AUTO SLIDER WARUNG
+// ==========================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".warung-slider-track").forEach(track => {
+
+        const wrapper = track.closest(".warung-slider-wrapper");
+
+        let timer;
+
+        function autoSlide() {
+
+            const card = track.querySelector(".warung-card");
+
+            if (!card) return;
+
+            const gap = 24;
+
+            const cardWidth = card.offsetWidth + gap;
+
+            // jika sudah mentok kanan
+            if (track.scrollLeft >= track.scrollWidth - track.clientWidth - 10) {
+
+                track.scrollTo({
+                    left: 0,
+                    behavior: "smooth"
+                });
+
+            } else {
+
+                track.scrollBy({
+                    left: cardWidth,
+                    behavior: "smooth"
+                });
+
+            }
+
+        }
+
+        timer = setInterval(autoSlide, 4000);
+
+        wrapper.addEventListener("mouseenter", () => {
+
+            clearInterval(timer);
+
+        });
+
+        wrapper.addEventListener("mouseleave", () => {
+
+            timer = setInterval(autoSlide, 4000);
+
+        });
+
+    });
+
+});
+
     function updateSliderButtons(track) {
         const wrapper = track.closest('.warung-slider-wrapper');
         if (!wrapper) return;
