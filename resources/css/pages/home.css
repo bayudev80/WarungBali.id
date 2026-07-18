@@ -40,3 +40,174 @@ body {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* ===========================
+   SLIDER WARUNG PER KATEGORI
+=========================== */
+
+.warung-slider-wrapper {
+    position: relative;
+    overflow: visible;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.warung-slider-track {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 1rem;
+    max-width: 100%;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding: 4px 46px 0.5rem;
+    scrollbar-width: none;
+}
+
+.warung-slider-track::-webkit-scrollbar {
+    display: none;
+}
+
+/* PENTING: hanya target kartu warung (.warung-card-item), JANGAN pakai
+   selector "> *" karena modal detail warung ikut jadi sibling di sini
+   dan bakal ke-maksa lebar 300px kalau kena selector universal. */
+.warung-slider-track > .warung-card-item {
+    flex: 0 0 auto;
+    width: 300px;
+    scroll-snap-align: start;
+}
+
+.warung-slider-btn {
+    position: absolute;
+    top: 45%;
+    transform: translateY(-50%);
+    z-index: 50;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-size: 22px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.warung-slider-prev {
+    left: 0;
+}
+
+.warung-slider-next {
+    right: 0;
+}
+
+.warung-slider-btn:hover {
+    background: #ffc107;
+    color: #fff;
+}
+
+.warung-slider-btn.is-hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .warung-slider-track {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+    .warung-slider-track > .warung-card-item {
+        width: 240px;
+    }
+}
+
+/* ===========================
+   DROPDOWN URUTKAN
+   (mandiri, tidak bergantung Bootstrap JS)
+=========================== */
+
+.warung-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.warung-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 6px;
+    min-width: 220px;
+    background: #fff;
+    border-radius: 0.5rem;
+    padding: 6px;
+    list-style: none;
+    z-index: 100;
+}
+
+.warung-dropdown-menu.is-open {
+    display: block;
+}
+
+.warung-dropdown-item {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 0.375rem;
+    color: #212529;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.warung-dropdown-item:hover {
+    background: #fff8ec;
+}
+
+.warung-dropdown-item.active {
+    background: #ffc107;
+    color: #fff;
+    font-weight: 600;
+}
+/* ===========================
+   KATEGORI POPULER
+=========================== */
+
+.kategori-card {
+    border-radius: 18px;
+    border: 2px solid transparent;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.35s ease;
+    background: #fff;
+}
+
+.kategori-card:hover {
+    transform: translateY(-8px);
+    border-color: #ffc107;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+}
+
+.kategori-card div:first-child {
+    transition: transform 0.35s ease;
+}
+
+.kategori-card:hover div:first-child {
+    transform: scale(1.2) rotate(-8deg);
+}
+
+.kategori-card h6 {
+    transition: color 0.3s ease;
+}
+
+.kategori-card:hover h6 {
+    color: #f59e0b;
+}
+
+/* Efek saat kategori sedang aktif */
+.kategori-card.border-warning {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(255, 193, 7, 0.35) !important;
+}

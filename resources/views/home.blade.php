@@ -3,11 +3,35 @@
 @section('content')
 
 <!-- HERO -->
-<section class="hero" style="background-image: url('{{ asset('images/hero.jpeg') }}');">
+<section class="hero">
 
-  <div class="hero-overlay"></div>
+    <div class="hero-slider">
 
-  <div class="container position-relative">
+        <div class="hero-slide active"
+            style="background-image:url('{{ asset('images/hero1.jpeg') }}')">
+        </div>
+
+        <div class="hero-slide"
+            style="background-image:url('{{ asset('images/hero2.jpeg') }}')">
+        </div>
+
+        <div class="hero-slide"
+            style="background-image:url('{{ asset('images/hero3.jpeg') }}')">
+        </div>
+
+        <div class="hero-slide"
+            style="background-image:url('{{ asset('images/hero4.jpeg') }}')">
+        </div>
+
+        <div class="hero-slide"
+            style="background-image:url('{{ asset('images/hero.jpeg') }}')">
+        </div>
+
+    </div>
+
+    <div class="hero-overlay"></div>
+
+    <div class="container position-relative">
 
     <div class="hero-content text-center">
 
@@ -100,7 +124,7 @@
 
         <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark">
 
-            <div class="card border-0 shadow-sm p-3 h-100 {{ !request('kategori') ? 'border border-warning border-2' : '' }}">
+            <div class="card kategori-card border-0 shadow-sm p-3 h-100 {{ !request('kategori') ? 'border border-warning border-2' : '' }}">
 
                 <div style="font-size:40px;">
                     🏪
@@ -122,7 +146,7 @@
 
             <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan'), 'kategori' => $item->id_kategori])) }}" class="text-decoration-none text-dark">
 
-                <div class="card border-0 shadow-sm p-3 h-100 {{ request('kategori') == $item->id_kategori ? 'border border-warning border-2' : '' }}">
+                <div class="card kategori-card border-0 shadow-sm p-3 h-100 {{ request('kategori') == $item->id_kategori ? 'border border-warning border-2' : '' }}">
 
                     <div style="font-size:40px;">
                         {{ $icons[$item->nama_kategori] ?? '🏪' }}
@@ -293,7 +317,7 @@
     .warung-slider-track {
         display: flex;
         flex-wrap: nowrap;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 1rem;
         max-width: 100%;
         overflow-x: auto;
@@ -305,7 +329,10 @@
     .warung-slider-track::-webkit-scrollbar {
         display: none;
     }
-    .warung-slider-track > * {
+    /* PENTING: hanya target kartu warung (.warung-card-item), JANGAN pakai
+       selector "> *" karena modal detail warung ikut jadi sibling di sini
+       dan bakal ke-maksa lebar 300px kalau kena selector universal. */
+    .warung-slider-track > .warung-card-item {
         flex: 0 0 auto;
         width: 300px;
         scroll-snap-align: start;
@@ -336,7 +363,7 @@
 
     @media (max-width: 768px) {
         .warung-slider-track { padding-left: 40px; padding-right: 40px; }
-        .warung-slider-track > * { width: 240px; }
+        .warung-slider-track > .warung-card-item { width: 240px; }
     }
 
     /* ===== Dropdown Urutkan (mandiri, tidak bergantung Bootstrap JS) ===== */
@@ -383,7 +410,7 @@
     function geserWarung(id, arah) {
         const track = document.getElementById(id);
         if (!track) return;
-        const jarak = track.querySelector(':scope > *')?.offsetWidth || 300;
+        const jarak = track.querySelector(':scope > .warung-card-item')?.offsetWidth || 300;
         track.scrollBy({ left: arah * (jarak + 16), behavior: 'smooth' });
     }
 
@@ -427,6 +454,26 @@
             document.querySelectorAll('.warung-dropdown-menu.is-open').forEach(m => m.classList.remove('is-open'));
         }
     });
+    // ===== Hero Slider =====
+document.addEventListener("DOMContentLoaded", function () {
+
+    const slides = document.querySelectorAll(".hero-slide");
+
+    if (!slides.length) return;
+
+    let index = 0;
+
+    setInterval(() => {
+
+        slides[index].classList.remove("active");
+
+        index = (index + 1) % slides.length;
+
+        slides[index].classList.add("active");
+
+    }, 5000);
+
+});
 </script>
 
 @endsection

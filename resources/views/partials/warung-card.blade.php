@@ -3,81 +3,79 @@
         $item->favorit->where('id_user', auth()->user()->id_user)->count() > 0;
       @endphp
 
-      <div class="warung-card-item mb-4">
+<div class="warung-card-item mb-4">
 
-        <div class="card border-0 shadow h-100">
+    <div class="card warung-card border-0 shadow">
 
-          <div class="position-relative">
+        <div class="position-relative">
 
-    <img src="{{ asset('images/warung/'.$item->foto) }}"
-        class="card-img-top"
-        style="height:220px;object-fit:cover;">
+            <img src="{{ asset('images/warung/'.$item->foto) }}"
+                class="card-img-top warung-image">
 
+            <button
+                class="btn btn-light rounded-circle shadow favorite-btn position-absolute top-0 end-0 m-2"
+                data-id="{{ $item->id_warung }}"
+                data-login="{{ auth()->check() ? 'true' : 'false' }}"
+                style="width:45px;height:45px;">
 
-<button
-    class="btn btn-light rounded-circle shadow favorite-btn position-absolute top-0 end-0 m-2"
-    data-id="{{ $item->id_warung }}"
-    data-login="{{ auth()->check() ? 'true' : 'false' }}"
-    style="width:45px;height:45px;">
-
-    @auth
-
-        @if($isFavorit)
-            <i class="fa-solid fa-heart text-danger"></i>
-        @else
-            <i class="fa-regular fa-heart"></i>
-        @endif
-
-    @else
-
-        <i class="fa-regular fa-heart"></i>
-
-    @endauth
-
-</button>
-
-
-</div>
-
-          <div class="card-body">
-
-            <h4 class="fw-bold">
-              {{ $item->nama_warung }}
-            </h4>
-
-            <p class="text-secondary">
-              📍 {{ $item->alamat }}
-            </p>
-
-            <p>
-              {{ $item->deskripsi }}
-            </p>
-
-            <p class="text-warning fw-bold">
-              Rp{{ number_format($item->harga_min,0,',','.') }}
-              -
-              Rp{{ number_format($item->harga_max,0,',','.') }}
-            </p>
-
-            <p>
-              🕒
-              {{ substr($item->jam_buka,0,5) }}
-              -
-              {{ substr($item->jam_tutup,0,5) }}
-            </p>
-
-            <button class="btn btn-warning text-white w-100" data-bs-toggle="modal"
-              data-bs-target="#detail{{ $item->id_warung }}">
-
-              Lihat Detail
+                @auth
+                    @if($isFavorit)
+                        <i class="fa-solid fa-heart text-danger"></i>
+                    @else
+                        <i class="fa-regular fa-heart"></i>
+                    @endif
+                @else
+                    <i class="fa-regular fa-heart"></i>
+                @endauth
 
             </button>
 
-          </div>
+        </div>
+
+        <div class="card-body d-flex flex-column">
+
+            <h4 class="fw-bold warung-title">
+                {{ $item->nama_warung }}
+            </h4>
+
+            <p class="text-secondary warung-address">
+                📍 {{ $item->alamat }}
+            </p>
+
+            <p class="warung-description">
+                {{ $item->deskripsi }}
+            </p>
+
+            <div class="mt-auto">
+
+                <p class="text-warning fw-bold mb-2">
+                    Rp{{ number_format($item->harga_min,0,',','.') }}
+                    -
+                    Rp{{ number_format($item->harga_max,0,',','.') }}
+                </p>
+
+                <p class="mb-3">
+                    🕒 {{ substr($item->jam_buka,0,5) }}
+                    -
+                    {{ substr($item->jam_tutup,0,5) }}
+                </p>
+
+                <button
+                    class="btn btn-warning text-white w-100"
+                    data-bs-toggle="modal"
+                    data-bs-target="#detail{{ $item->id_warung }}">
+
+                    Lihat Detail
+
+                </button>
+
+            </div>
 
         </div>
 
-      </div>
+    </div>
+
+</div>
 
       <!-- MODAL DETAIL WARUNG -->
       <div class="modal fade" id="detail{{ $item->id_warung }}" tabindex="-1" aria-hidden="true">
