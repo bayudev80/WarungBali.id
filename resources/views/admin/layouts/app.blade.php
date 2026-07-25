@@ -46,22 +46,32 @@
                 <span>Kategori</span>
             </a>
 
-            <a href="#">
+            <a href="{{ route('admin.warung.index') }}"
+                class="{{ request()->routeIs('admin.warung.*') ? 'active' : '' }}">
+                <i class="bi bi-shop"></i>
+                <span>Warung</span>
+            </a>
+
+            <a href="{{ route('admin.user.index') }}"
+                class="{{ request()->routeIs('admin.user.*') ? 'active' : '' }}">
                 <i class="bi bi-people"></i>
                 <span>Pengguna</span>
             </a>
 
-            <a href="#">
+            <a href="{{ route('admin.review.index') }}"
+                class="{{ request()->routeIs('admin.review.*') ? 'active' : '' }}">
                 <i class="bi bi-star"></i>
                 <span>Review</span>
             </a>
 
-            <a href="#">
+            <a href="{{ route('admin.favorit.index') }}"
+                class="{{ request()->routeIs('admin.favorit.*') ? 'active' : '' }}">
                 <i class="bi bi-heart"></i>
                 <span>Favorit</span>
             </a>
 
-            <a href="#">
+            <a href="{{ route('profile.edit') }}"
+                class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
                 <i class="bi bi-gear"></i>
                 <span>Pengaturan</span>
             </a>
