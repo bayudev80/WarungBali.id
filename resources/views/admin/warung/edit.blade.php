@@ -8,6 +8,16 @@
 
     <h3 class="fw-bold mb-4">Edit Warung</h3>
 
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form action="{{ route('admin.warung.update', $warung->id_warung) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -89,8 +99,10 @@
         <div class="mb-3">
             <label class="form-label">Foto Warung</label><br>
 
-            @if($warung->foto)
+            @if($warung->foto && file_exists(public_path('images/warung/'.$warung->foto)))
                 <img src="{{ asset('images/warung/'.$warung->foto) }}" style="width:100px;height:100px;object-fit:cover;border-radius:6px;" class="mb-2">
+            @else
+                <div class="text-muted small mb-2">Belum ada foto / file tidak ditemukan</div>
             @endif
 
             <input type="file" name="foto" class="form-control" accept="image/*">

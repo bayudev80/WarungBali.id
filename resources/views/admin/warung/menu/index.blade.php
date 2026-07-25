@@ -53,10 +53,10 @@
                     <td>{{ $loop->iteration }}</td>
 
                     <td>
-                        @if($item->foto_menu)
+                        @if($item->foto_menu && file_exists(public_path('images/menu/'.$item->foto_menu)))
                             <img src="{{ asset('images/menu/'.$item->foto_menu) }}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
                         @else
-                            -
+                            <span class="text-muted small">Tidak ada foto</span>
                         @endif
                     </td>
 

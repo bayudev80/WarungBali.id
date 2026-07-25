@@ -9,6 +9,16 @@
     <h3 class="fw-bold mb-1">Tambah Menu</h3>
     <p class="text-muted mb-4">Warung: {{ $warung->nama_warung }}</p>
 
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form action="{{ route('admin.warung.menu.store', $warung->id_warung) }}" method="POST" enctype="multipart/form-data">
         @csrf
 

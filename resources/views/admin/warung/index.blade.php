@@ -10,12 +10,16 @@
 
         <h3 class="fw-bold">Data Warung</h3>
 
-        <a href="#" class="btn btn-success">
+        <a href="{{ route('admin.warung.create') }}" class="btn btn-success">
             <i class="bi bi-plus-circle"></i>
             Tambah Warung
         </a>
 
     </div>
+
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
     <div class="table-responsive">
 
@@ -26,6 +30,7 @@
                 <tr>
 
                     <th>No</th>
+                    <th>Foto</th>
                     <th>Nama Warung</th>
                     <th>Kategori</th>
                     <th>Kabupaten</th>
@@ -42,7 +47,15 @@
 
                 <tr>
 
-                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $loop->iteration + ($warung->currentPage() - 1) * $warung->perPage() }}</td>
+
+                    <td>
+                        @if($item->foto && file_exists(public_path('images/warung/'.$item->foto)))
+                            <img src="{{ asset('images/warung/'.$item->foto) }}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
+                        @else
+                            <span class="text-muted small">Tidak ada foto</span>
+                        @endif
+                    </td>
 
                     <td>{{ $item->nama_warung }}</td>
 
@@ -54,13 +67,21 @@
 
                     <td>
 
-                        <button class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil"></i>
-                        </button>
+                        <a href="{{ route('admin.warung.menu.index', $item->id_warung) }}" class="btn btn-info btn-sm" title="Kelola Menu">
+                            <i class="bi bi-menu-button-wide"></i>
+                        </a>
 
-                        <button class="btn btn-danger btn-sm">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                        <a href="{{ route('admin.warung.edit', $item->id_warung) }}" class="btn btn-warning btn-sm" title="Edit">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+
+                        <form action="{{ route('admin.warung.destroy', $item->id_warung) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus warung ini? Semua menu di dalamnya juga akan terhapus.')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
 
                     </td>
 
@@ -70,7 +91,7 @@
 
                 <tr>
 
-                    <td colspan="6" class="text-center">
+                    <td colspan="7" class="text-center">
 
                         Belum ada data warung.
 
@@ -85,6 +106,8 @@
         </table>
 
     </div>
+
+    {{ $warung->links() }}
 
 </div>
 

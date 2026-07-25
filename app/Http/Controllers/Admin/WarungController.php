@@ -41,7 +41,7 @@ class WarungController extends Controller
             'jam_tutup'    => 'nullable',
             'harga_min'    => 'nullable|integer|min:0',
             'harga_max'    => 'nullable|integer|min:0',
-            'foto'         => 'nullable|image|max:2048',
+            'foto'         => 'nullable|image|max:5120',
         ]);
 
         $data = $request->except('foto', '_token');
@@ -81,7 +81,7 @@ class WarungController extends Controller
             'jam_tutup'    => 'nullable',
             'harga_min'    => 'nullable|integer|min:0',
             'harga_max'    => 'nullable|integer|min:0',
-            'foto'         => 'nullable|image|max:2048',
+            'foto'         => 'nullable|image|max:5120',
         ]);
 
         $data = $request->except('foto', '_token', '_method');
