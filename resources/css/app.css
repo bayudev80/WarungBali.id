@@ -23,3 +23,5 @@
 @import "./responsive/responsive.css";
 
 @import "./components/favorite.css";
+
+@import "./admin.css";

@@ -8,7 +8,7 @@
 
     <title>@yield('title', 'Admin WarungBali.id')</title>
 
-    @vite(['resources/css/app.css','resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -22,47 +22,100 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
-<body class="bg-light">
+<body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
-        <div class="container-fluid">
+    <!-- Sidebar -->
+    <aside class="sidebar">
 
-            <a class="navbar-brand fw-bold" href="{{ route('admin.dashboard') }}">
-                WarungBali.id Admin
+        <div class="sidebar-header">
+            <h3>WarungBali.id</h3>
+            <span>Admin Panel</span>
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a href="{{ route('admin.dashboard') }}"
+                class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
             </a>
 
-            <div class="ms-auto d-flex align-items-center">
+            <a href="{{ route('admin.kategori.index') }}"
+                class="{{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}">
+                <i class="bi bi-grid"></i>
+                <span>Kategori</span>
+            </a>
 
-                <span class="text-white me-3">
-                    Halo, {{ Auth::user()->nama }}
+            <a href="#">
+                <i class="bi bi-people"></i>
+                <span>Pengguna</span>
+            </a>
+
+            <a href="#">
+                <i class="bi bi-star"></i>
+                <span>Review</span>
+            </a>
+
+            <a href="#">
+                <i class="bi bi-heart"></i>
+                <span>Favorit</span>
+            </a>
+
+            <a href="#">
+                <i class="bi bi-gear"></i>
+                <span>Pengaturan</span>
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <!-- Content -->
+    <div class="content">
+
+        <!-- Topbar -->
+        <header class="topbar">
+
+            <div>
+                <h4 class="fw-bold mb-0">
+                    @yield('title')
+                </h4>
+            </div>
+
+            <div class="profile">
+
+                <span>
+                    Halo,
+                    <strong>{{ Auth::user()->nama }}</strong>
                 </span>
 
-                <a href="{{ route('home') }}" class="btn btn-light btn-sm me-2">
-                    <i class="fas fa-globe"></i> Website
+                <a href="{{ route('home') }}" class="btn-website">
+                    <i class="fa-solid fa-globe"></i>
+                    Website
                 </a>
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
-                    <button class="btn btn-danger btn-sm">
-                        <i class="fas fa-sign-out-alt"></i> Logout
+                    <button type="submit" class="btn-logout">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Logout
                     </button>
                 </form>
 
             </div>
 
-        </div>
-    </nav>
+        </header>
 
-    <!-- Content -->
-    <main class="container py-4">
+        <!-- Main Content -->
+        <main class="main-content">
 
-        @yield('content')
+            @yield('content')
 
-    </main>
+        </main>
 
-    <!-- Bootstrap JS -->
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     @stack('scripts')

@@ -1,0 +1,298 @@
+/* ===========================
+   ADMIN WARUNGBALI.ID
+=========================== */
+
+:root {
+    --primary: #2e7d32;
+    --secondary: #f4b400;
+    --dark: #1e293b;
+    --bg: #f5f7fb;
+    --white: #ffffff;
+    --text: #374151;
+    --border: #e5e7eb;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --radius: 18px;
+}
+
+body {
+    background: var(--bg);
+    font-family: "Segoe UI", sans-serif;
+    color: var(--text);
+}
+
+/* ===========================
+SIDEBAR
+=========================== */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 260px;
+    height: 100vh;
+    background: var(--dark);
+    overflow-y: auto;
+    z-index: 999;
+}
+
+.sidebar-header {
+    text-align: center;
+    padding: 30px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-header h3 {
+    color: var(--secondary);
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.sidebar-header span {
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.sidebar-menu {
+    padding: 20px 0;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 28px;
+    color: #fff;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 15px;
+}
+
+.sidebar-menu a i {
+    width: 22px;
+    text-align: center;
+}
+
+.sidebar-menu a:hover {
+    background: var(--primary);
+}
+
+.sidebar-menu a.active {
+    background: var(--primary);
+    border-left: 5px solid var(--secondary);
+}
+
+/* ===========================
+CONTENT
+=========================== */
+
+.content {
+    margin-left: 260px;
+    min-height: 100vh;
+}
+
+/* ===========================
+TOPBAR
+=========================== */
+
+.topbar {
+    height: 75px;
+    background: var(--white);
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 35px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile strong {
+    color: var(--primary);
+}
+
+.btn-website {
+    background: var(--primary);
+    color: white;
+    border-radius: 10px;
+    padding: 8px 18px;
+    text-decoration: none;
+}
+
+.btn-website:hover {
+    background: #256b2a;
+    color: white;
+}
+
+.btn-logout {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 18px;
+}
+
+/* ===========================
+MAIN
+=========================== */
+
+.main-content {
+    padding: 35px;
+}
+
+/* ===========================
+CARD
+=========================== */
+
+.dashboard-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 5px;
+    background: var(--primary);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-6px);
+}
+
+.dashboard-card i {
+    font-size: 36px;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.dashboard-card h6 {
+    color: #6b7280;
+    margin-bottom: 5px;
+}
+
+.dashboard-card h2 {
+    font-weight: bold;
+    margin: 0;
+}
+
+/* ===========================
+BOX
+=========================== */
+
+.content-box {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 25px;
+}
+
+/* ===========================
+TABLE
+=========================== */
+
+.table {
+    margin: 0;
+}
+
+.table thead {
+    background: #f8f9fa;
+}
+
+.table thead th {
+    border: none;
+    font-weight: 600;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* ===========================
+BUTTON
+=========================== */
+
+.btn-success {
+    background: var(--primary);
+    border: none;
+}
+
+.btn-success:hover {
+    background: #256b2a;
+}
+
+.btn-warning {
+    color: white;
+}
+
+.btn {
+    border-radius: 10px;
+}
+
+/* ===========================
+FORM
+=========================== */
+
+.form-control {
+    border-radius: 10px;
+    height: 46px;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: var(--primary);
+}
+
+/* ===========================
+RESPONSIVE
+=========================== */
+
+@media (max-width: 992px) {
+    .sidebar {
+        width: 80px;
+    }
+
+    .sidebar-header h3,
+    .sidebar-header span,
+    .sidebar-menu span {
+        display: none;
+    }
+
+    .sidebar-menu a {
+        justify-content: center;
+        padding: 18px;
+    }
+
+    .content {
+        margin-left: 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    .topbar {
+        padding: 15px;
+        flex-direction: column;
+        height: auto;
+        gap: 10px;
+    }
+
+    .profile {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+}
