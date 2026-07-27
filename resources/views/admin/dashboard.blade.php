@@ -46,6 +46,17 @@
         </div>
     </div>
 
+    <div class="col-md-3 mb-3">
+        <a href="{{ route('admin.warung.verifikasi') }}" class="text-decoration-none">
+            <div class="card shadow border-0 {{ $jumlahWarungPending > 0 ? 'border-warning' : '' }}">
+                <div class="card-body">
+                    <h6 class="text-dark">Menunggu Verifikasi</h6>
+                    <h2 class="{{ $jumlahWarungPending > 0 ? 'text-warning' : '' }}">{{ $jumlahWarungPending }}</h2>
+                </div>
+            </div>
+        </a>
+    </div>
+
 </div>
 
 @endsection

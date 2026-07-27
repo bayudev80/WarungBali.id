@@ -41,6 +41,9 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::resource('warung', WarungController::class);
 
+        Route::get('warung-verifikasi', [WarungController::class, 'verifikasi'])
+            ->name('warung.verifikasi');
+
         Route::patch('warung/{id}/approve', [WarungController::class, 'approve'])
             ->name('warung.approve');
         Route::patch('warung/{id}/reject', [WarungController::class, 'reject'])
@@ -71,7 +74,14 @@ Route::middleware(['auth', 'role:admin'])
 // =========================
 // PEMILIK WARUNG
 // =========================
-Route::middleware(['auth', 'role:pemilik'])
+
+// Semua route pemilik cukup butuh login (auth). Tidak lagi digerbang oleh
+// middleware role:pemilik, karena setiap controller di bawah ini SUDAH
+// menangani sendiri kondisi "belum punya warung" / "role belum pemilik"
+// dengan redirect yang ramah -- bukan error 403 mentah. Ini supaya akun
+// yang baru login sebagai "user" (belum resmi jadi pemilik) tetap bisa
+// diarahkan dengan mulus ke form pendaftaran warung, tanpa terjebak 403.
+Route::middleware(['auth'])
     ->prefix('pemilik')
     ->name('pemilik.')
     ->group(function () {

@@ -14,11 +14,12 @@ class DashboardController extends Controller
     public function index()
     {
         return view('admin.dashboard', [
-            'jumlahWarung'   => Warung::count(),
-            'jumlahUser'     => User::count(),
-            'jumlahReview'   => Review::count(),
-            'jumlahKategori' => Kategori::count(),
-            'jumlahFavorit'  => Favorit::count(),
+            'jumlahWarung'        => Warung::count(),
+            'jumlahUser'          => User::count(),
+            'jumlahReview'        => Review::count(),
+            'jumlahKategori'      => Kategori::count(),
+            'jumlahFavorit'       => Favorit::count(),
+            'jumlahWarungPending' => Warung::where('status', 'pending')->count(),
         ]);
     }
 }

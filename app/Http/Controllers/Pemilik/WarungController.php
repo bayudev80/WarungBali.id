@@ -13,6 +13,11 @@ class WarungController extends Controller
 {
     public function create()
     {
+        // Admin tidak mendaftarkan warung untuk dirinya sendiri.
+        if (auth()->user()->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat mendaftarkan warung.');
+        }
+
         // Satu pemilik cuma boleh punya satu warung.
         if (auth()->user()->warung) {
             return redirect()->route('pemilik.dashboard');
@@ -26,6 +31,10 @@ class WarungController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat mendaftarkan warung.');
+        }
+
         if (auth()->user()->warung) {
             return redirect()->route('pemilik.dashboard');
         }
@@ -54,12 +63,22 @@ class WarungController extends Controller
 
         Warung::create($data);
 
+        // Akun user biasa yang baru pertama kali mendaftarkan warung
+        // otomatis dinaikkan statusnya menjadi "pemilik".
+        if (auth()->user()->role !== 'pemilik') {
+            auth()->user()->update(['role' => 'pemilik']);
+        }
+
         return redirect()->route('pemilik.dashboard')
             ->with('success', 'Warung berhasil didaftarkan! Mohon tunggu persetujuan admin sebelum warung Anda tayang di website.');
     }
 
     public function edit()
     {
+        if (auth()->user()->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat mengelola warung pemilik.');
+        }
+
         $warung = auth()->user()->warung;
 
         if (!$warung) {
@@ -74,6 +93,10 @@ class WarungController extends Controller
 
     public function update(Request $request)
     {
+        if (auth()->user()->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat mengelola warung pemilik.');
+        }
+
         $warung = auth()->user()->warung;
 
         if (!$warung) {

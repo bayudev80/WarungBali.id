@@ -59,6 +59,11 @@ class Warung extends Model
     return $this->belongsTo(Kabupaten::class, 'id_kabupaten', 'id_kabupaten');
 }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
+    }
+
     /**
      * Label dinamis untuk item yang dijual warung ini.
      * Kalau kategorinya mengandung kata "makan" atau "minum" -> "Menu".

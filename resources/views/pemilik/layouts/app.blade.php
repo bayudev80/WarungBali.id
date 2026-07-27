@@ -34,23 +34,35 @@
 
         <nav class="sidebar-menu">
 
-            <a href="{{ route('pemilik.dashboard') }}"
-                class="{{ request()->routeIs('pemilik.dashboard') ? 'active' : '' }}">
-                <i class="bi bi-speedometer2"></i>
-                <span>Dashboard</span>
-            </a>
+            @if(auth()->user()->warung)
 
-            <a href="{{ route('pemilik.warung.edit') }}"
-                class="{{ request()->routeIs('pemilik.warung.*') ? 'active' : '' }}">
-                <i class="bi bi-shop"></i>
-                <span>Warung Saya</span>
-            </a>
+                <a href="{{ route('pemilik.dashboard') }}"
+                    class="{{ request()->routeIs('pemilik.dashboard') ? 'active' : '' }}">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
 
-            <a href="{{ route('pemilik.menu.index') }}"
-                class="{{ request()->routeIs('pemilik.menu.*') ? 'active' : '' }}">
-                <i class="bi bi-menu-button-wide"></i>
-                <span>Menu Saya</span>
-            </a>
+                <a href="{{ route('pemilik.warung.edit') }}"
+                    class="{{ request()->routeIs('pemilik.warung.*') ? 'active' : '' }}">
+                    <i class="bi bi-shop"></i>
+                    <span>Warung Saya</span>
+                </a>
+
+                <a href="{{ route('pemilik.menu.index') }}"
+                    class="{{ request()->routeIs('pemilik.menu.*') ? 'active' : '' }}">
+                    <i class="bi bi-menu-button-wide"></i>
+                    <span>Menu Saya</span>
+                </a>
+
+            @else
+
+                <a href="{{ route('pemilik.warung.create') }}"
+                    class="{{ request()->routeIs('pemilik.warung.create') ? 'active' : '' }}">
+                    <i class="bi bi-shop"></i>
+                    <span>Daftarkan Warung</span>
+                </a>
+
+            @endif
 
             <a href="{{ route('profile.edit') }}"
                 class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">

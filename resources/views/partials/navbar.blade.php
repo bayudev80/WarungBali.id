@@ -97,6 +97,26 @@
 
     @auth
 
+        @if(Auth::user()->role === 'admin')
+
+            <a href="{{ route('admin.dashboard') }}"
+                class="btn btn-light border rounded-4 px-4 me-3">
+
+                Dashboard Admin
+
+            </a>
+
+        @elseif(Auth::user()->role === 'pemilik')
+
+            <a href="{{ route('pemilik.dashboard') }}"
+                class="btn btn-light border rounded-4 px-4 me-3">
+
+                Dashboard Pemilik
+
+            </a>
+
+        @endif
+
         <span class="me-3 fw-semibold">
 
             👋 {{ Auth::user()->nama }}

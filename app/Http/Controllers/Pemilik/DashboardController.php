@@ -8,6 +8,11 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Admin tidak punya dashboard pemilik.
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
         $warung = auth()->user()->warung()->with(['kategori', 'kabupaten', 'menu'])->first();
 
         // Belum pernah isi data warung -> arahkan ke form tambah warung

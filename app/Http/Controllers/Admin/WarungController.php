@@ -21,6 +21,19 @@ class WarungController extends Controller
         return view('admin.warung.index', compact('warung'));
     }
 
+    /**
+     * Daftar pengajuan warung yang menunggu persetujuan admin.
+     */
+    public function verifikasi()
+    {
+        $warung = Warung::with(['kategori', 'kabupaten', 'user'])
+            ->where('status', 'pending')
+            ->latest('id_warung')
+            ->paginate(10);
+
+        return view('admin.warung.verifikasi', compact('warung'));
+    }
+
     public function create()
     {
         $kategori  = Kategori::orderBy('nama_kategori')->get();

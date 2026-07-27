@@ -320,9 +320,11 @@
                 wisatawan setiap bulan.
             </p>
 
-            <a href="{{ route('register') }}" class="btn btn-warning fw-bold px-4 py-2 rounded-pill">
-                Daftarkan Warung Saya
-            </a>
+            @if(!auth()->check() || auth()->user()->role !== 'admin')
+                <a href="{{ route('pemilik.warung.create') }}" class="btn btn-warning fw-bold px-4 py-2 rounded-pill">
+                    Daftarkan Warung Saya
+                </a>
+            @endif
 
         </div>
 
