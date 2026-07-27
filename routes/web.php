@@ -19,6 +19,7 @@ use App\Http\Controllers\Pemilik\MenuController as PemilikMenuController;
 // HOME
 // =========================
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/tentang', [HomeController::class, 'tentang'])->name('tentang');
 Route::get('/warung/random', [HomeController::class, 'randomWarung'])->name('warung.random');
 
 // Dashboard (redirect ke home)

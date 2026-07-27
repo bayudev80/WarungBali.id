@@ -94,4 +94,16 @@ class HomeController extends Controller
         ));
     }
 
+    public function tentang()
+    {
+        $tim = [
+            ['nama' => 'Bayu Putra', 'peran' => 'Pendiri & CEO'],
+            ['nama' => 'Deana',      'peran' => 'Kepala Konten'],
+            ['nama' => 'Arma',       'peran' => 'Teknologi'],
+            ['nama' => 'Yogi',       'peran' => 'Kemitraan'],
+        ];
+
+        return view('tentang', compact('tim'));
+    }
+
 }

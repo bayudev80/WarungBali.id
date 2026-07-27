@@ -39,9 +39,9 @@
 
                 <li class="nav-item mx-2">
 
-                    <a class="nav-link active px-4 py-2 rounded-pill"
-                        href="/"
-                        style="background:#FCE8CC;color:#C85C2E;font-weight:600;">
+                    <a class="nav-link px-4 py-2 rounded-pill {{ request()->routeIs('home') ? 'active' : '' }}"
+                        href="{{ route('home') }}"
+                        style="{{ request()->routeIs('home') ? 'background:#FCE8CC;color:#C85C2E;font-weight:600;' : '' }}">
 
                         Beranda
 
@@ -52,7 +52,7 @@
                 <li class="nav-item mx-2">
 
                     <a class="nav-link"
-                        href="#warung">
+                        href="{{ route('home') }}#warung">
 
                         Jelajahi
 
@@ -62,8 +62,9 @@
 
                 <li class="nav-item mx-2">
 
-                    <a class="nav-link"
-                        href="#footer">
+                    <a class="nav-link px-4 py-2 rounded-pill {{ request()->routeIs('tentang') ? 'active' : '' }}"
+                        href="{{ route('tentang') }}"
+                        style="{{ request()->routeIs('tentang') ? 'background:#FCE8CC;color:#C85C2E;font-weight:600;' : '' }}">
 
                         Tentang Kami
 
