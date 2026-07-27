@@ -24,7 +24,8 @@ class Warung extends Model
         'jam_tutup',
         'harga_min',
         'harga_max',
-        'foto'
+        'foto',
+        'status'
     ];
 
     public function menu()
@@ -57,5 +58,21 @@ class Warung extends Model
 {
     return $this->belongsTo(Kabupaten::class, 'id_kabupaten', 'id_kabupaten');
 }
+
+    /**
+     * Label dinamis untuk item yang dijual warung ini.
+     * Kalau kategorinya mengandung kata "makan" atau "minum" -> "Menu".
+     * Selain itu (mis. ATK, Sembako, dll) -> "Produk".
+     */
+    public function getLabelMenuAttribute()
+    {
+        $nama = strtolower($this->kategori->nama_kategori ?? '');
+
+        if (str_contains($nama, 'makan') || str_contains($nama, 'minum') || str_contains($nama, 'kuliner') || str_contains($nama, 'jajan')) {
+            return 'Menu';
+        }
+
+        return 'Produk';
+    }
     }
 

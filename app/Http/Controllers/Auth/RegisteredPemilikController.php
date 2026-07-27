@@ -10,43 +10,41 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
-class RegisteredUserController extends Controller
+class RegisteredPemilikController extends Controller
 {
     /**
-     * Display the registration view.
+     * Tampilkan form daftar akun pemilik warung (tahap 1).
      */
     public function create(): View
     {
-        return view('auth.register');
+        return view('auth.register-pemilik');
     }
 
     /**
-     * Handle an incoming registration request.
-     *
-     * @throws ValidationException
+     * Simpan akun pemilik warung, lalu arahkan ke form Tambah Warung (tahap 2).
      */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class.',email'],
+            'nama'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class.',email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'nama' => $request->nama,
-            'email' => $request->email,
+            'nama'     => $request->nama,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user',
+            'role'     => 'pemilik',
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('pemilik.warung.create')
+            ->with('success', 'Akun berhasil dibuat! Sekarang lengkapi data warung Anda.');
     }
 }

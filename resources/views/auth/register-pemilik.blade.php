@@ -1,12 +1,12 @@
 @extends('layouts.auth')
 
-@section('title', 'Daftar')
+@section('title', 'Daftarkan Warung')
 
 @section('content')
 
 <div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
 
-    <div class="col-md-6 col-lg-4">
+    <div class="col-md-7 col-lg-5">
 
         <div class="card border-0 shadow-lg rounded-4">
 
@@ -18,9 +18,13 @@
                         WarungBali.id
                     </h2>
 
-                    <p class="text-secondary">
-                        Buat akun baru
+                    <p class="text-secondary mb-0">
+                        Daftarkan Warung Anda
                     </p>
+
+                    <small class="text-muted">
+                        Langkah 1 dari 2 &mdash; buat akun pemilik warung dulu
+                    </small>
 
                 </div>
 
@@ -34,13 +38,13 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('register') }}">
+                <form method="POST" action="{{ route('pemilik.register') }}">
                     @csrf
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Nama</label>
+                        <label class="form-label fw-semibold">Nama Pemilik</label>
                         <input type="text" name="nama" class="form-control @error('nama') is-invalid @enderror"
-                            value="{{ old('nama') }}" placeholder="Nama lengkap" required autofocus>
+                            value="{{ old('nama') }}" placeholder="Nama lengkap Anda" required autofocus>
                     </div>
 
                     <div class="mb-3">
@@ -62,8 +66,8 @@
                     </div>
 
                     <button class="btn w-100 text-white py-2" style="background:#C85C2E;border-radius:12px;">
-                        <i class="bi bi-person-plus-fill me-2"></i>
-                        Daftar
+                        <i class="bi bi-shop me-2"></i>
+                        Lanjut Isi Data Warung
                     </button>
 
                 </form>

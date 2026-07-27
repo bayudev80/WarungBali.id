@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Pemilik;
 
 use App\Http\Controllers\Controller;
 use App\Models\Warung;
@@ -11,26 +11,25 @@ use Illuminate\Support\Facades\File;
 
 class WarungController extends Controller
 {
-    public function index()
-    {
-        $warung = Warung::with(['kategori', 'kabupaten'])
-            ->orderByRaw("FIELD(status, 'pending', 'rejected', 'approved')")
-            ->latest('id_warung')
-            ->paginate(10);
-
-        return view('admin.warung.index', compact('warung'));
-    }
-
     public function create()
     {
+        // Satu pemilik cuma boleh punya satu warung.
+        if (auth()->user()->warung) {
+            return redirect()->route('pemilik.dashboard');
+        }
+
         $kategori  = Kategori::orderBy('nama_kategori')->get();
         $kabupaten = Kabupaten::orderBy('nama_kabupaten')->get();
 
-        return view('admin.warung.create', compact('kategori', 'kabupaten'));
+        return view('pemilik.warung.create', compact('kategori', 'kabupaten'));
     }
 
     public function store(Request $request)
     {
+        if (auth()->user()->warung) {
+            return redirect()->route('pemilik.dashboard');
+        }
+
         $request->validate([
             'nama_warung'  => 'required|max:150',
             'id_kategori'  => 'required|exists:kategori,id_kategori',
@@ -47,6 +46,7 @@ class WarungController extends Controller
 
         $data = $request->except('foto', '_token');
         $data['id_user'] = auth()->id();
+        $data['status']  = 'pending';
 
         if ($request->hasFile('foto')) {
             $data['foto'] = $this->uploadFoto($request->file('foto'));
@@ -54,22 +54,31 @@ class WarungController extends Controller
 
         Warung::create($data);
 
-        return redirect()->route('admin.warung.index')
-            ->with('success', 'Warung berhasil ditambahkan.');
+        return redirect()->route('pemilik.dashboard')
+            ->with('success', 'Warung berhasil didaftarkan! Mohon tunggu persetujuan admin sebelum warung Anda tayang di website.');
     }
 
-    public function edit($id)
+    public function edit()
     {
-        $warung    = Warung::findOrFail($id);
+        $warung = auth()->user()->warung;
+
+        if (!$warung) {
+            return redirect()->route('pemilik.warung.create');
+        }
+
         $kategori  = Kategori::orderBy('nama_kategori')->get();
         $kabupaten = Kabupaten::orderBy('nama_kabupaten')->get();
 
-        return view('admin.warung.edit', compact('warung', 'kategori', 'kabupaten'));
+        return view('pemilik.warung.edit', compact('warung', 'kategori', 'kabupaten'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $warung = Warung::findOrFail($id);
+        $warung = auth()->user()->warung;
+
+        if (!$warung) {
+            return redirect()->route('pemilik.warung.create');
+        }
 
         $request->validate([
             'nama_warung'  => 'required|max:150',
@@ -87,6 +96,11 @@ class WarungController extends Controller
 
         $data = $request->except('foto', '_token', '_method');
 
+        // Perubahan data warung setelah disetujui perlu ditinjau ulang oleh admin.
+        if ($warung->status === 'approved') {
+            $data['status'] = 'pending';
+        }
+
         if ($request->hasFile('foto')) {
             $this->deleteFoto($warung->foto);
             $data['foto'] = $this->uploadFoto($request->file('foto'));
@@ -94,37 +108,10 @@ class WarungController extends Controller
 
         $warung->update($data);
 
-        return redirect()->route('admin.warung.index')
-            ->with('success', 'Warung berhasil diubah.');
-    }
-
-    public function destroy($id)
-    {
-        $warung = Warung::findOrFail($id);
-
-        $this->deleteFoto($warung->foto);
-        $warung->delete();
-
-        return redirect()->route('admin.warung.index')
-            ->with('success', 'Warung berhasil dihapus.');
-    }
-
-    public function approve($id)
-    {
-        $warung = Warung::findOrFail($id);
-        $warung->update(['status' => 'approved']);
-
-        return redirect()->back()
-            ->with('success', 'Warung "' . $warung->nama_warung . '" disetujui dan sekarang tayang di website.');
-    }
-
-    public function reject($id)
-    {
-        $warung = Warung::findOrFail($id);
-        $warung->update(['status' => 'rejected']);
-
-        return redirect()->back()
-            ->with('success', 'Warung "' . $warung->nama_warung . '" ditolak.');
+        return redirect()->route('pemilik.dashboard')
+            ->with('success', $warung->status === 'pending'
+                ? 'Perubahan disimpan. Warung Anda perlu ditinjau ulang oleh admin sebelum tayang.'
+                : 'Data warung berhasil diubah.');
     }
 
     private function uploadFoto($file)

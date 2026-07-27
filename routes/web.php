@@ -11,6 +11,9 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\FavoritController as AdminFavoritController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Pemilik\DashboardController as PemilikDashboardController;
+use App\Http\Controllers\Pemilik\WarungController as PemilikWarungController;
+use App\Http\Controllers\Pemilik\MenuController as PemilikMenuController;
 
 // =========================
 // HOME
@@ -26,7 +29,7 @@ Route::middleware('auth')->get('/dashboard', function () {
 // =========================
 // ADMIN
 // =========================
-Route::middleware('auth')
+Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -37,6 +40,11 @@ Route::middleware('auth')
         Route::resource('kategori', KategoriController::class);
 
         Route::resource('warung', WarungController::class);
+
+        Route::patch('warung/{id}/approve', [WarungController::class, 'approve'])
+            ->name('warung.approve');
+        Route::patch('warung/{id}/reject', [WarungController::class, 'reject'])
+            ->name('warung.reject');
 
         Route::prefix('warung/{warung}/menu')->name('warung.menu.')->group(function () {
             Route::get('/', [MenuController::class, 'index'])->name('index');
@@ -58,6 +66,40 @@ Route::middleware('auth')
             ->name('favorit.index');
         Route::delete('favorit/{id}', [AdminFavoritController::class, 'destroy'])
             ->name('favorit.destroy');
+    });
+
+// =========================
+// PEMILIK WARUNG
+// =========================
+Route::middleware(['auth', 'role:pemilik'])
+    ->prefix('pemilik')
+    ->name('pemilik.')
+    ->group(function () {
+
+        Route::get('/', [PemilikDashboardController::class, 'index'])
+            ->name('dashboard');
+
+        Route::get('warung/create', [PemilikWarungController::class, 'create'])
+            ->name('warung.create');
+        Route::post('warung', [PemilikWarungController::class, 'store'])
+            ->name('warung.store');
+        Route::get('warung/edit', [PemilikWarungController::class, 'edit'])
+            ->name('warung.edit');
+        Route::put('warung', [PemilikWarungController::class, 'update'])
+            ->name('warung.update');
+
+        Route::get('menu', [PemilikMenuController::class, 'index'])
+            ->name('menu.index');
+        Route::get('menu/create', [PemilikMenuController::class, 'create'])
+            ->name('menu.create');
+        Route::post('menu', [PemilikMenuController::class, 'store'])
+            ->name('menu.store');
+        Route::get('menu/{id}/edit', [PemilikMenuController::class, 'edit'])
+            ->name('menu.edit');
+        Route::put('menu/{id}', [PemilikMenuController::class, 'update'])
+            ->name('menu.update');
+        Route::delete('menu/{id}', [PemilikMenuController::class, 'destroy'])
+            ->name('menu.destroy');
     });
 
 // =========================

@@ -35,6 +35,7 @@
                     <th>Kategori</th>
                     <th>Kabupaten</th>
                     <th>Telepon</th>
+                    <th>Status</th>
                     <th>Aksi</th>
 
                 </tr>
@@ -44,6 +45,14 @@
             <tbody>
 
                 @forelse($warung as $item)
+
+                @php
+                    $statusBadge = [
+                        'pending'  => ['label' => 'Menunggu', 'class' => 'bg-warning text-dark'],
+                        'approved' => ['label' => 'Disetujui', 'class' => 'bg-success'],
+                        'rejected' => ['label' => 'Ditolak', 'class' => 'bg-danger'],
+                    ][$item->status];
+                @endphp
 
                 <tr>
 
@@ -66,8 +75,30 @@
                     <td>{{ $item->telepon }}</td>
 
                     <td>
+                        <span class="badge {{ $statusBadge['class'] }}">{{ $statusBadge['label'] }}</span>
+                    </td>
 
-                        <a href="{{ route('admin.warung.menu.index', $item->id_warung) }}" class="btn btn-info btn-sm" title="Kelola Menu">
+                    <td class="text-nowrap">
+
+                        @if($item->status === 'pending')
+                            <form action="{{ route('admin.warung.approve', $item->id_warung) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn btn-success btn-sm" title="Setujui" onclick="return confirm('Setujui warung ini supaya tayang di website?')">
+                                    <i class="bi bi-check-lg"></i>
+                                </button>
+                            </form>
+
+                            <form action="{{ route('admin.warung.reject', $item->id_warung) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Tolak" onclick="return confirm('Tolak pengajuan warung ini?')">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </form>
+                        @endif
+
+                        <a href="{{ route('admin.warung.menu.index', $item->id_warung) }}" class="btn btn-info btn-sm" title="Kelola {{ $item->label_menu }}">
                             <i class="bi bi-menu-button-wide"></i>
                         </a>
 
@@ -91,7 +122,7 @@
 
                 <tr>
 
-                    <td colspan="7" class="text-center">
+                    <td colspan="8" class="text-center">
 
                         Belum ada data warung.
 

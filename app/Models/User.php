@@ -35,4 +35,12 @@ class User extends Authenticatable
     {
     return $this->hasMany(Favorit::class, 'id_user', 'id_user');
     }
+
+    /**
+     * Warung milik user ini (khusus role pemilik, satu pemilik = satu warung).
+     */
+    public function warung()
+    {
+        return $this->hasOne(Warung::class, 'id_user', 'id_user');
+    }
     }

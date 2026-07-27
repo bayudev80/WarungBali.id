@@ -21,6 +21,7 @@ class HomeController extends Controller
             'favorit',
             'kategori'
         ])
+        ->where('status', 'approved')
         ->withCount([
             'favorit as favorit_count',
             'review as review_count',
@@ -79,7 +80,7 @@ class HomeController extends Controller
         // Semua kategori (untuk bagian Kategori Populer)
         $kategori = Kategori::orderBy('nama_kategori')->get();
 
-        $totalWarung = Warung::count();
+        $totalWarung = Warung::where('status', 'approved')->count();
         $totalUlasan = 5400;
         $totalKabupaten = 9;
 
