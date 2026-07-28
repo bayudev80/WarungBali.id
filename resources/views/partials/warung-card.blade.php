@@ -46,11 +46,13 @@
                 {{ $item->deskripsi }}
             </p>
 
-            @if($item->is_kuliner && $item->menerima_catering)
-                <span class="badge bg-success-subtle text-success mb-2 align-self-start">
-                    🍱 Menerima Catering
-                </span>
-            @endif
+            <div class="warung-catering-slot mb-2">
+                @if($item->is_kuliner && $item->menerima_catering)
+                    <span class="badge bg-success-subtle text-success align-self-start">
+                        🍱 Menerima Catering
+                    </span>
+                @endif
+            </div>
 
             <div class="mt-auto">
 

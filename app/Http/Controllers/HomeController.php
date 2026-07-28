@@ -5,16 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Warung;
 use App\Models\Kategori;
 use App\Models\Review;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index()
+    /**
+     * Bangun query warung yang sudah difilter (search/kategori) dan diurutkan.
+     * Dipakai bareng oleh index() (load halaman awal) dan searchAjax()
+     * (pencarian tanpa reload), supaya logikanya tidak dobel/ketinggalan sinkron.
+     */
+    private function buildWarungQuery(Request $request)
     {
-        $search = request('search');
-        $kategoriFilter = request('kategori');
-        $urutan = request('urutan', 'populer');
+        $search = $request->input('search');
+        $kategoriFilter = $request->input('kategori');
+        $urutan = $request->input('urutan', 'populer');
 
-        // Data warung (sudah difilter search & kategori, + siap diurutkan)
         $query = Warung::with([
             'menu',
             'review.user',
@@ -31,14 +36,16 @@ class HomeController extends Controller
             $q->where(function ($qq) use ($search) {
                 $qq->where('nama_warung', 'like', "%{$search}%")
                    ->orWhere('alamat', 'like', "%{$search}%")
-                   ->orWhere('deskripsi', 'like', "%{$search}%");
+                   ->orWhere('deskripsi', 'like', "%{$search}%")
+                   ->orWhereHas('kategori', function ($kq) use ($search) {
+                        $kq->where('nama_kategori', 'like', "%{$search}%");
+                   });
             });
         })
         ->when($kategoriFilter, function ($q) use ($kategoriFilter) {
             $q->where('id_kategori', $kategoriFilter);
         });
 
-        // Urutan / filter pilihan
         switch ($urutan) {
             case 'disukai':
                 $query->orderByDesc('favorit_count');
@@ -75,6 +82,13 @@ class HomeController extends Controller
                 break;
         }
 
+        return [$query, $urutan];
+    }
+
+    public function index(Request $request)
+    {
+        [$query, $urutan] = $this->buildWarungQuery($request);
+
         $warungPilihan = $query->get();
 
         // Semua kategori (untuk bagian Kategori Populer)
@@ -92,6 +106,27 @@ class HomeController extends Controller
             'totalKabupaten',
             'urutan'
         ));
+    }
+
+    /**
+     * Endpoint AJAX: dipanggil dari JS saat user mencari/mengurutkan/memfilter
+     * kategori, supaya hasilnya update tanpa reload halaman.
+     * Mengembalikan HTML hasil render partial (bukan JSON data mentah),
+     * supaya markup kartu warung & slider tetap sama persis dengan
+     * halaman utama (tidak perlu duplikasi logic render di JS).
+     */
+    public function searchAjax(Request $request)
+    {
+        [$query, $urutan] = $this->buildWarungQuery($request);
+
+        $warungPilihan = $query->get();
+
+        $html = view('partials.warung-results', compact('warungPilihan', 'urutan'))->render();
+
+        return response()->json([
+            'html'  => $html,
+            'total' => $warungPilihan->count(),
+        ]);
     }
 
     public function tentang()

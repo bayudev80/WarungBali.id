@@ -69,6 +69,15 @@
     overflow: hidden;
 }
 
+/* Slot badge catering: tinggi selalu sama, ada isi ataupun kosong,
+   supaya kartu warung yang menerima catering tidak jadi lebih panjang
+   dibanding kartu lain */
+.warung-catering-slot {
+    min-height: 26px;
+    display: flex;
+    align-items: center;
+}
+
 /* Harga + Jam + Tombol selalu di bawah */
 .warung-card .mt-auto {
     margin-top: auto;
