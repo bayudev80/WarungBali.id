@@ -35,6 +35,7 @@
                     <th>Kategori</th>
                     <th>Kabupaten</th>
                     <th>Telepon</th>
+                    <th>Catering</th>
                     <th>Status</th>
                     <th>Aksi</th>
 
@@ -73,6 +74,16 @@
                     <td>{{ $item->kabupaten->nama_kabupaten ?? '-' }}</td>
 
                     <td>{{ $item->telepon }}</td>
+
+                    <td>
+                        @if(!$item->is_kuliner)
+                            <span class="text-muted small">-</span>
+                        @elseif($item->menerima_catering)
+                            <span class="badge bg-success-subtle text-success">Ya</span>
+                        @else
+                            <span class="badge bg-secondary-subtle text-secondary">Tidak</span>
+                        @endif
+                    </td>
 
                     <td>
                         <span class="badge {{ $statusBadge['class'] }}">{{ $statusBadge['label'] }}</span>
@@ -122,7 +133,7 @@
 
                 <tr>
 
-                    <td colspan="8" class="text-center">
+                    <td colspan="9" class="text-center">
 
                         Belum ada data warung.
 

@@ -90,6 +90,14 @@
             </div>
         </div>
 
+        <div class="mb-3 form-check">
+            <input type="hidden" name="menerima_catering" value="0">
+            <input type="checkbox" name="menerima_catering" id="menerima_catering" class="form-check-input" value="1" {{ old('menerima_catering') ? 'checked' : '' }}>
+            <label class="form-check-label" for="menerima_catering">
+                Warung ini menerima layanan catering
+            </label>
+        </div>
+
         <div class="mb-4">
             <label class="form-label">Foto Warung</label>
             <input type="file" name="foto" class="form-control" accept="image/*">

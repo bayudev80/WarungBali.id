@@ -1,27 +1,26 @@
 <nav class="navbar navbar-expand-lg fixed-top py-3" style="background:#FFF7EF;">
     <div class="container">
 
-        <!-- Logo -->
-        <a class="navbar-brand d-flex align-items-center fw-bold" href="/">
-            <div class="rounded-3 d-flex justify-content-center align-items-center me-3"
-                style="width:48px;height:48px;background:#C85C2E;">
+       <!-- Logo -->
+<a class="navbar-brand d-flex align-items-center fw-bold" href="/">
+    <img src="{{ asset('images/logo.png') }}"
+        alt="WarungBali"
+        width="48"
+        height="48"
+        class="rounded-3 me-3"
+        style="object-fit:cover;">
 
-                <span class="text-white fw-bold fs-3">
-                    W
-                </span>
+    <span style="
+        font-family:'Playfair Display',serif;
+        font-size:22px;
+        color:#2D201C;">
 
-            </div>
+        Warungbali<span style="color:#C85C2E;">.id</span>
 
-            <span style="
-                font-family:'Playfair Display',serif;
-                font-size:22px;
-                color:#2D201C;">
+    </span>
 
-                Warungbali<span style="color:#C85C2E;">.id</span>
+</a>
 
-            </span>
-
-        </a>
 
         <button class="navbar-toggler"
             type="button"

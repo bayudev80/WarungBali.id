@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FavoritController;
+use App\Http\Controllers\ReviewController as PublicReviewController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\KategoriController;
 use App\Http\Controllers\Admin\WarungController;
@@ -129,6 +130,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/favorit/{id}', [FavoritController::class, 'toggle'])
         ->name('favorit.toggle');
+
+    Route::post('/warung/{id}/review', [PublicReviewController::class, 'store'])
+        ->name('review.store');
 
     Route::get('/kategori-random', [HomeController::class, 'kategoriRandom']);
 });

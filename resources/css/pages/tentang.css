@@ -7,7 +7,7 @@
     min-height: 38vh;
     display: flex;
     align-items: center;
-    background-image: url("/images/bgcklt.jpeg");
+    background-image: url("/images/hero2.jpeg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -17,7 +17,7 @@
 .tentang-hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(rgba(45, 32, 28, 0.72), rgba(45, 32, 28, 0.6));
+    background: linear-gradient(rgba(45, 32, 28, 0.45), rgba(45, 32, 28, 0.4));
 }
 
 .tentang-hero .container {
@@ -64,12 +64,13 @@
     border-radius: 18px;
     overflow: hidden;
     box-shadow: 0 15px 35px rgba(45, 32, 28, 0.18);
+    background: #fff;
 }
 
 .misi-image img {
     width: 100%;
-    height: 260px;
-    object-fit: cover;
+    height: auto;
+    display: block;
     transition: transform 0.5s ease;
 }
 
@@ -154,7 +155,9 @@
     width: 74px;
     height: 74px;
     border-radius: 50%;
-    background: #c85c2e;
+    background-color: #c85c2e;
+    background-size: cover;
+    background-position: center;
     color: #fff;
     font-weight: 700;
     font-size: 24px;

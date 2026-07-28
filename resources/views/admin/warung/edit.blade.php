@@ -110,6 +110,14 @@
             @error('foto') <div class="text-danger small">{{ $message }}</div> @enderror
         </div>
 
+        <div class="mb-3 form-check">
+            <input type="hidden" name="menerima_catering" value="0">
+            <input type="checkbox" name="menerima_catering" id="menerima_catering" class="form-check-input" value="1" {{ old('menerima_catering', $warung->menerima_catering) ? 'checked' : '' }}>
+            <label class="form-check-label" for="menerima_catering">
+                Warung ini menerima layanan catering
+            </label>
+        </div>
+
         <button class="btn btn-primary">Update</button>
         <a href="{{ route('admin.warung.index') }}" class="btn btn-secondary">Kembali</a>
 

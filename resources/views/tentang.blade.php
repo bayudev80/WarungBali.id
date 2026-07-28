@@ -43,7 +43,7 @@
         <div class="col-lg-5">
 
             <div class="misi-image">
-                <img src="{{ asset('images/hero2.jpeg') }}" alt="Suasana warung lokal Bali">
+                <img src="{{ asset('images/filosofilogowb-id.jpeg') }}" alt="Logo Warungbali.id">
             </div>
 
         </div>
@@ -98,36 +98,6 @@
                 </div>
 
             </div>
-
-        </div>
-
-    </div>
-
-    <!-- TIM KAMI -->
-    <div class="mb-5">
-
-        <h2 class="tentang-section-title">Tim Kami</h2>
-
-        <div class="row g-4 text-center">
-
-            @foreach ($tim as $anggota)
-
-                <div class="col-6 col-md-3">
-
-                    <div class="tim-item">
-
-                        <div class="tim-avatar">
-                            {{ strtoupper(substr($anggota['nama'], 0, 1)) }}
-                        </div>
-
-                        <div class="tim-nama">{{ $anggota['nama'] }}</div>
-                        <div class="tim-peran">{{ $anggota['peran'] }}</div>
-
-                    </div>
-
-                </div>
-
-            @endforeach
 
         </div>
 

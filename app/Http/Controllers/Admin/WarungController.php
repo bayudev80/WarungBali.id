@@ -56,10 +56,18 @@ class WarungController extends Controller
             'harga_min'    => 'nullable|integer|min:0',
             'harga_max'    => 'nullable|integer|min:0',
             'foto'         => 'nullable|image|max:5120',
+            'menerima_catering' => 'nullable|boolean',
         ]);
 
         $data = $request->except('foto', '_token');
         $data['id_user'] = auth()->id();
+        $data['menerima_catering'] = $request->boolean('menerima_catering');
+
+        // Jaga-jaga: catering cuma relevan untuk warung kategori kuliner.
+        $kategoriDipilih = Kategori::find($data['id_kategori'] ?? null);
+        if (!$kategoriDipilih || !$kategoriDipilih->is_kuliner) {
+            $data['menerima_catering'] = false;
+        }
 
         if ($request->hasFile('foto')) {
             $data['foto'] = $this->uploadFoto($request->file('foto'));
@@ -96,9 +104,17 @@ class WarungController extends Controller
             'harga_min'    => 'nullable|integer|min:0',
             'harga_max'    => 'nullable|integer|min:0',
             'foto'         => 'nullable|image|max:5120',
+            'menerima_catering' => 'nullable|boolean',
         ]);
 
         $data = $request->except('foto', '_token', '_method');
+        $data['menerima_catering'] = $request->boolean('menerima_catering');
+
+        // Jaga-jaga: catering cuma relevan untuk warung kategori kuliner.
+        $kategoriDipilih = Kategori::find($data['id_kategori'] ?? null);
+        if (!$kategoriDipilih || !$kategoriDipilih->is_kuliner) {
+            $data['menerima_catering'] = false;
+        }
 
         if ($request->hasFile('foto')) {
             $this->deleteFoto($warung->foto);

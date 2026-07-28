@@ -25,7 +25,8 @@ class Warung extends Model
         'harga_min',
         'harga_max',
         'foto',
-        'status'
+        'status',
+        'menerima_catering'
     ];
 
     public function menu()
@@ -71,13 +72,17 @@ class Warung extends Model
      */
     public function getLabelMenuAttribute()
     {
-        $nama = strtolower($this->kategori->nama_kategori ?? '');
+        return $this->is_kuliner ? 'Menu' : 'Produk';
+    }
 
-        if (str_contains($nama, 'makan') || str_contains($nama, 'minum') || str_contains($nama, 'kuliner') || str_contains($nama, 'jajan')) {
-            return 'Menu';
-        }
-
-        return 'Produk';
+    /**
+     * True kalau warung ini termasuk kategori kuliner (makanan/minuman).
+     * Dipakai untuk menentukan apakah opsi "menerima catering" relevan
+     * ditampilkan atau tidak, karena catering cuma masuk akal untuk warung makanan.
+     */
+    public function getIsKulinerAttribute()
+    {
+        return $this->kategori->is_kuliner ?? false;
     }
     }
 

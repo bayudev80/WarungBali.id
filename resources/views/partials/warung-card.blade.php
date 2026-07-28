@@ -46,6 +46,12 @@
                 {{ $item->deskripsi }}
             </p>
 
+            @if($item->is_kuliner && $item->menerima_catering)
+                <span class="badge bg-success-subtle text-success mb-2 align-self-start">
+                    🍱 Menerima Catering
+                </span>
+            @endif
+
             <div class="mt-auto">
 
                 <p class="text-warning fw-bold mb-2">
@@ -107,17 +113,17 @@
 
                 <div class="d-flex flex-wrap gap-4">
 
-                  <div>
+                  <div id="review-summary-{{ $item->id_warung }}">
                     @if($item->review->count() > 0)
                     ⭐
-                    <strong>{{ number_format($item->review->avg('rating'), 1) }}</strong>
-                    <span class="text-light">
+                    <strong class="review-summary-avg">{{ number_format($item->review->avg('rating'), 1) }}</strong>
+                    <span class="text-light review-summary-count">
                       ({{ $item->review->count() }} Ulasan)
                     </span>
                     @else
                     ⭐
-                    <strong>0.0</strong>
-                    <span class="text-light">
+                    <strong class="review-summary-avg">0.0</strong>
+                    <span class="text-light review-summary-count">
                       (Belum ada ulasan)
                     </span>
                     @endif
@@ -204,6 +210,22 @@
                       {{ $item->telepon }}
 
                     </p>
+
+                  </div>
+
+                  <div class="mt-4">
+
+                    @if($item->is_kuliner)
+                      @if($item->menerima_catering)
+                        <span class="badge bg-success p-2">
+                          🍱 Menerima Layanan Catering
+                        </span>
+                      @else
+                        <span class="badge bg-secondary p-2">
+                          Tidak Menerima Layanan Catering
+                        </span>
+                      @endif
+                    @endif
 
                   </div>
 
@@ -296,9 +318,60 @@
 
                   <div class="mt-3">
 
+                    <!-- FORM ULASAN -->
+                    <div class="border rounded-4 p-4 mb-4" style="background:#FFF8EC;">
+
+                      <h6 class="fw-bold mb-3">Bagikan Pengalaman Anda</h6>
+
+                      @auth
+                        @php
+                          $ulasanSaya = $item->review->firstWhere('id_user', auth()->user()->id_user);
+                        @endphp
+
+                        <form class="review-form" data-warung-id="{{ $item->id_warung }}">
+                          @csrf
+
+                          <div class="mb-3">
+                            <label class="form-label d-block">Rating</label>
+
+                            <div class="star-rating" data-target="rating-input-{{ $item->id_warung }}">
+                              @for ($i = 1; $i <= 5; $i++)
+                                <span class="star" data-value="{{ $i }}" style="font-size:1.7rem;cursor:pointer;color:#ccc;">★</span>
+                              @endfor
+                            </div>
+
+                            <input type="hidden" name="rating" id="rating-input-{{ $item->id_warung }}" value="{{ $ulasanSaya->rating ?? 0 }}">
+                          </div>
+
+                          <div class="mb-3">
+                            <textarea name="komentar" class="form-control" rows="3" placeholder="Tulis ulasan Anda tentang warung ini...">{{ $ulasanSaya->komentar ?? '' }}</textarea>
+                          </div>
+
+                          <button type="submit" class="btn btn-warning text-white">
+                            {{ $ulasanSaya ? 'Perbarui Ulasan' : 'Kirim Ulasan' }}
+                          </button>
+
+                          <div class="review-form-message small mt-2"></div>
+
+                        </form>
+                      @else
+                        <p class="text-secondary mb-3">
+                          Anda perlu masuk (login) terlebih dahulu untuk memberi ulasan warung ini.
+                        </p>
+
+                        <a href="{{ route('login') }}" class="btn btn-warning text-white">
+                          Login untuk Memberi Ulasan
+                        </a>
+                      @endauth
+
+                    </div>
+                    <!-- /form ulasan -->
+
+                    <div id="review-list-{{ $item->id_warung }}">
+
                     @forelse($item->review as $review)
 
-                    <div class="border rounded-4 p-4 mb-3">
+                    <div class="border rounded-4 p-4 mb-3" data-review-user="{{ $review->id_user }}">
 
                       <div class="d-flex justify-content-between align-items-center mb-2">
 
@@ -336,13 +409,16 @@
 
                     @empty
 
-                    <div class="alert alert-warning rounded-4">
+                    <div class="alert alert-warning rounded-4 review-empty-state">
 
                       Belum ada ulasan untuk warung ini.
 
                     </div>
 
                     @endforelse
+
+                    </div>
+                    <!-- /review-list -->
 
                   </div>
 
