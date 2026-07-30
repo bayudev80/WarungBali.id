@@ -55,7 +55,7 @@ class WarungController extends Controller
             'jam_tutup'    => 'nullable',
             'harga_min'    => 'nullable|integer|min:0',
             'harga_max'    => 'nullable|integer|min:0',
-            'foto'         => 'nullable|image|max:5120',
+            'foto'         => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
             'menerima_catering' => 'nullable|boolean',
         ]);
 
@@ -103,7 +103,7 @@ class WarungController extends Controller
             'jam_tutup'    => 'nullable',
             'harga_min'    => 'nullable|integer|min:0',
             'harga_max'    => 'nullable|integer|min:0',
-            'foto'         => 'nullable|image|max:5120',
+            'foto'         => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
             'menerima_catering' => 'nullable|boolean',
         ]);
 
@@ -158,7 +158,7 @@ class WarungController extends Controller
 
     private function uploadFoto($file)
     {
-        $filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+        $filename = time() . '_' . \Illuminate\Support\Str::random(12) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('images/warung'), $filename);
 
         return $filename;

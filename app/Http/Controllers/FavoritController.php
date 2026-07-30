@@ -19,6 +19,13 @@ class FavoritController extends Controller
         ], 401);
     }
 
+    if (!\App\Models\Warung::where('id_warung', $id)->exists()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Warung tidak ditemukan'
+        ], 404);
+    }
+
     $favorit = Favorit::where('id_user', $user->id_user)
         ->where('id_warung', $id)
         ->first();

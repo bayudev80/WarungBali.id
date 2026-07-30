@@ -45,10 +45,10 @@ class MenuController extends Controller
             'nama_menu' => 'required|max:150',
             'deskripsi' => 'nullable|string',
             'harga'     => 'required|integer|min:0',
-            'foto_menu' => 'nullable|image|max:5120',
+            'foto_menu' => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        $data = $request->except('foto_menu', '_token');
+        $data = $request->only(['nama_menu', 'deskripsi', 'harga']);
         $data['id_warung'] = $warung->id_warung;
 
         if ($request->hasFile('foto_menu')) {
@@ -88,10 +88,10 @@ class MenuController extends Controller
             'nama_menu' => 'required|max:150',
             'deskripsi' => 'nullable|string',
             'harga'     => 'required|integer|min:0',
-            'foto_menu' => 'nullable|image|max:5120',
+            'foto_menu' => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        $data = $request->except('foto_menu', '_token', '_method');
+        $data = $request->only(['nama_menu', 'deskripsi', 'harga']);
 
         if ($request->hasFile('foto_menu')) {
             $this->deleteFoto($menu->foto_menu);
@@ -123,7 +123,7 @@ class MenuController extends Controller
 
     private function uploadFoto($file)
     {
-        $filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+        $filename = time() . '_' . \Illuminate\Support\Str::random(12) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('images/menu'), $filename);
 
         return $filename;

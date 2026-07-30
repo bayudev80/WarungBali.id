@@ -11,7 +11,7 @@
 
         <h1>Tentang Warungbali.id</h1>
 
-        <p>Melestarikan warisan kuliner Bali melalui teknologi digital</p>
+        <p>Memberdayakan UMKM dan warisan budaya Bali melalui teknologi</p>
 
     </div>
 
@@ -27,9 +27,10 @@
             <h2 class="tentang-section-title">Misi Kami</h2>
 
             <p>
-                Warungbali.id lahir dari kecintaan terhadap kuliner tradisional Bali.
-                Kami percaya bahwa setiap warung lokal menyimpan cerita, warisan
-                keluarga, dan cita rasa yang tak ternilai.
+                Warungbali.id lahir dari kecintaan terhadap warung lokal Bali.
+                Kami percaya setiap warung menyimpan cerita dan warisan
+                keluarga, baik itu kuliner, sembako, oleh-oleh, maupun
+                kebutuhan sehari-hari lainnya.
             </p>
 
             <p>

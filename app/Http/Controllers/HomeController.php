@@ -95,8 +95,8 @@ class HomeController extends Controller
         $kategori = Kategori::orderBy('nama_kategori')->get();
 
         $totalWarung = Warung::where('status', 'approved')->count();
-        $totalUlasan = 5400;
-        $totalKabupaten = 9;
+        $totalUlasan = Review::count();
+        $totalKabupaten = \App\Models\Kabupaten::count();
 
         return view('home', compact(
             'kategori',

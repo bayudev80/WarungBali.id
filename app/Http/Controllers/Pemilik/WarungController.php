@@ -50,11 +50,18 @@ class WarungController extends Controller
             'jam_tutup'    => 'nullable',
             'harga_min'    => 'nullable|integer|min:0',
             'harga_max'    => 'nullable|integer|min:0',
-            'foto'         => 'nullable|image|max:5120',
+            'foto'         => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
             'menerima_catering' => 'nullable|boolean',
         ]);
 
-        $data = $request->except('foto', '_token');
+        // Whitelist eksplisit: jangan pernah pakai except() untuk data yang
+        // langsung di-mass-assign, karena field seperti "status" dan "id_user"
+        // ada di $fillable dan bisa disisipkan lewat request oleh user.
+        $data = $request->only([
+            'nama_warung', 'id_kategori', 'id_kabupaten', 'alamat',
+            'deskripsi', 'telepon', 'jam_buka', 'jam_tutup',
+            'harga_min', 'harga_max',
+        ]);
         $data['id_user'] = auth()->id();
         $data['status']  = 'pending';
         $data['menerima_catering'] = $request->boolean('menerima_catering');
@@ -122,11 +129,18 @@ class WarungController extends Controller
             'jam_tutup'    => 'nullable',
             'harga_min'    => 'nullable|integer|min:0',
             'harga_max'    => 'nullable|integer|min:0',
-            'foto'         => 'nullable|image|max:5120',
+            'foto'         => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
             'menerima_catering' => 'nullable|boolean',
         ]);
 
-        $data = $request->except('foto', '_token', '_method');
+        // Whitelist eksplisit -- lihat catatan di store(). Ini juga menutup
+        // celah di mana pemilik bisa menyisipkan field "status" atau
+        // "id_user" ke request untuk melewati proses verifikasi admin.
+        $data = $request->only([
+            'nama_warung', 'id_kategori', 'id_kabupaten', 'alamat',
+            'deskripsi', 'telepon', 'jam_buka', 'jam_tutup',
+            'harga_min', 'harga_max',
+        ]);
         $data['menerima_catering'] = $request->boolean('menerima_catering');
 
         // Jaga-jaga: catering cuma relevan untuk warung kategori kuliner.
@@ -155,7 +169,9 @@ class WarungController extends Controller
 
     private function uploadFoto($file)
     {
-        $filename = time() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+        // Nama file acak (bukan nama asli yang di-sanitize) supaya tidak ada
+        // celah path traversal / nama file berbahaya dari input pengguna.
+        $filename = time() . '_' . \Illuminate\Support\Str::random(12) . '.' . $file->getClientOriginalExtension();
         $file->move(public_path('images/warung'), $filename);
 
         return $filename;
