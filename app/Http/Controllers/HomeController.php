@@ -97,6 +97,7 @@ class HomeController extends Controller
         $totalWarung = Warung::where('status', 'approved')->count();
         $totalUlasan = Review::count();
         $totalKabupaten = \App\Models\Kabupaten::count();
+        $totalPengunjungBulanIni = \App\Models\PageVisit::countThisMonth();
 
         return view('home', compact(
             'kategori',
@@ -104,6 +105,7 @@ class HomeController extends Controller
             'totalWarung',
             'totalUlasan',
             'totalKabupaten',
+            'totalPengunjungBulanIni',
             'urutan'
         ));
     }

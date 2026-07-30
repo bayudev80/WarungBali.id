@@ -90,8 +90,8 @@
         </div>
 
         <div class="stat-item">
-            <h2>32.000+</h2>
-            <p>Pengunjung/Bulan</p>
+            <h2>{{ number_format($totalPengunjungBulanIni) }}</h2>
+            <p>Pengunjung Bulan Ini</p>
         </div>
 </section>
 <!-- KATEGORI -->
