@@ -4,6 +4,21 @@
 
 @section('content')
 
+<style>
+    /* Lebar kolom dikunci sama persis untuk semua tabel per-kategori,
+       supaya garis kolom sejajar dari kategori satu ke kategori lain. */
+    .warung-table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    .warung-table td {
+        vertical-align: middle;
+    }
+    .warung-table td.text-truncate {
+        max-width: 0;
+    }
+</style>
+
 <div class="content-box">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -99,7 +114,17 @@
 
                     <div class="table-responsive">
 
-                        <table class="table table-hover align-middle mb-0">
+                        <table class="table table-hover align-middle mb-0 warung-table">
+
+                            <colgroup>
+                                <col style="width:80px">
+                                <col style="width:32%">
+                                <col style="width:15%">
+                                <col style="width:17%">
+                                <col style="width:11%">
+                                <col style="width:13%">
+                                <col style="width:190px">
+                            </colgroup>
 
                             <thead>
 
@@ -139,9 +164,9 @@
                                         @endif
                                     </td>
 
-                                    <td>{{ $item->nama_warung }}</td>
+                                    <td class="text-truncate" title="{{ $item->nama_warung }}">{{ $item->nama_warung }}</td>
 
-                                    <td>{{ $item->kabupaten->nama_kabupaten ?? '-' }}</td>
+                                    <td class="text-truncate">{{ $item->kabupaten->nama_kabupaten ?? '-' }}</td>
 
                                     <td>{{ $item->telepon }}</td>
 

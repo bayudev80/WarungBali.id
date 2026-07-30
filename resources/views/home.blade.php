@@ -100,7 +100,7 @@
   <div class="container">
 
     <h2 class="fw-bold text-center mb-5">
-      Kategori Populer
+        Jelajahi Berdasarkan Kategori
     </h2>
 
     <div class="row g-4 text-center">
