@@ -21,135 +21,201 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <div class="table-responsive">
+    {{-- Form pencarian & filter kategori --}}
+    <form action="{{ route('admin.warung.index') }}" method="GET" class="row g-2 align-items-center mb-4">
 
-        <table class="table table-hover align-middle">
+        <div class="col-12 col-md-5">
+            <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="text" name="search" value="{{ $search }}" class="form-control"
+                    placeholder="Cari nama warung, alamat, atau telepon...">
+            </div>
+        </div>
 
-            <thead>
+        <div class="col-8 col-md-3">
+            <select name="kategori" class="form-select">
+                <option value="">Semua Kategori</option>
+                @foreach($kategori as $k)
+                    <option value="{{ $k->id_kategori }}" @selected((string) $kategoriTerpilih === (string) $k->id_kategori)>
+                        {{ $k->nama_kategori }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
-                <tr>
+        <div class="col-4 col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Cari</button>
+        </div>
 
-                    <th>No</th>
-                    <th>Foto</th>
-                    <th>Nama Warung</th>
-                    <th>Kategori</th>
-                    <th>Kabupaten</th>
-                    <th>Telepon</th>
-                    <th>Catering</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
+        @if($search !== '' || $kategoriTerpilih)
+            <div class="col-12 col-md-2">
+                <a href="{{ route('admin.warung.index') }}" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-x-circle"></i> Reset
+                </a>
+            </div>
+        @endif
 
-                </tr>
+    </form>
 
-            </thead>
+    @php
+        $grouped = $warung->getCollection()->groupBy(function ($item) {
+            return $item->kategori->nama_kategori ?? 'Tanpa Kategori';
+        });
+    @endphp
 
-            <tbody>
+    @if($warung->isEmpty())
 
-                @forelse($warung as $item)
+        <div class="alert alert-light border text-center">
+            @if($search !== '' || $kategoriTerpilih)
+                Tidak ada warung yang cocok dengan pencarian/filter ini.
+            @else
+                Belum ada data warung.
+            @endif
+        </div>
 
-                @php
-                    $statusBadge = [
-                        'pending'  => ['label' => 'Menunggu', 'class' => 'bg-warning text-dark'],
-                        'approved' => ['label' => 'Disetujui', 'class' => 'bg-success'],
-                        'rejected' => ['label' => 'Ditolak', 'class' => 'bg-danger'],
-                    ][$item->status];
-                @endphp
+    @else
 
-                <tr>
+        @foreach($grouped as $namaKategori => $items)
 
-                    <td>{{ $loop->iteration + ($warung->currentPage() - 1) * $warung->perPage() }}</td>
+            @php $groupId = 'kategori-group-' . $loop->index; @endphp
 
-                    <td>
-                        @if($item->foto && file_exists(public_path('images/warung/'.$item->foto)))
-                            <img src="{{ asset('images/warung/'.$item->foto) }}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
-                        @else
-                            <span class="text-muted small">Tidak ada foto</span>
-                        @endif
-                    </td>
+            <div class="card mb-3 shadow-sm">
 
-                    <td>{{ $item->nama_warung }}</td>
+                <div class="card-header bg-light d-flex justify-content-between align-items-center"
+                    role="button" data-bs-toggle="collapse" data-bs-target="#{{ $groupId }}"
+                    aria-expanded="true" aria-controls="{{ $groupId }}">
 
-                    <td>{{ $item->kategori->nama_kategori ?? '-' }}</td>
+                    <span class="fw-semibold">
+                        <i class="bi bi-tag-fill me-1"></i>
+                        {{ $namaKategori }}
+                        <span class="badge bg-secondary ms-2">{{ $items->count() }} warung</span>
+                    </span>
 
-                    <td>{{ $item->kabupaten->nama_kabupaten ?? '-' }}</td>
+                    <i class="bi bi-chevron-down"></i>
 
-                    <td>{{ $item->telepon }}</td>
+                </div>
 
-                    <td>
-                        @if(!$item->is_kuliner)
-                            <span class="text-muted small">-</span>
-                        @elseif($item->menerima_catering)
-                            <span class="badge bg-success-subtle text-success">Ya</span>
-                        @else
-                            <span class="badge bg-secondary-subtle text-secondary">Tidak</span>
-                        @endif
-                    </td>
+                <div id="{{ $groupId }}" class="collapse show">
 
-                    <td>
-                        <span class="badge {{ $statusBadge['class'] }}">{{ $statusBadge['label'] }}</span>
-                    </td>
+                    <div class="table-responsive">
 
-                    <td class="text-nowrap">
+                        <table class="table table-hover align-middle mb-0">
 
-                        @if($item->status === 'pending')
-                            <form action="{{ route('admin.warung.approve', $item->id_warung) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-success btn-sm" title="Setujui" onclick="return confirm('Setujui warung ini supaya tayang di website?')">
-                                    <i class="bi bi-check-lg"></i>
-                                </button>
-                            </form>
+                            <thead>
 
-                            <form action="{{ route('admin.warung.reject', $item->id_warung) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Tolak" onclick="return confirm('Tolak pengajuan warung ini?')">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-                            </form>
-                        @endif
+                                <tr>
 
-                        <a href="{{ route('admin.warung.menu.index', $item->id_warung) }}" class="btn btn-info btn-sm" title="Kelola {{ $item->label_menu }}">
-                            <i class="bi bi-menu-button-wide"></i>
-                        </a>
+                                    <th>Foto</th>
+                                    <th>Nama Warung</th>
+                                    <th>Kabupaten</th>
+                                    <th>Telepon</th>
+                                    <th>Catering</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
 
-                        <a href="{{ route('admin.warung.edit', $item->id_warung) }}" class="btn btn-warning btn-sm" title="Edit">
-                            <i class="bi bi-pencil"></i>
-                        </a>
+                                </tr>
 
-                        <form action="{{ route('admin.warung.destroy', $item->id_warung) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus warung ini? Semua menu di dalamnya juga akan terhapus.')">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
+                            </thead>
 
-                    </td>
+                            <tbody>
 
-                </tr>
+                                @foreach($items as $item)
 
-                @empty
+                                @php
+                                    $statusBadge = [
+                                        'pending'  => ['label' => 'Menunggu', 'class' => 'bg-warning text-dark'],
+                                        'approved' => ['label' => 'Disetujui', 'class' => 'bg-success'],
+                                        'rejected' => ['label' => 'Ditolak', 'class' => 'bg-danger'],
+                                    ][$item->status];
+                                @endphp
 
-                <tr>
+                                <tr>
 
-                    <td colspan="9" class="text-center">
+                                    <td>
+                                        @if($item->foto && file_exists(public_path('images/warung/'.$item->foto)))
+                                            <img src="{{ asset('images/warung/'.$item->foto) }}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
+                                        @else
+                                            <span class="text-muted small">Tidak ada foto</span>
+                                        @endif
+                                    </td>
 
-                        Belum ada data warung.
+                                    <td>{{ $item->nama_warung }}</td>
 
-                    </td>
+                                    <td>{{ $item->kabupaten->nama_kabupaten ?? '-' }}</td>
 
-                </tr>
+                                    <td>{{ $item->telepon }}</td>
 
-                @endforelse
+                                    <td>
+                                        @if(!$item->is_kuliner)
+                                            <span class="text-muted small">-</span>
+                                        @elseif($item->menerima_catering)
+                                            <span class="badge bg-success-subtle text-success">Ya</span>
+                                        @else
+                                            <span class="badge bg-secondary-subtle text-secondary">Tidak</span>
+                                        @endif
+                                    </td>
 
-            </tbody>
+                                    <td>
+                                        <span class="badge {{ $statusBadge['class'] }}">{{ $statusBadge['label'] }}</span>
+                                    </td>
 
-        </table>
+                                    <td class="text-nowrap">
 
-    </div>
+                                        @if($item->status === 'pending')
+                                            <form action="{{ route('admin.warung.approve', $item->id_warung) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-success btn-sm" title="Setujui" onclick="return confirm('Setujui warung ini supaya tayang di website?')">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </button>
+                                            </form>
 
-    {{ $warung->links() }}
+                                            <form action="{{ route('admin.warung.reject', $item->id_warung) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Tolak" onclick="return confirm('Tolak pengajuan warung ini?')">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+
+                                        <a href="{{ route('admin.warung.menu.index', $item->id_warung) }}" class="btn btn-info btn-sm" title="Kelola {{ $item->label_menu }}">
+                                            <i class="bi bi-menu-button-wide"></i>
+                                        </a>
+
+                                        <a href="{{ route('admin.warung.edit', $item->id_warung) }}" class="btn btn-warning btn-sm" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <form action="{{ route('admin.warung.destroy', $item->id_warung) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus warung ini? Semua menu di dalamnya juga akan terhapus.')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+
+                                @endforeach
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        @endforeach
+
+        {{ $warung->links() }}
+
+    @endif
 
 </div>
 

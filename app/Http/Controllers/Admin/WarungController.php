@@ -11,14 +11,34 @@ use Illuminate\Support\Facades\File;
 
 class WarungController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $warung = Warung::with(['kategori', 'kabupaten'])
-            ->orderByRaw("FIELD(status, 'pending', 'rejected', 'approved')")
-            ->latest('id_warung')
-            ->paginate(10);
+        $search        = trim((string) $request->input('search'));
+        $kategoriTerpilih = $request->input('kategori');
 
-        return view('admin.warung.index', compact('warung'));
+        $warung = Warung::with(['kategori', 'kabupaten'])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nama_warung', 'like', "%{$search}%")
+                        ->orWhere('alamat', 'like', "%{$search}%")
+                        ->orWhere('telepon', 'like', "%{$search}%");
+                });
+            })
+            ->when($kategoriTerpilih, function ($query) use ($kategoriTerpilih) {
+                $query->where('warung.id_kategori', $kategoriTerpilih);
+            })
+            // Diurutkan per kategori dulu supaya mudah dikelompokkan di tampilan,
+            // baru berdasarkan nama warung di dalam kategori yang sama.
+            ->join('kategori', 'kategori.id_kategori', '=', 'warung.id_kategori')
+            ->orderBy('kategori.nama_kategori')
+            ->orderBy('warung.nama_warung')
+            ->select('warung.*')
+            ->paginate(15)
+            ->withQueryString();
+
+        $kategori = Kategori::orderBy('nama_kategori')->get();
+
+        return view('admin.warung.index', compact('warung', 'kategori', 'search', 'kategoriTerpilih'));
     }
 
     /**
