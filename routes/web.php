@@ -43,6 +43,14 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::resource('warung', WarungController::class);
 
+        // Cabang: admin bisa menambahkan cabang baru untuk warung yang
+        // sudah ada. Warung induknya otomatis warung yang dipilih di
+        // daftar (tidak dipilih manual dari dropdown).
+        Route::get('warung/{warung}/cabang/create', [WarungController::class, 'createCabang'])
+            ->name('warung.cabang.create');
+        Route::post('warung/{warung}/cabang', [WarungController::class, 'storeCabang'])
+            ->name('warung.cabang.store');
+
         Route::get('warung-verifikasi', [WarungController::class, 'verifikasi'])
             ->name('warung.verifikasi');
 
@@ -100,6 +108,20 @@ Route::middleware(['auth'])
         Route::put('warung', [PemilikWarungController::class, 'update'])
             ->name('warung.update');
 
+        // Cabang: pemilik yang sudah punya warung utama bisa menambahkan
+        // cabang baru langsung dari sini. Warung induk-nya otomatis warung
+        // milik pemilik yang sedang login (tidak dipilih manual dari daftar).
+        Route::get('warung/cabang/create', [PemilikWarungController::class, 'createCabang'])
+            ->name('warung.cabang.create');
+        Route::post('warung/cabang', [PemilikWarungController::class, 'storeCabang'])
+            ->name('warung.cabang.store');
+        Route::get('warung/cabang/{cabang}/edit', [PemilikWarungController::class, 'editCabang'])
+            ->name('warung.cabang.edit');
+        Route::put('warung/cabang/{cabang}', [PemilikWarungController::class, 'updateCabang'])
+            ->name('warung.cabang.update');
+        Route::delete('warung/cabang/{cabang}', [PemilikWarungController::class, 'destroyCabang'])
+            ->name('warung.cabang.destroy');
+
         Route::get('menu', [PemilikMenuController::class, 'index'])
             ->name('menu.index');
         Route::get('menu/create', [PemilikMenuController::class, 'create'])
@@ -127,6 +149,9 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
+
+    Route::get('/favorit', [FavoritController::class, 'index'])
+        ->name('favorit.index');
 
     Route::post('/favorit/{id}', [FavoritController::class, 'toggle'])
         ->name('favorit.toggle');

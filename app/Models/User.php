@@ -37,10 +37,17 @@ class User extends Authenticatable
     }
 
     /**
-     * Warung milik user ini (khusus role pemilik, satu pemilik = satu warung).
+     * Warung UTAMA milik user ini (khusus role pemilik). Sengaja dibatasi
+     * whereNull('id_warung_induk') -- kalau user ini punya cabang juga,
+     * cabang-cabang itu ikut punya id_user yang sama (supaya kolom id_user
+     * yang NOT NULL di database tetap terisi), tapi relasi ini harus tetap
+     * konsisten mengembalikan warung UTAMA-nya saja, bukan salah satu
+     * cabangnya, karena banyak tempat lain (dashboard, edit, dsb) asumsinya
+     * "satu pemilik = satu warung utama yang dikelola di sini".
      */
     public function warung()
     {
-        return $this->hasOne(Warung::class, 'id_user', 'id_user');
+        return $this->hasOne(Warung::class, 'id_user', 'id_user')
+            ->whereNull('id_warung_induk');
     }
     }

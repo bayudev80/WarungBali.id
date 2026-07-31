@@ -79,7 +79,11 @@ class WarungController extends Controller
             'menerima_catering' => 'nullable|boolean',
         ]);
 
-        $data = $request->except('foto', '_token');
+        // Warung yang didaftarkan lewat form ini SELALU warung utama/berdiri
+        // sendiri -- kalau admin mau menambahkan cabang untuk warung yang
+        // sudah ada, itu dilakukan lewat tombol "+ Cabang" di halaman Data
+        // Warung, bukan dengan memilih induk manual di sini.
+        $data = $request->except('foto', '_token', 'id_warung_induk');
         $data['id_user'] = auth()->id();
         $data['menerima_catering'] = $request->boolean('menerima_catering');
 
@@ -127,7 +131,11 @@ class WarungController extends Controller
             'menerima_catering' => 'nullable|boolean',
         ]);
 
-        $data = $request->except('foto', '_token', '_method');
+        // Form edit umum ini tidak lagi mengubah hubungan induk/cabang
+        // warung -- itu ditentukan otomatis lewat alur "+ Cabang", bukan
+        // dipilih manual, supaya tidak ada yang bisa memindahkan warung
+        // jadi cabang dari warung sembarangan.
+        $data = $request->except('foto', '_token', '_method', 'id_warung_induk');
         $data['menerima_catering'] = $request->boolean('menerima_catering');
 
         // Jaga-jaga: catering cuma relevan untuk warung kategori kuliner.
@@ -174,6 +182,72 @@ class WarungController extends Controller
 
         return redirect()->back()
             ->with('success', 'Warung "' . $warung->nama_warung . '" ditolak.');
+    }
+
+    /**
+     * Form tambah cabang baru untuk warung yang dipilih admin dari daftar
+     * Data Warung. Warung induknya otomatis warung yang diklik (tidak
+     * dipilih manual dari dropdown), supaya jelas cabang ini "anak" dari
+     * warung tersebut.
+     */
+    public function createCabang($id)
+    {
+        $warung = Warung::findOrFail($id);
+
+        if ($warung->is_cabang) {
+            return redirect()->route('admin.warung.index')
+                ->with('error', 'Warung cabang tidak bisa membuka cabang baru lagi.');
+        }
+
+        $kabupaten = Kabupaten::orderBy('nama_kabupaten')->get();
+
+        return view('admin.warung.cabang.create', compact('warung', 'kabupaten'));
+    }
+
+    public function storeCabang(Request $request, $id)
+    {
+        $warung = Warung::findOrFail($id);
+
+        if ($warung->is_cabang) {
+            return redirect()->route('admin.warung.index')
+                ->with('error', 'Warung cabang tidak bisa membuka cabang baru lagi.');
+        }
+
+        $request->validate([
+            'nama_warung'  => 'required|max:150',
+            'id_kabupaten' => 'required|exists:kabupaten,id_kabupaten',
+            'alamat'       => 'required',
+            'deskripsi'    => 'nullable|string',
+            'telepon'      => 'nullable|max:20',
+            'jam_buka'     => 'nullable',
+            'jam_tutup'    => 'nullable',
+            'harga_min'    => 'nullable|integer|min:0',
+            'harga_max'    => 'nullable|integer|min:0',
+            'foto'         => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
+            'menerima_catering' => 'nullable|boolean',
+        ]);
+
+        $data = $request->only([
+            'nama_warung', 'id_kabupaten', 'alamat',
+            'deskripsi', 'telepon', 'jam_buka', 'jam_tutup',
+            'harga_min', 'harga_max',
+        ]);
+
+        // Cabang otomatis mengikuti kategori dan warung induknya sendiri --
+        // bukan dipilih manual.
+        $data['id_kategori']     = $warung->id_kategori;
+        $data['id_warung_induk'] = $warung->id_warung;
+        $data['id_user']         = $warung->id_user;
+        $data['menerima_catering'] = $warung->is_kuliner ? $request->boolean('menerima_catering') : false;
+
+        if ($request->hasFile('foto')) {
+            $data['foto'] = $this->uploadFoto($request->file('foto'));
+        }
+
+        Warung::create($data);
+
+        return redirect()->route('admin.warung.index')
+            ->with('success', 'Cabang baru untuk "' . $warung->nama_warung . '" berhasil ditambahkan.');
     }
 
     private function uploadFoto($file)

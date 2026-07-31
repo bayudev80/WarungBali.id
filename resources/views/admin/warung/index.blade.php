@@ -36,6 +36,10 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
     {{-- Form pencarian & filter kategori --}}
     <form action="{{ route('admin.warung.index') }}" method="GET" class="row g-2 align-items-center mb-4">
 
@@ -164,7 +168,12 @@
                                         @endif
                                     </td>
 
-                                    <td class="text-truncate" title="{{ $item->nama_warung }}">{{ $item->nama_warung }}</td>
+                                    <td class="text-truncate" title="{{ $item->nama_warung }}">
+                                        {{ $item->nama_warung }}
+                                        @if($item->id_warung_induk)
+                                            <br><span class="badge bg-secondary">Cabang</span>
+                                        @endif
+                                    </td>
 
                                     <td class="text-truncate">{{ $item->kabupaten->nama_kabupaten ?? '-' }}</td>
 
@@ -207,6 +216,12 @@
                                         <a href="{{ route('admin.warung.menu.index', $item->id_warung) }}" class="btn btn-info btn-sm" title="Kelola {{ $item->label_menu }}">
                                             <i class="bi bi-menu-button-wide"></i>
                                         </a>
+
+                                        @if(!$item->is_cabang)
+                                            <a href="{{ route('admin.warung.cabang.create', $item->id_warung) }}" class="btn btn-outline-success btn-sm" title="Tambah Cabang">
+                                                <i class="bi bi-diagram-3"></i>
+                                            </a>
+                                        @endif
 
                                         <a href="{{ route('admin.warung.edit', $item->id_warung) }}" class="btn btn-warning btn-sm" title="Edit">
                                             <i class="bi bi-pencil"></i>

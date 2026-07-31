@@ -50,10 +50,11 @@
 
                 <li class="nav-item mx-2">
 
-                    <a class="nav-link"
-                        href="{{ route('home') }}#warung">
+                    <a class="nav-link px-4 py-2 rounded-pill {{ request()->routeIs('favorit.index') ? 'active' : '' }}"
+                        href="{{ route('favorit.index') }}"
+                        style="{{ request()->routeIs('favorit.index') ? 'background:#FCE8CC;color:#C85C2E;font-weight:600;' : '' }}">
 
-                        Jelajahi
+                        Favorit Saya
 
                     </a>
 
@@ -77,6 +78,13 @@
 <div class="d-flex align-items-center">
 
     @guest
+
+        <a href="{{ route('pemilik.warung.create') }}"
+            class="btn btn-outline-dark rounded-pill px-3 me-3">
+
+            🏪 Daftarkan Warung
+
+        </a>
 
         <a href="{{ route('login') }}"
             class="btn btn-light border rounded-4 px-4 me-3">
@@ -112,6 +120,15 @@
                 class="btn btn-light border rounded-4 px-4 me-3">
 
                 Dashboard Pemilik
+
+            </a>
+
+        @else
+
+            <a href="{{ route('pemilik.warung.create') }}"
+                class="btn btn-outline-dark rounded-pill px-3 me-3">
+
+                🏪 Daftarkan Warung
 
             </a>
 

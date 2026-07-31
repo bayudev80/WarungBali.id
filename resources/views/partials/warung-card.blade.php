@@ -139,7 +139,13 @@
                   </div>
 
                   <div>
-                    📞 {{ $item->telepon }}
+                    @if($item->wa_link)
+                      <a href="{{ $item->wa_link }}" target="_blank" rel="noopener" class="text-white text-decoration-none">
+                        <i class="fa-brands fa-whatsapp"></i> {{ $item->telepon }}
+                      </a>
+                    @else
+                      📞 Telepon belum tersedia
+                    @endif
                   </div>
 
                 </div>
@@ -191,6 +197,10 @@
                       📍
                       <strong>Alamat</strong><br>
                       {{ $item->alamat }}
+                      <br>
+                      <a href="{{ $item->maps_link }}" target="_blank" rel="noopener" class="text-warning fw-bold">
+                        <i class="fa-solid fa-map-location-dot"></i> Buka di Google Maps
+                      </a>
                     </p>
 
                     <p class="mb-3">
@@ -209,11 +219,55 @@
                       📞
                       <strong>Telepon</strong><br>
 
-                      {{ $item->telepon }}
+                      @if($item->wa_link)
+                        <a href="{{ $item->wa_link }}" target="_blank" rel="noopener" class="text-success fw-bold">
+                          <i class="fa-brands fa-whatsapp"></i> {{ $item->telepon }} (Chat WhatsApp)
+                        </a>
+                      @else
+                        Belum tersedia
+                      @endif
 
                     </p>
 
+                    @if($item->is_cabang && $item->indukWarung)
+                      <hr>
+                      <p class="mb-0">
+                        🏬
+                        <strong>Cabang dari</strong><br>
+                        Warung ini adalah cabang dari
+                        <a href="#" class="fw-bold text-warning btn-lihat-cabang"
+                           data-cabang-target="#detail{{ $item->indukWarung->id_warung }}">
+                          {{ $item->indukWarung->nama_warung }}
+                        </a>,
+                        dengan menu yang sama seperti warung utamanya.
+                      </p>
+                    @endif
+
                   </div>
+
+                  @if(!$item->is_cabang && $item->cabang->count() > 0)
+                    <div class="rounded-4 p-4 mt-4" style="background:#FFF8EC;">
+
+                      <p class="mb-3">
+                        🏬
+                        <strong>Cabang Warung Ini ({{ $item->cabang->count() }})</strong>
+                      </p>
+
+                      @foreach($item->cabang as $cabang)
+                        <div class="d-flex justify-content-between align-items-center mb-2 {{ !$loop->last ? 'border-bottom pb-2' : '' }}">
+                          <div>
+                            <strong>{{ $cabang->nama_warung }}</strong><br>
+                            <span class="text-secondary small">📍 {{ $cabang->alamat }}</span>
+                          </div>
+                          <a href="#" class="btn btn-sm btn-warning text-white btn-lihat-cabang"
+                             data-cabang-target="#detail{{ $cabang->id_warung }}">
+                            Lihat Detail
+                          </a>
+                        </div>
+                      @endforeach
+
+                    </div>
+                  @endif
 
                   <div class="mt-4">
 
@@ -247,17 +301,23 @@
 
                   <div class="mt-4">
 
-                    <span class="badge bg-warning-subtle text-dark me-2 p-2">
-                      Legendaris
-                    </span>
+                    @if($item->is_legendaris)
+                      <span class="badge bg-warning-subtle text-dark me-2 p-2">
+                        Legendaris
+                      </span>
+                    @endif
 
-                    <span class="badge bg-warning-subtle text-dark me-2 p-2">
-                      Kuliner Bali
-                    </span>
+                    @if($item->is_kuliner)
+                      <span class="badge bg-warning-subtle text-dark me-2 p-2">
+                        Kuliner Bali
+                      </span>
+                    @endif
 
-                    <span class="badge bg-warning-subtle text-dark me-2 p-2">
-                      Favorit Wisatawan
-                    </span>
+                    @if($item->is_favorit_wisatawan)
+                      <span class="badge bg-warning-subtle text-dark me-2 p-2">
+                        Favorit Wisatawan
+                      </span>
+                    @endif
 
                   </div>
 
@@ -268,7 +328,7 @@
 
                   <div class="row g-4 mt-3">
 
-                    @forelse($item->menu as $menu)
+                    @forelse($item->menu_tampil as $menu)
 
                     <div class="col-md-6">
 
@@ -441,3 +501,38 @@
 
       </div>
       <!-- /modal fade -->
+
+      @once
+        <script>
+          // Pindah dari modal detail warung ini ke modal detail warung
+          // induk/cabang-nya (tombol "Lihat Detail" cabang & link "Cabang dari").
+          // Cuma didaftarkan sekali (@@once) walau partial ini dipanggil
+          // berkali-kali di dalam perulangan daftar warung.
+          document.addEventListener('click', function (e) {
+            const link = e.target.closest('.btn-lihat-cabang');
+            if (!link) return;
+
+            e.preventDefault();
+
+            const targetEl = document.querySelector(link.getAttribute('data-cabang-target'));
+
+            if (!targetEl) {
+              alert('Detail warung tersebut tidak tampil di halaman ini (kemungkinan tersaring oleh pencarian/filter yang aktif). Coba hapus pencarian atau filter kategori, lalu coba lagi.');
+              return;
+            }
+
+            const modalSaatIni = link.closest('.modal');
+
+            const bukaTarget = function () {
+              bootstrap.Modal.getOrCreateInstance(targetEl).show();
+            };
+
+            if (modalSaatIni && modalSaatIni !== targetEl) {
+              modalSaatIni.addEventListener('hidden.bs.modal', bukaTarget, { once: true });
+              bootstrap.Modal.getOrCreateInstance(modalSaatIni).hide();
+            } else {
+              bukaTarget();
+            }
+          });
+        </script>
+      @endonce

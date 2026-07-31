@@ -13,7 +13,7 @@ class DashboardController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        $warung = auth()->user()->warung()->with(['kategori', 'kabupaten', 'menu'])->first();
+        $warung = auth()->user()->warung()->with(['kategori', 'kabupaten', 'menu', 'semuaCabang'])->first();
 
         // Belum pernah isi data warung -> arahkan ke form tambah warung
         if (!$warung) {

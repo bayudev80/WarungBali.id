@@ -24,7 +24,9 @@ class HomeController extends Controller
             'menu',
             'review.user',
             'favorit',
-            'kategori'
+            'kategori',
+            'cabang',
+            'indukWarung.menu',
         ])
         ->where('status', 'approved')
         ->withCount([

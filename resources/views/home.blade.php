@@ -435,12 +435,14 @@
         padding: 60px 0;
     }
     .cta-warung-box {
-        background: linear-gradient(rgba(30,20,15,.75), rgba(30,20,15,.75)),
-                    url('{{ asset('images/cta-warung.jpeg') }}') center/cover no-repeat;
+        background: linear-gradient(rgba(30,20,15,.6), rgba(30,20,15,.6)),
+                    url('{{ asset('images/hero3.jpeg') }}') center/cover no-repeat;
         border-radius: 24px;
         padding: 60px 50px;
         color: #fff;
-        max-width: 650px;
+        max-width: 100%;
+        margin: 0 auto;
+        text-align: center;
     }
     .cta-warung-box h2 {
         font-size: 2rem;

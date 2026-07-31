@@ -8,6 +8,28 @@ use Illuminate\Support\Facades\Auth;
 
 class FavoritController extends Controller
 {
+    /**
+     * Halaman "Favorit Saya": daftar warung yang sudah disukai
+     * oleh user yang sedang login.
+     */
+    public function index()
+    {
+        $user = Auth::user();
+
+        $warungFavorit = \App\Models\Warung::with([
+                'menu',
+                'review.user',
+                'favorit',
+                'kategori'
+            ])
+            ->whereHas('favorit', function ($q) use ($user) {
+                $q->where('id_user', $user->id_user);
+            })
+            ->get();
+
+        return view('favorit.index', compact('warungFavorit'));
+    }
+
     public function toggle($id)
 {
     $user = Auth::user();

@@ -55,8 +55,12 @@ class WarungController extends Controller
         ]);
 
         // Whitelist eksplisit: jangan pernah pakai except() untuk data yang
-        // langsung di-mass-assign, karena field seperti "status" dan "id_user"
-        // ada di $fillable dan bisa disisipkan lewat request oleh user.
+        // langsung di-mass-assign, karena field seperti "status", "id_user",
+        // dan "id_warung_induk" ada di $fillable dan bisa disisipkan lewat
+        // request oleh user. Warung yang didaftarkan lewat form ini SELALU
+        // warung utama/berdiri sendiri -- kalau pemilik nanti mau buka
+        // cabang, itu dilakukan lewat menu "Tambah Cabang" di dashboard,
+        // bukan dengan memilih induk sendiri di form ini.
         $data = $request->only([
             'nama_warung', 'id_kategori', 'id_kabupaten', 'alamat',
             'deskripsi', 'telepon', 'jam_buka', 'jam_tutup',
@@ -134,8 +138,9 @@ class WarungController extends Controller
         ]);
 
         // Whitelist eksplisit -- lihat catatan di store(). Ini juga menutup
-        // celah di mana pemilik bisa menyisipkan field "status" atau
-        // "id_user" ke request untuk melewati proses verifikasi admin.
+        // celah di mana pemilik bisa menyisipkan field "status", "id_user",
+        // atau "id_warung_induk" ke request untuk melewati proses verifikasi
+        // admin atau mengubah warung utamanya sendiri jadi cabang.
         $data = $request->only([
             'nama_warung', 'id_kategori', 'id_kabupaten', 'alamat',
             'deskripsi', 'telepon', 'jam_buka', 'jam_tutup',
@@ -165,6 +170,189 @@ class WarungController extends Controller
             ->with('success', $warung->status === 'pending'
                 ? 'Perubahan disimpan. Warung Anda perlu ditinjau ulang oleh admin sebelum tayang.'
                 : 'Data warung berhasil diubah.');
+    }
+
+    /**
+     * Form tambah cabang baru. Hanya bisa diakses oleh pemilik yang sudah
+     * punya warung utama (bukan cabang), karena warung induknya otomatis
+     * warung milik pemilik yang sedang login -- tidak dipilih manual dari
+     * daftar warung lain seperti sebelumnya.
+     */
+    public function createCabang()
+    {
+        if (auth()->user()->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat mengelola warung pemilik.');
+        }
+
+        $warung = auth()->user()->warung;
+
+        if (!$warung) {
+            return redirect()->route('pemilik.warung.create');
+        }
+
+        if ($warung->is_cabang) {
+            return redirect()->route('pemilik.dashboard')
+                ->with('error', 'Warung cabang tidak bisa membuka cabang baru lagi.');
+        }
+
+        $kabupaten = Kabupaten::orderBy('nama_kabupaten')->get();
+
+        return view('pemilik.warung.cabang.create', compact('warung', 'kabupaten'));
+    }
+
+    public function storeCabang(Request $request)
+    {
+        if (auth()->user()->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat mengelola warung pemilik.');
+        }
+
+        $warung = auth()->user()->warung;
+
+        if (!$warung) {
+            return redirect()->route('pemilik.warung.create');
+        }
+
+        if ($warung->is_cabang) {
+            return redirect()->route('pemilik.dashboard')
+                ->with('error', 'Warung cabang tidak bisa membuka cabang baru lagi.');
+        }
+
+        $request->validate([
+            'nama_warung'  => 'required|max:150',
+            'id_kabupaten' => 'required|exists:kabupaten,id_kabupaten',
+            'alamat'       => 'required',
+            'deskripsi'    => 'nullable|string',
+            'telepon'      => 'nullable|max:20',
+            'jam_buka'     => 'nullable',
+            'jam_tutup'    => 'nullable',
+            'harga_min'    => 'nullable|integer|min:0',
+            'harga_max'    => 'nullable|integer|min:0',
+            'foto'         => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
+            'menerima_catering' => 'nullable|boolean',
+        ]);
+
+        $data = $request->only([
+            'nama_warung', 'id_kabupaten', 'alamat',
+            'deskripsi', 'telepon', 'jam_buka', 'jam_tutup',
+            'harga_min', 'harga_max',
+        ]);
+
+        // Cabang otomatis mengikuti kategori dan warung induknya sendiri --
+        // bukan dipilih manual -- supaya jelas cabang ini "anak" dari warung
+        // yang sedang login, bukan warung sembarangan.
+        $data['id_kategori']     = $warung->id_kategori;
+        $data['id_warung_induk'] = $warung->id_warung;
+        $data['id_user']         = $warung->id_user;
+        $data['status']          = 'pending';
+        $data['menerima_catering'] = $warung->is_kuliner ? $request->boolean('menerima_catering') : false;
+
+        if ($request->hasFile('foto')) {
+            $data['foto'] = $this->uploadFoto($request->file('foto'));
+        }
+
+        Warung::create($data);
+
+        return redirect()->route('pemilik.dashboard')
+            ->with('success', 'Cabang baru berhasil ditambahkan! Mohon tunggu persetujuan admin sebelum cabang ini tayang di website.');
+    }
+
+    public function editCabang($id)
+    {
+        if (auth()->user()->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat mengelola warung pemilik.');
+        }
+
+        $warung = auth()->user()->warung;
+
+        if (!$warung) {
+            return redirect()->route('pemilik.warung.create');
+        }
+
+        // Pastikan cabang yang diedit benar-benar anak dari warung milik
+        // pemilik yang sedang login, bukan cabang milik warung lain.
+        $cabang = Warung::where('id_warung_induk', $warung->id_warung)
+            ->findOrFail($id);
+
+        $kabupaten = Kabupaten::orderBy('nama_kabupaten')->get();
+
+        return view('pemilik.warung.cabang.edit', compact('warung', 'cabang', 'kabupaten'));
+    }
+
+    public function updateCabang(Request $request, $id)
+    {
+        if (auth()->user()->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat mengelola warung pemilik.');
+        }
+
+        $warung = auth()->user()->warung;
+
+        if (!$warung) {
+            return redirect()->route('pemilik.warung.create');
+        }
+
+        $cabang = Warung::where('id_warung_induk', $warung->id_warung)
+            ->findOrFail($id);
+
+        $request->validate([
+            'nama_warung'  => 'required|max:150',
+            'id_kabupaten' => 'required|exists:kabupaten,id_kabupaten',
+            'alamat'       => 'required',
+            'deskripsi'    => 'nullable|string',
+            'telepon'      => 'nullable|max:20',
+            'jam_buka'     => 'nullable',
+            'jam_tutup'    => 'nullable',
+            'harga_min'    => 'nullable|integer|min:0',
+            'harga_max'    => 'nullable|integer|min:0',
+            'foto'         => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
+            'menerima_catering' => 'nullable|boolean',
+        ]);
+
+        $data = $request->only([
+            'nama_warung', 'id_kabupaten', 'alamat',
+            'deskripsi', 'telepon', 'jam_buka', 'jam_tutup',
+            'harga_min', 'harga_max',
+        ]);
+
+        $data['menerima_catering'] = $warung->is_kuliner ? $request->boolean('menerima_catering') : false;
+
+        // Perubahan data cabang yang sudah disetujui perlu ditinjau ulang admin.
+        if ($cabang->status === 'approved') {
+            $data['status'] = 'pending';
+        }
+
+        if ($request->hasFile('foto')) {
+            $this->deleteFoto($cabang->foto);
+            $data['foto'] = $this->uploadFoto($request->file('foto'));
+        }
+
+        $cabang->update($data);
+
+        return redirect()->route('pemilik.dashboard')
+            ->with('success', $cabang->status === 'pending'
+                ? 'Perubahan cabang disimpan. Cabang perlu ditinjau ulang oleh admin sebelum tayang.'
+                : 'Data cabang berhasil diubah.');
+    }
+
+    public function destroyCabang($id)
+    {
+        if (auth()->user()->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat mengelola warung pemilik.');
+        }
+
+        $warung = auth()->user()->warung;
+
+        if (!$warung) {
+            return redirect()->route('pemilik.warung.create');
+        }
+
+        $cabang = Warung::where('id_warung_induk', $warung->id_warung)
+            ->findOrFail($id);
+
+        $this->deleteFoto($cabang->foto);
+        $cabang->delete();
+
+        return redirect()->route('pemilik.dashboard')
+            ->with('success', 'Cabang berhasil dihapus.');
     }
 
     private function uploadFoto($file)

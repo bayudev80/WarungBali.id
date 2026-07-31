@@ -64,12 +64,6 @@
 
             @endif
 
-            <a href="{{ route('profile.edit') }}"
-                class="{{ request()->routeIs('profile.edit') ? 'active' : '' }}">
-                <i class="bi bi-gear"></i>
-                <span>Pengaturan</span>
-            </a>
-
         </nav>
 
     </aside>
