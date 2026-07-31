@@ -79,25 +79,27 @@
 
     @guest
 
-        <a href="{{ route('pemilik.warung.create') }}"
-            class="btn btn-outline-dark rounded-pill px-3 me-3">
-
-            🏪 Daftarkan Warung
-
-        </a>
-
         <a href="{{ route('login') }}"
-            class="btn btn-light border rounded-4 px-4 me-3">
+            class="btn btn-sm btn-light border rounded-4 px-3 me-2"
+            style="font-size:14px;">
 
             Masuk
 
         </a>
 
         <a href="{{ route('register') }}"
-            class="btn rounded-4 text-white px-4"
-            style="background:#C85C2E;">
+            class="btn btn-sm rounded-4 text-white px-3 me-2"
+            style="background:#C85C2E;font-size:14px;">
 
             Daftar
+
+        </a>
+
+        <a href="{{ route('pemilik.warung.create') }}"
+            class="btn btn-sm rounded-pill text-white px-3"
+            style="background:#C85C2E;font-size:14px;">
+
+             Daftarkan Warung
 
         </a>
 
@@ -126,9 +128,10 @@
         @else
 
             <a href="{{ route('pemilik.warung.create') }}"
-                class="btn btn-outline-dark rounded-pill px-3 me-3">
+                class="btn btn-sm rounded-pill text-white px-3 me-3"
+                style="background:#C85C2E;font-size:14px;">
 
-                🏪 Daftarkan Warung
+                 Daftarkan Warung
 
             </a>
 
