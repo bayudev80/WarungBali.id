@@ -46,7 +46,7 @@ info@warungbali.id
 
 <a href="https://wa.me/628123456789" target="_blank" rel="noopener" class="text-white text-decoration-none">
 <i class="fa-brands fa-whatsapp"></i>
-0812-3456-789 (Chat WhatsApp)
+082146789679 (Chat WhatsApp)
 </a>
 
 </p>
