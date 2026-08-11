@@ -1,18 +1,18 @@
-<nav class="navbar navbar-expand-lg fixed-top py-3" style="background:#FFF7EF;">
+<nav class="navbar navbar-expand-lg fixed-top py-2" style="background:#FFF7EF;">
     <div class="container">
 
        <!-- Logo -->
 <a class="navbar-brand d-flex align-items-center fw-bold" href="/">
     <img src="{{ asset('images/logo.png') }}"
         alt="WarungBali"
-        width="48"
-        height="48"
-        class="rounded-3 me-3"
+        width="38"
+        height="38"
+        class="rounded-3 me-2"
         style="object-fit:cover;">
 
     <span style="
         font-family:'Playfair Display',serif;
-        font-size:22px;
+        font-size:19px;
         color:#2D201C;">
 
         Warungbali<span style="color:#C85C2E;">.id</span>
@@ -110,7 +110,8 @@
         @if(Auth::user()->role === 'admin')
 
             <a href="{{ route('admin.dashboard') }}"
-                class="btn btn-light border rounded-4 px-4 me-3">
+                class="btn btn-sm btn-light border rounded-4 px-3 me-3"
+                style="font-size:14px;">
 
                 Dashboard Admin
 
@@ -119,7 +120,8 @@
         @elseif(Auth::user()->role === 'pemilik')
 
             <a href="{{ route('pemilik.dashboard') }}"
-                class="btn btn-light border rounded-4 px-4 me-3">
+                class="btn btn-sm btn-light border rounded-4 px-3 me-3"
+                style="font-size:14px;">
 
                 Dashboard Pemilik
 
@@ -137,7 +139,7 @@
 
         @endif
 
-        <span class="me-3 fw-semibold">
+        <span class="me-3 fw-semibold" style="font-size:14px;">
 
             👋 {{ Auth::user()->nama }}
 
@@ -148,7 +150,8 @@
             @csrf
 
             <button type="submit"
-                class="btn btn-danger rounded-4">
+                class="btn btn-sm btn-danger rounded-4"
+                style="font-size:14px;">
 
                 Logout
 
@@ -165,4 +168,4 @@
     </div>
 </nav>
 
-<div style="height:90px;"></div>
+<div style="height:74px;"></div>

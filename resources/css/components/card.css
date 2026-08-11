@@ -18,7 +18,7 @@
 }
 
 .warung-image {
-    height: 220px;
+    height: 160px;
     width: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
@@ -32,14 +32,14 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    padding: 20px;
+    padding: 14px;
 }
 
 /* Nama Warung */
 .warung-title {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 700;
-    min-height: 58px;
+    min-height: 42px;
 
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -49,7 +49,8 @@
 
 /* Alamat */
 .warung-address {
-    min-height: 48px;
+    min-height: 36px;
+    font-size: 0.85rem;
     color: #6c757d;
 
     display: -webkit-box;
@@ -60,7 +61,8 @@
 
 /* Deskripsi */
 .warung-description {
-    min-height: 52px;
+    min-height: 38px;
+    font-size: 0.85rem;
     color: #666;
 
     display: -webkit-box;
@@ -73,9 +75,10 @@
    supaya kartu warung yang menerima catering tidak jadi lebih panjang
    dibanding kartu lain */
 .warung-catering-slot {
-    min-height: 26px;
+    min-height: 22px;
     display: flex;
     align-items: center;
+    font-size: 0.85rem;
 }
 
 /* Harga + Jam + Tombol selalu di bawah */
@@ -83,6 +86,12 @@
     margin-top: auto;
 }
 
+.warung-card .mt-auto p {
+    font-size: 0.9rem;
+}
+
 .warung-card .btn {
     border-radius: 10px;
+    font-size: 0.9rem;
+    padding: 0.45rem 0.75rem;
 }

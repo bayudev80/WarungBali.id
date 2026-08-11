@@ -23,7 +23,7 @@ body {
 }
 
 .stat-item h2 {
-    font-size: 50px;
+    font-size: 36px;
     font-weight: 700;
     color: #d97706;
     margin-bottom: 8px;
@@ -32,7 +32,7 @@ body {
 .stat-item p {
     margin: 0;
     color: #666;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 @media (max-width: 768px) {
@@ -74,7 +74,7 @@ body {
    dan bakal ke-maksa lebar 300px kalau kena selector universal. */
 .warung-slider-track > .warung-card-item {
     flex: 0 0 auto;
-    width: 300px;
+    width: 250px;
     scroll-snap-align: start;
 }
 
@@ -121,7 +121,7 @@ body {
         padding-right: 40px;
     }
     .warung-slider-track > .warung-card-item {
-        width: 240px;
+        width: 210px;
     }
 }
 
@@ -192,7 +192,11 @@ body {
     right: 0;
     bottom: 1rem;
     width: 48px;
-    background: linear-gradient(to right, rgba(248, 249, 250, 0), rgba(248, 249, 250, 1));
+    background: linear-gradient(
+        to right,
+        rgba(248, 249, 250, 0),
+        rgba(248, 249, 250, 1)
+    );
     pointer-events: none;
     display: none;
 }
@@ -258,7 +262,10 @@ body {
     border: 2px solid transparent;
     overflow: hidden;
     cursor: pointer;
-    transition: box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+    transition:
+        box-shadow 0.3s ease,
+        border-color 0.3s ease,
+        background-color 0.3s ease;
     background: #fff;
 }
 
@@ -377,7 +384,9 @@ body {
     text-decoration: none;
     font-size: 0.75rem;
     line-height: 1;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
 }
 
 .hasil-chip a:hover {
@@ -387,8 +396,8 @@ body {
 
 .warung-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1.25rem;
     align-items: stretch;
 }
 

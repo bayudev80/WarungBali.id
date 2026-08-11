@@ -6,16 +6,7 @@
     hasil pencarian selalu sama persis di kedua mode.
 --}}
 
-<h2 class="fw-bold mb-5">
-
-  @if($sedangFilter)
-  Hasil Pencarian
-  @else
-  Warung Populer
-  @endif
-</h2>
-
-<div class="mb-4 d-flex flex-wrap gap-2">
+<div class="mb-4 d-flex flex-wrap gap-2 mt-4">
 
     <div class="warung-dropdown">
 
