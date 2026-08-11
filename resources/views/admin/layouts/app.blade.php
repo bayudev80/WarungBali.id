@@ -28,7 +28,10 @@
     <aside class="sidebar">
 
         <div class="sidebar-header">
-            <h3>WarungBali.id</h3>
+            <div class="d-flex align-items-center justify-content-center mb-1">
+                <img src="{{ asset('images/logo.png') }}" alt="WarungBali Logo" width="30" height="30" class="rounded-3 me-2" style="object-fit:cover; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                <h3 class="mb-0 lh-1">WarungBali<span>.id</span></h3>
+            </div>
             <span>Admin Panel</span>
         </div>
 
@@ -86,26 +89,35 @@
                 </h4>
             </div>
 
-            <div class="profile">
+            <div class="profile dropdown">
 
-                <span>
-                    Halo,
-                    <strong>{{ Auth::user()->nama }}</strong>
-                </span>
+                <div class="d-flex align-items-center gap-3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="text-end d-none d-md-block">
+                        <span class="d-block fw-bold text-dark mb-0 lh-1" style="font-size: 14px;">{{ Auth::user()->nama }}</span>
+                        <span class="text-muted small" style="font-size: 12px;">Administrator</span>
+                    </div>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm text-white" style="width: 42px; height: 42px; font-size: 16px; background-color: #C85C2E;">
+                        {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
+                    </div>
+                    <i class="bi bi-chevron-down text-muted small"></i>
+                </div>
 
-                <a href="{{ route('home') }}" class="btn-website">
-                    <i class="fa-solid fa-globe"></i>
-                    Website
-                </a>
-
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <button type="submit" class="btn-logout">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        Logout
-                    </button>
-                </form>
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2" style="min-width: 200px;">
+                    <li>
+                        <a class="dropdown-item py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('home') }}" target="_blank">
+                            <i class="bi bi-globe2"></i> Ke Website Utama
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider opacity-25"></li>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}" class="m-0">
+                            @csrf
+                            <button type="submit" class="dropdown-item py-2 d-flex align-items-center gap-2 text-danger fw-medium">
+                                <i class="bi bi-box-arrow-right"></i> Keluar
+                            </button>
+                        </form>
+                    </li>
+                </ul>
 
             </div>
 

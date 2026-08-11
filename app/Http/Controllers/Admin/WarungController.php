@@ -27,11 +27,13 @@ class WarungController extends Controller
             ->when($kategoriTerpilih, function ($query) use ($kategoriTerpilih) {
                 $query->where('warung.id_kategori', $kategoriTerpilih);
             })
-            // Diurutkan per kategori dulu supaya mudah dikelompokkan di tampilan,
-            // baru berdasarkan nama warung di dalam kategori yang sama.
+            // Diurutkan per kabupaten dulu supaya mudah dikelompokkan di tampilan,
+            // lalu berdasarkan kategori, dan terakhir nama warung.
             ->join('kategori', 'kategori.id_kategori', '=', 'warung.id_kategori')
-            ->orderBy('kategori.nama_kategori')
-            ->orderBy('warung.nama_warung')
+            ->join('kabupaten', 'kabupaten.id_kabupaten', '=', 'warung.id_kabupaten')
+            ->orderBy('kabupaten.nama_kabupaten', 'asc')
+            ->orderBy('kategori.nama_kategori', 'asc')
+            ->orderBy('warung.nama_warung', 'asc')
             ->select('warung.*')
             ->paginate(15)
             ->withQueryString();

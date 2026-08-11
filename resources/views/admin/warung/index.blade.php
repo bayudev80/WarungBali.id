@@ -4,113 +4,198 @@
 
 @section('content')
 
-<style>
-    /* Lebar kolom dikunci sama persis untuk semua tabel per-kategori,
-       supaya garis kolom sejajar dari kategori satu ke kategori lain. */
-    .warung-table {
-        table-layout: fixed;
-        width: 100%;
-    }
-    .warung-table td {
-        vertical-align: middle;
-    }
-    .warung-table td.text-truncate {
-        max-width: 0;
-    }
-</style>
+    <style>
+        .warung-thumb {
+            width: 55px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+        .warung-table {
+            table-layout: fixed;
+            width: 100%;
+            font-size: 0.85rem;
+        }
+        .warung-table th {
+            color: #6c757d;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #f8f9fa;
+        }
+        .warung-table th, .warung-table td {
+            vertical-align: middle;
+            padding: 0.75rem 0.5rem;
+            border-color: #f1f3f5;
+        }
+        .warung-table td.text-truncate { max-width: 0; }
+        
+        /* Modern hover effect for table rows */
+        .warung-table tbody tr {
+            transition: all 0.2s ease;
+        }
+        .warung-table tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-1px);
+        }
 
-<div class="content-box">
+        .action-buttons {
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+        .action-buttons .btn {
+            border-radius: 6px;
+            padding: 0.25rem 0.45rem;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            border: none;
+            line-height: 1.4;
+        }
+        .action-buttons .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+        
+        /* Modern Card styling */
+        .modern-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+        .modern-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+        .modern-card-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #f1f3f5;
+            padding: 1rem 1.25rem;
+        }
+        
+        /* Modern Search Input */
+        .modern-input {
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            padding: 0.6rem 1rem;
+            background-color: #f8f9fa;
+            transition: all 0.2s;
+        }
+        .modern-input:focus {
+            background-color: #ffffff;
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13,110,253,.15);
+        }
+    </style>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="content-box px-2">
 
-        <h3 class="fw-bold">Data Warung</h3>
-
-        <a href="{{ route('admin.warung.create') }}" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i>
-            Tambah Warung
+    <div class="d-flex justify-content-between align-items-center mb-4 pt-2">
+        <div>
+            <h3 class="fw-bold mb-0 text-dark">Data Warung</h3>
+            <p class="text-muted small mb-0 mt-1">Kelola daftar warung, cabang, dan status persetujuan.</p>
+        </div>
+        <a href="{{ route('admin.warung.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm" style="transition: 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+            <i class="bi bi-plus-lg me-1"></i> Tambah Warung
         </a>
-
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     @endif
 
     @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
+        <div class="alert alert-danger alert-dismissible fade show rounded-4 border-0 shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     @endif
 
     {{-- Form pencarian & filter kategori --}}
-    <form action="{{ route('admin.warung.index') }}" method="GET" class="row g-2 align-items-center mb-4">
+    <form action="{{ route('admin.warung.index') }}" method="GET" class="card modern-card p-3 mb-4">
+        <div class="row g-3 align-items-center">
+            <div class="col-12 col-md-5">
+                <div class="position-relative">
+                    <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted ms-3"></i>
+                    <input type="text" name="search" value="{{ $search }}" class="form-control modern-input ps-5"
+                        placeholder="Cari nama warung, alamat, atau telepon...">
+                </div>
+            </div>
 
-        <div class="col-12 col-md-5">
-            <div class="input-group">
-                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                <input type="text" name="search" value="{{ $search }}" class="form-control"
-                    placeholder="Cari nama warung, alamat, atau telepon...">
+            <div class="col-8 col-md-4">
+                <select name="kategori" class="form-select modern-input text-secondary">
+                    <option value="">Semua Kategori</option>
+                    @foreach($kategori as $k)
+                        <option value="{{ $k->id_kategori }}" @selected((string) $kategoriTerpilih === (string) $k->id_kategori)>
+                            {{ $k->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-4 col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-dark modern-input text-white w-100 border-0">Cari</button>
+                @if($search !== '' || $kategoriTerpilih)
+                    <a href="{{ route('admin.warung.index') }}" class="btn btn-light modern-input w-100 text-secondary border">
+                        Reset
+                    </a>
+                @endif
             </div>
         </div>
-
-        <div class="col-8 col-md-3">
-            <select name="kategori" class="form-select">
-                <option value="">Semua Kategori</option>
-                @foreach($kategori as $k)
-                    <option value="{{ $k->id_kategori }}" @selected((string) $kategoriTerpilih === (string) $k->id_kategori)>
-                        {{ $k->nama_kategori }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="col-4 col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Cari</button>
-        </div>
-
-        @if($search !== '' || $kategoriTerpilih)
-            <div class="col-12 col-md-2">
-                <a href="{{ route('admin.warung.index') }}" class="btn btn-outline-secondary w-100">
-                    <i class="bi bi-x-circle"></i> Reset
-                </a>
-            </div>
-        @endif
-
     </form>
 
     @php
         $grouped = $warung->getCollection()->groupBy(function ($item) {
-            return $item->kategori->nama_kategori ?? 'Tanpa Kategori';
+            return $item->kabupaten->nama_kabupaten ?? 'Tanpa Kabupaten';
         });
     @endphp
 
     @if($warung->isEmpty())
 
-        <div class="alert alert-light border text-center">
-            @if($search !== '' || $kategoriTerpilih)
-                Tidak ada warung yang cocok dengan pencarian/filter ini.
-            @else
-                Belum ada data warung.
-            @endif
+        <div class="card modern-card p-5 text-center">
+            <div class="d-flex flex-column align-items-center py-4">
+                <i class="bi bi-shop fa-3x text-light mb-3" style="font-size: 4rem;"></i>
+                @if($search !== '' || $kategoriTerpilih)
+                    <h5 class="text-secondary fw-semibold">Tidak ada warung yang cocok dengan pencarian ini.</h5>
+                @else
+                    <h5 class="text-secondary fw-semibold">Belum ada data warung.</h5>
+                    <p class="text-muted">Silakan tambahkan warung pertama Anda.</p>
+                @endif
+            </div>
         </div>
 
     @else
 
-        @foreach($grouped as $namaKategori => $items)
+        @foreach($grouped as $namaKabupaten => $items)
 
-            @php $groupId = 'kategori-group-' . $loop->index; @endphp
+            @php $groupId = 'kabupaten-group-' . $loop->index; @endphp
 
-            <div class="card mb-3 shadow-sm">
+            <div class="card modern-card mb-4">
 
-                <div class="card-header bg-light d-flex justify-content-between align-items-center"
+                <div class="modern-card-header d-flex justify-content-between align-items-center"
                     role="button" data-bs-toggle="collapse" data-bs-target="#{{ $groupId }}"
                     aria-expanded="true" aria-controls="{{ $groupId }}">
 
-                    <span class="fw-semibold">
-                        <i class="bi bi-tag-fill me-1"></i>
-                        {{ $namaKategori }}
-                        <span class="badge bg-secondary ms-2">{{ $items->count() }} warung</span>
-                    </span>
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                            <i class="bi bi-geo-alt-fill fs-5"></i>
+                        </div>
+                        <span class="fw-bold text-dark fs-5">
+                            {{ $namaKabupaten }}
+                        </span>
+                        <span class="badge bg-light text-secondary border ms-3 rounded-pill px-3 py-2">{{ $items->count() }} warung</span>
+                    </div>
 
-                    <i class="bi bi-chevron-down"></i>
+                    <i class="bi bi-chevron-down text-muted"></i>
 
                 </div>
 
@@ -118,33 +203,31 @@
 
                     <div class="table-responsive">
 
-                        <table class="table table-hover align-middle mb-0 warung-table">
+                        <table class="table table-borderless warung-table mb-0">
 
                             <colgroup>
-                                <col style="width:80px">
-                                <col style="width:32%">
-                                <col style="width:15%">
-                                <col style="width:17%">
-                                <col style="width:11%">
+                                <col style="width:45px">
+                                <col style="width:65px">
+                                <col>
                                 <col style="width:13%">
-                                <col style="width:190px">
+                                <col style="width:13%">
+                                <col style="width:9%">
+                                <col style="width:9%">
+                                <col style="width:130px">
                             </colgroup>
 
                             <thead>
-
-                                <tr>
-
-                                    <th>Foto</th>
-                                    <th>Nama Warung</th>
-                                    <th>Kabupaten</th>
-                                    <th>Telepon</th>
-                                    <th>Catering</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
-
-                                </tr>
-
-                            </thead>
+                            <tr>
+                                <th style="width:50px;" class="text-center">No</th>
+                                <th style="width:70px;">Foto</th>
+                                <th style="width:250px;">Nama Warung</th>
+                                <th>Kategori</th>
+                                <th>Telepon</th>
+                                <th>Catering</th>
+                                <th>Status</th>
+                                <th style="width:160px;" class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
 
                             <tbody>
 
@@ -160,32 +243,39 @@
 
                                 <tr>
 
+                                    <td class="text-center text-muted fw-medium">{{ $loop->iteration }}</td>
+
                                     <td>
                                         @if($item->foto && file_exists(public_path('images/warung/'.$item->foto)))
-                                            <img src="{{ asset('images/warung/'.$item->foto) }}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;">
+                                            <img src="{{ asset('images/warung/'.$item->foto) }}" class="warung-thumb" alt="Foto">
                                         @else
-                                            <span class="text-muted small">Tidak ada foto</span>
+                                            <div class="warung-thumb d-flex align-items-center justify-content-center text-muted" style="font-size: 0.75rem;">
+                                                <i class="bi bi-image"></i>
+                                            </div>
                                         @endif
                                     </td>
 
                                     <td class="text-truncate" title="{{ $item->nama_warung }}">
-                                        {{ $item->nama_warung }}
-                                        @if($item->id_warung_induk)
-                                            <br><span class="badge bg-secondary">Cabang</span>
-                                        @endif
+                                        <div class="fw-bold text-dark">{{ $item->nama_warung }}</div>
+                                        <div class="d-flex align-items-center mt-1 gap-2">
+                                            <span class="badge bg-light text-secondary border">WRG-{{ str_pad($item->id_warung, 4, '0', STR_PAD_LEFT) }}</span>
+                                            @if($item->id_warung_induk)
+                                                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-2">Cabang</span>
+                                            @endif
+                                        </div>
                                     </td>
 
-                                    <td class="text-truncate">{{ $item->kabupaten->nama_kabupaten ?? '-' }}</td>
+                                    <td class="text-truncate">{{ $item->kategori->nama_kategori ?? '-' }}</td>
 
-                                    <td>{{ $item->telepon }}</td>
+                                    <td class="text-nowrap">{{ $item->telepon }}</td>
 
-                                    <td>
+                                    <td class="text-center">
                                         @if(!$item->is_kuliner)
                                             <span class="text-muted small">-</span>
                                         @elseif($item->menerima_catering)
-                                            <span class="badge bg-success-subtle text-success">Ya</span>
+                                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Ya</span>
                                         @else
-                                            <span class="badge bg-secondary-subtle text-secondary">Tidak</span>
+                                            <span class="badge bg-secondary"><i class="bi bi-x-circle me-1"></i>Tidak</span>
                                         @endif
                                     </td>
 
@@ -193,48 +283,60 @@
                                         <span class="badge {{ $statusBadge['class'] }}">{{ $statusBadge['label'] }}</span>
                                     </td>
 
-                                    <td class="text-nowrap">
+                                    <td>
+                                        <div class="action-buttons">
+                                            @if($item->status === 'pending')
+                                                <form action="{{ route('admin.warung.approve', $item->id_warung) }}" method="POST" class="m-0">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="btn btn-success text-white" title="Setujui" onclick="return confirm('Setujui warung ini?')">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
+                                                </form>
+                                                <form action="{{ route('admin.warung.reject', $item->id_warung) }}" method="POST" class="m-0">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="btn btn-outline-danger bg-white" title="Tolak" onclick="return confirm('Tolak warung ini?')">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
 
-                                        @if($item->status === 'pending')
-                                            <form action="{{ route('admin.warung.approve', $item->id_warung) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-success btn-sm" title="Setujui" onclick="return confirm('Setujui warung ini supaya tayang di website?')">
-                                                    <i class="bi bi-check-lg"></i>
-                                                </button>
-                                            </form>
-
-                                            <form action="{{ route('admin.warung.reject', $item->id_warung) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Tolak" onclick="return confirm('Tolak pengajuan warung ini?')">
-                                                    <i class="bi bi-x-lg"></i>
-                                                </button>
-                                            </form>
-                                        @endif
-
-                                        <a href="{{ route('admin.warung.menu.index', $item->id_warung) }}" class="btn btn-info btn-sm" title="Kelola {{ $item->label_menu }}">
-                                            <i class="bi bi-menu-button-wide"></i>
-                                        </a>
-
-                                        @if(!$item->is_cabang)
-                                            <a href="{{ route('admin.warung.cabang.create', $item->id_warung) }}" class="btn btn-outline-success btn-sm" title="Tambah Cabang">
-                                                <i class="bi bi-diagram-3"></i>
+                                            <a href="{{ route('admin.warung.edit', $item->id_warung) }}" class="btn btn-warning text-white" title="Edit">
+                                                <i class="bi bi-pencil"></i>
                                             </a>
-                                        @endif
 
-                                        <a href="{{ route('admin.warung.edit', $item->id_warung) }}" class="btn btn-warning btn-sm" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-
-                                        <form action="{{ route('admin.warung.destroy', $item->id_warung) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Hapus warung ini? Semua menu di dalamnya juga akan terhapus.')">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-
+                                            {{-- Dropdown untuk aksi lainnya --}}
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary text-white" type="button" data-bs-toggle="dropdown" title="Lainnya">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-3" style="min-width:160px;font-size:0.85rem;">
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.warung.menu.index', $item->id_warung) }}">
+                                                            <i class="bi bi-menu-button-wide text-info"></i> Kelola {{ $item->label_menu }}
+                                                        </a>
+                                                    </li>
+                                                    @if(!$item->is_cabang)
+                                                    <li>
+                                                        <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.warung.cabang.create', $item->id_warung) }}">
+                                                            <i class="bi bi-diagram-3 text-success"></i> Tambah Cabang
+                                                        </a>
+                                                    </li>
+                                                    @endif
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <form action="{{ route('admin.warung.destroy', $item->id_warung) }}" method="POST" class="m-0">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger" onclick="return confirm('Hapus warung ini?')">
+                                                                <i class="bi bi-trash"></i> Hapus
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </td>
 
                                 </tr>
