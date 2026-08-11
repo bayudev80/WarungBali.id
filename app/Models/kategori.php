@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Kategori extends Model
 {
@@ -13,6 +14,16 @@ class Kategori extends Model
     protected $fillable = [
         'nama_kategori'
     ];
+
+    /**
+     * Slug URL kategori, dibuat otomatis dari nama_kategori
+     * (tidak disimpan di database, cukup dihitung on the fly).
+     * Contoh: "Warung Makan" -> "warung-makan"
+     */
+    public function getSlugAttribute()
+    {
+        return Str::slug($this->nama_kategori);
+    }
 
     public function warung()
     {

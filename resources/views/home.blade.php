@@ -103,32 +103,33 @@
         Jelajahi Berdasarkan Kategori
     </h2>
 
-    <div class="row g-4 text-center">
+    <div class="kategori-scroll-wrapper">
+    <div class="kategori-grid">
 
     @php
         $icons = [
-            'Warung Makan' => '🍛',
-            'Warung Minuman' => '🥤',
-            'Warung Sembako' => '🛒',
-            'Oleh-Oleh Bali' => '🎁',
-            'Warung Buah & Sayur' => '🥬',
-            'Warung Herbal' => '🌿',
-            'Warung Pulsa & PPOB' => '📱',
-            'Warung ATK & Fotokopi' => '📚',
+            'Warung Makan' => 'bi-shop-window',
+            'Warung Minuman' => 'bi-cup-straw',
+            'Warung Sembako' => 'bi-basket2-fill',
+            'Oleh-Oleh Bali' => 'bi-gift-fill',
+            'Warung Buah & Sayur' => 'bi-flower1',
+            'Warung Herbal' => 'bi-flower2',
+            'Warung Pulsa & PPOB' => 'bi-phone-fill',
+            'Warung ATK & Fotokopi' => 'bi-printer-fill',
         ];
     @endphp
 
-    <div class="col-lg-3 col-md-4 col-6">
+    <div class="kategori-item">
 
         <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark">
 
-            <div class="card kategori-card border-0 shadow-sm p-3 h-100 {{ !request('kategori') ? 'border border-warning border-2' : '' }}">
+            <div class="card kategori-card border-0 shadow-sm {{ !request('kategori') ? 'border border-warning border-2' : '' }}">
 
-                <div style="font-size:40px;">
-                    🏪
+                <div class="kategori-card-icon">
+                    <i class="bi bi-grid-3x3-gap-fill"></i>
                 </div>
 
-                <h6 class="mt-2">
+                <h6 class="kategori-card-label">
                     Semua
                 </h6>
 
@@ -140,17 +141,17 @@
 
     @foreach($kategori as $item)
 
-        <div class="col-lg-3 col-md-4 col-6">
+        <div class="kategori-item">
 
-            <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan'), 'kategori' => $item->id_kategori])) }}" class="text-decoration-none text-dark">
+            <a href="{{ route('kategori.show', $item->slug) }}" class="text-decoration-none text-dark">
 
-                <div class="card kategori-card border-0 shadow-sm p-3 h-100 {{ request('kategori') == $item->id_kategori ? 'border border-warning border-2' : '' }}">
+                <div class="card kategori-card border-0 shadow-sm {{ request('kategori') == $item->id_kategori ? 'border border-warning border-2' : '' }}">
 
-                    <div style="font-size:40px;">
-                        {{ $icons[$item->nama_kategori] ?? '🏪' }}
+                    <div class="kategori-card-icon">
+                        <i class="bi {{ $icons[$item->nama_kategori] ?? 'bi-shop' }}"></i>
                     </div>
 
-                    <h6 class="mt-2">
+                    <h6 class="kategori-card-label">
                         {{ $item->nama_kategori }}
                     </h6>
 
@@ -163,6 +164,7 @@
     @endforeach
 
 </div>
+    </div>
 
   </div>
 
@@ -175,129 +177,11 @@
 
   <div class="container">
 
-    <h2 class="fw-bold mb-5">
-
-      @if(request('search'))
-      Hasil Pencarian
-      @else
-      Warung Populer
-      @endif
-    </h2>
-
-    @php
-        $urutanOptions = [
-            'populer'  => '🔥 Terpopuler',
-            'disukai'  => '❤️ Banyak Disukai',
-            'rating'   => '⭐ Rating Tertinggi',
-            'terbaru'  => '🆕 Terbaru',
-            'termurah' => '💸 Harga Termurah',
-            'termahal' => '💰 Harga Termahal',
-        ];
-    @endphp
-
-    <div class="mb-4">
-
-        <div class="warung-dropdown">
-
-            <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded-pill"
-                onclick="toggleDropdown('urutanDropdownMenu')">
-                 {{ $urutanOptions[$urutan] ?? $urutanOptions['populer'] }} ▾
-            </button>
-
-            <ul id="urutanDropdownMenu" class="warung-dropdown-menu shadow border-0">
-
-                @foreach($urutanOptions as $key => $label)
-
-                    <li>
-                        <a class="warung-dropdown-item {{ $urutan === $key ? 'active' : '' }}"
-                           href="{{ route('home', array_filter([
-                                'search'   => request('search'),
-                                'kategori' => request('kategori'),
-                                'urutan'   => $key,
-                           ])) }}">
-                            {{ $label }}
-                        </a>
-                    </li>
-
-                @endforeach
-
-            </ul>
-
-        </div>
-
+    <div id="warung-hasil">
+        @include('partials.warung-results', compact(
+            'sedangFilter', 'urutan', 'urutanOptions', 'warungPilihan', 'kabupatenAktif', 'icons'
+        ))
     </div>
-
-    @if(request('search'))
-
-    </div>
-</section>
-
-    <div class="alert alert-warning border-0 rounded-4 shadow-sm mb-4">
-
-      <h5 class="mb-1">
-        🔍 Hasil pencarian untuk:
-        <strong>"{{ request('search') }}"</strong>
-
-      </h5>
-
-      <small class="text-secondary">
-        Ditemukan <strong>{{ $warungPilihan->count() }}</strong> warung
-      </small>
-
-    </div>
-
-    @endif
-    @php
-        $tampilkanPerKategori = !request('kategori');
-
-        $groupedWarung = $tampilkanPerKategori
-            ? $warungPilihan->groupBy(fn($w) => $w->kategori->nama_kategori ?? 'Lainnya')
-            : collect(['__single__' => $warungPilihan]);
-    @endphp
-
-    @forelse($groupedWarung as $namaGrup => $items)
-
-        @if($tampilkanPerKategori)
-
-            <h3 class="fw-bold mt-5 mb-4">
-                {{ $icons[$namaGrup] ?? '🏪' }} {{ $namaGrup }}
-            </h3>
-
-        @endif
-
-        @php $sliderId = 'slider-'.$loop->index; @endphp
-
-        <div class="warung-slider-wrapper position-relative mb-3">
-
-            <button type="button" class="warung-slider-btn warung-slider-prev"
-                onclick="geserWarung('{{ $sliderId }}', -1)" aria-label="Sebelumnya">
-                &#8249;
-            </button>
-
-            <div id="{{ $sliderId }}" class="warung-slider-track">
-
-                @foreach($items as $item)
-
-                    @include('partials.warung-card', ['item' => $item])
-
-                @endforeach
-
-            </div>
-
-            <button type="button" class="warung-slider-btn warung-slider-next"
-                onclick="geserWarung('{{ $sliderId }}', 1)" aria-label="Berikutnya">
-                &#8250;
-            </button>
-
-        </div>
-
-    @empty
-
-        <div class="alert alert-warning text-center rounded-4">
-            Belum ada warung untuk ditampilkan.
-        </div>
-
-    @endforelse
 
   </div>
   <!-- /container -->
@@ -333,6 +217,13 @@
 </section>
 
 <style>
+    /* ===== Loading state hasil warung (AJAX) ===== */
+    #warung-hasil.is-loading {
+        opacity: .45;
+        pointer-events: none;
+        transition: opacity .15s ease;
+    }
+
     /* ===== Slider warung per kategori ===== */
     .warung-slider-wrapper {
         position: relative;
@@ -462,6 +353,90 @@
 </style>
 
 <script>
+    // ==========================================================
+    // PENCARIAN & URUTAN TANPA RELOAD (AJAX)
+    // ==========================================================
+    // Semua interaksi yang tadinya bikin form/link menavigasi ulang
+    // halaman (search box, dropdown urutan, chip hapus filter,
+    // pagination) sekarang ditangkap di sini, dikirim ke endpoint
+    // /search-ajax, lalu cuma #warung-hasil yang diganti isinya.
+    // Event delegation dipakai (listener nempel di document, bukan
+    // di tiap link) supaya tetap jalan meski link-nya diganti baru
+    // setiap kali #warung-hasil di-render ulang.
+
+    const warungHasilEl = document.getElementById('warung-hasil');
+    const searchAjaxPath = new URL('{{ route("search.ajax") }}', window.location.href).pathname;
+
+    function muatHasilWarung(url, { pushState = true } = {}) {
+        if (!warungHasilEl) return;
+
+        warungHasilEl.classList.add('is-loading');
+
+        const urlAjax = new URL(url, window.location.href);
+        urlAjax.pathname = searchAjaxPath;
+
+        fetch(urlAjax.toString(), { headers: { 'Accept': 'application/json' } })
+            .then(res => res.json())
+            .then(data => {
+                warungHasilEl.innerHTML = data.html;
+                warungHasilEl.classList.remove('is-loading');
+
+                if (pushState) {
+                    window.history.pushState({}, '', url);
+                }
+
+                // Sinkronkan kotak pencarian di hero dengan kata kunci yang
+                // aktif sekarang (penting saat chip "hapus pencarian" diklik
+                // atau tombol back/forward browser dipakai).
+                if (heroSearchForm) {
+                    const input = heroSearchForm.querySelector('input[name="search"]');
+                    if (input) input.value = urlAjax.searchParams.get('search') || '';
+                }
+
+                initWarungSliders();
+
+                warungHasilEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            })
+            .catch(() => {
+                // Kalau AJAX gagal (mis. server mati), jangan diam saja —
+                // fallback ke navigasi biasa supaya user tetap dapat hasilnya.
+                window.location.href = url;
+            });
+    }
+
+    // Form pencarian hero
+    const heroSearchForm = document.querySelector('.hero-search');
+    if (heroSearchForm) {
+        heroSearchForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const input = heroSearchForm.querySelector('input[name="search"]');
+            const params = new URLSearchParams();
+            if (input && input.value.trim() !== '') {
+                params.set('search', input.value.trim());
+            }
+            const url = '{{ route("home") }}' + (params.toString() ? '?' + params.toString() : '');
+            muatHasilWarung(url);
+        });
+    }
+
+    // Dropdown urutan + chip hapus filter + pagination (link-link di
+    // dalam #warung-hasil yang menunjuk balik ke route('home'))
+    document.addEventListener('click', function (e) {
+        const link = e.target.closest(
+            '#warung-hasil .warung-dropdown-item, #warung-hasil .hasil-chip a, #warung-hasil .pagination a'
+        );
+        if (!link) return;
+
+        e.preventDefault();
+        muatHasilWarung(link.getAttribute('href'));
+    });
+
+    // Balik/maju browser (tombol back/forward) tetap harus memuat
+    // ulang hasil yang sesuai dengan URL saat itu.
+    window.addEventListener('popstate', function () {
+        muatHasilWarung(window.location.href, { pushState: false });
+    });
+
     // --- Slider warung ---
     function geserWarung(id, arah) {
         const track = document.getElementById(id);
@@ -473,8 +448,28 @@
   // ==========================
 // AUTO SLIDER WARUNG
 // ==========================
+// Dibungkus jadi fungsi (bukan langsung nempel di DOMContentLoaded)
+// supaya bisa dipanggil ulang tiap kali #warung-hasil diganti oleh
+// AJAX — kalau tidak, slider hasil pencarian baru tidak akan
+// auto-geser / tombol prev-next-nya tidak berfungsi.
 
-document.addEventListener("DOMContentLoaded", function () {
+function updateSliderButtons(track) {
+    const wrapper = track.closest('.warung-slider-wrapper');
+    if (!wrapper) return;
+    const prevBtn = wrapper.querySelector('.warung-slider-prev');
+    const nextBtn = wrapper.querySelector('.warung-slider-next');
+    const bisaScroll = track.scrollWidth > track.clientWidth + 5;
+
+    if (!bisaScroll) {
+        prevBtn?.classList.add('is-hidden');
+        nextBtn?.classList.add('is-hidden');
+        return;
+    }
+    prevBtn?.classList.toggle('is-hidden', track.scrollLeft <= 5);
+    nextBtn?.classList.toggle('is-hidden', track.scrollLeft + track.clientWidth >= track.scrollWidth - 5);
+}
+
+function initWarungSliders() {
 
     document.querySelectorAll(".warung-slider-track").forEach(track => {
 
@@ -525,35 +520,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         });
 
+        updateSliderButtons(track);
+        track.addEventListener('scroll', function () { updateSliderButtons(track); });
+
     });
 
+}
+
+document.addEventListener("DOMContentLoaded", initWarungSliders);
+
+window.addEventListener('resize', function () {
+    document.querySelectorAll('.warung-slider-track').forEach(updateSliderButtons);
 });
-
-    function updateSliderButtons(track) {
-        const wrapper = track.closest('.warung-slider-wrapper');
-        if (!wrapper) return;
-        const prevBtn = wrapper.querySelector('.warung-slider-prev');
-        const nextBtn = wrapper.querySelector('.warung-slider-next');
-        const bisaScroll = track.scrollWidth > track.clientWidth + 5;
-
-        if (!bisaScroll) {
-            prevBtn?.classList.add('is-hidden');
-            nextBtn?.classList.add('is-hidden');
-            return;
-        }
-        prevBtn?.classList.toggle('is-hidden', track.scrollLeft <= 5);
-        nextBtn?.classList.toggle('is-hidden', track.scrollLeft + track.clientWidth >= track.scrollWidth - 5);
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.warung-slider-track').forEach(function (track) {
-            updateSliderButtons(track);
-            track.addEventListener('scroll', function () { updateSliderButtons(track); });
-        });
-        window.addEventListener('resize', function () {
-            document.querySelectorAll('.warung-slider-track').forEach(updateSliderButtons);
-        });
-    });
 
     // --- Dropdown Urutkan (mandiri) ---
     function toggleDropdown(menuId) {

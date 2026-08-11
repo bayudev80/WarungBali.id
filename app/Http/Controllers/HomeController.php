@@ -18,6 +18,7 @@ class HomeController extends Controller
     {
         $search = $request->input('search');
         $kategoriFilter = $request->input('kategori');
+        $kabupatenFilter = $request->input('kabupaten');
         $urutan = $request->input('urutan', 'populer');
 
         $query = Warung::with([
@@ -25,6 +26,7 @@ class HomeController extends Controller
             'review.user',
             'favorit',
             'kategori',
+            'kabupaten',
             'cabang',
             'indukWarung.menu',
         ])
@@ -46,6 +48,12 @@ class HomeController extends Controller
         })
         ->when($kategoriFilter, function ($q) use ($kategoriFilter) {
             $q->where('id_kategori', $kategoriFilter);
+        })
+        // Filter kabupaten pakai relasi id_kabupaten yang sudah ada di tabel
+        // warung, bukan tebak-tebakan lewat LIKE ke kolom alamat bebas teks.
+        // Jadi hasilnya presisi walau format penulisan alamat beda-beda.
+        ->when($kabupatenFilter, function ($q) use ($kabupatenFilter) {
+            $q->where('id_kabupaten', $kabupatenFilter);
         });
 
         switch ($urutan) {
@@ -87,11 +95,66 @@ class HomeController extends Controller
         return [$query, $urutan];
     }
 
-    public function index(Request $request)
+    /**
+     * Ikon per kategori & label dropdown urutan dipakai bareng oleh index()
+     * dan searchAjax(), supaya partial hasil (warung-results) selalu dapat
+     * variabel yang sama persis baik saat load halaman penuh maupun AJAX.
+     */
+    private function iconMap(): array
+    {
+        return [
+            'Warung Makan' => 'bi-shop-window',
+            'Warung Minuman' => 'bi-cup-straw',
+            'Warung Sembako' => 'bi-basket2-fill',
+            'Oleh-Oleh Bali' => 'bi-gift-fill',
+            'Warung Buah & Sayur' => 'bi-flower1',
+            'Warung Herbal' => 'bi-flower2',
+            'Warung Pulsa & PPOB' => 'bi-phone-fill',
+            'Warung ATK & Fotokopi' => 'bi-printer-fill',
+        ];
+    }
+
+    private function urutanOptions(): array
+    {
+        return [
+            'populer'  => '🔥 Terpopuler',
+            'disukai'  => '❤️ Banyak Disukai',
+            'rating'   => '⭐ Rating Tertinggi',
+            'terbaru'  => '🆕 Terbaru',
+            'termurah' => '💸 Harga Termurah',
+            'termahal' => '💰 Harga Termahal',
+        ];
+    }
+
+    /**
+     * Data hasil (warungPilihan, sedangFilter, kabupatenAktif) dipakai bareng
+     * oleh index() (render halaman penuh) dan searchAjax() (render partial
+     * saja), supaya kedua mode selalu menampilkan hasil yang identik.
+     */
+    private function buildHasil(Request $request): array
     {
         [$query, $urutan] = $this->buildWarungQuery($request);
 
-        $warungPilihan = $query->get();
+        // Mode "hasil pencarian/filter" (search dan/atau kabupaten dipilih)
+        // ditampilkan sebagai grid rapi dengan pagination, beda dari mode
+        // "jelajahi" default di homepage yang dikelompokkan per kategori
+        // dalam slider horizontal. Kalau semuanya di-load sekaligus tanpa
+        // pagination, kabupaten yang warungnya banyak bikin halaman berat.
+        $sedangFilter = (bool) ($request->filled('search') || $request->filled('kabupaten'));
+
+        $warungPilihan = $sedangFilter
+            ? $query->paginate(12)->withQueryString()
+            : $query->get();
+
+        $kabupatenList = \App\Models\Kabupaten::orderBy('nama_kabupaten')->get();
+        $kabupatenAktif = $kabupatenList->firstWhere('id_kabupaten', (int) $request->input('kabupaten'));
+
+        return compact('warungPilihan', 'sedangFilter', 'kabupatenAktif', 'urutan', 'kabupatenList');
+    }
+
+    public function index(Request $request)
+    {
+        $hasil = $this->buildHasil($request);
 
         // Semua kategori (untuk bagian Kategori Populer)
         $kategori = Kategori::orderBy('nama_kategori')->get();
@@ -101,15 +164,34 @@ class HomeController extends Controller
         $totalKabupaten = \App\Models\Kabupaten::count();
         $totalPengunjungBulanIni = \App\Models\PageVisit::countThisMonth();
 
-        return view('home', compact(
+        return view('home', array_merge($hasil, compact(
             'kategori',
-            'warungPilihan',
             'totalWarung',
             'totalUlasan',
             'totalKabupaten',
-            'totalPengunjungBulanIni',
-            'urutan'
-        ));
+            'totalPengunjungBulanIni'
+        ), [
+            'urutanOptions' => $this->urutanOptions(),
+            'icons' => $this->iconMap(),
+        ]));
+    }
+
+    /**
+     * Halaman khusus per kategori, diakses lewat URL yang enak dibaca,
+     * misalnya /kategori/warung-makan (bukan lewat query string ?kategori=1).
+     * Isinya sama persis dengan halaman utama, cuma sudah otomatis
+     * terfilter ke kategori tersebut.
+     */
+    public function kategori(Request $request, string $slug)
+    {
+        $kategori = Kategori::get()
+            ->first(fn ($k) => $k->slug === $slug);
+
+        abort_unless($kategori, 404);
+
+        $request->merge(['kategori' => $kategori->id_kategori]);
+
+        return $this->index($request);
     }
 
     /**
@@ -121,15 +203,16 @@ class HomeController extends Controller
      */
     public function searchAjax(Request $request)
     {
-        [$query, $urutan] = $this->buildWarungQuery($request);
+        $hasil = $this->buildHasil($request);
 
-        $warungPilihan = $query->get();
-
-        $html = view('partials.warung-results', compact('warungPilihan', 'urutan'))->render();
+        $html = view('partials.warung-results', array_merge($hasil, [
+            'urutanOptions' => $this->urutanOptions(),
+            'icons' => $this->iconMap(),
+        ]))->render();
 
         return response()->json([
             'html'  => $html,
-            'total' => $warungPilihan->count(),
+            'total' => $hasil['warungPilihan']->count(),
         ]);
     }
 
