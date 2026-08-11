@@ -117,12 +117,12 @@ class HomeController extends Controller
     private function urutanOptions(): array
     {
         return [
-            'populer'  => '🔥 Terpopuler',
-            'disukai'  => '❤️ Banyak Disukai',
-            'rating'   => '⭐ Rating Tertinggi',
-            'terbaru'  => '🆕 Terbaru',
-            'termurah' => '💸 Harga Termurah',
-            'termahal' => '💰 Harga Termahal',
+            'populer'  => ['label' => 'Terpopuler',       'icon' => 'bi-fire'],
+            'disukai'  => ['label' => 'Banyak Disukai',   'icon' => 'bi-heart-fill'],
+            'rating'   => ['label' => 'Rating Tertinggi', 'icon' => 'bi-star-fill'],
+            'terbaru'  => ['label' => 'Terbaru',          'icon' => 'bi-lightning-charge-fill'],
+            'termurah' => ['label' => 'Harga Termurah',   'icon' => 'bi-cash-coin'],
+            'termahal' => ['label' => 'Harga Termahal',   'icon' => 'bi-gem'],
         ];
     }
 

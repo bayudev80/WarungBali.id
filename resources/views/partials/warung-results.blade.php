@@ -8,26 +8,32 @@
 
 <div class="mb-4 d-flex flex-wrap gap-2 mt-4">
 
+    @php
+        $urutanAktif = $urutanOptions[$urutan] ?? $urutanOptions['populer'];
+    @endphp
+
     <div class="warung-dropdown">
 
-        <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded-pill"
+        <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded-pill d-inline-flex align-items-center gap-2"
             onclick="toggleDropdown('urutanDropdownMenu')">
-             {{ $urutanOptions[$urutan] ?? $urutanOptions['populer'] }} ▾
+            <i class="bi {{ $urutanAktif['icon'] }}" style="color:#C85C2E;"></i>
+            {{ $urutanAktif['label'] }} ▾
         </button>
 
         <ul id="urutanDropdownMenu" class="warung-dropdown-menu shadow border-0">
 
-            @foreach($urutanOptions as $key => $label)
+            @foreach($urutanOptions as $key => $opsi)
 
                 <li>
-                    <a class="warung-dropdown-item {{ $urutan === $key ? 'active' : '' }}"
+                    <a class="warung-dropdown-item d-flex align-items-center gap-2 {{ $urutan === $key ? 'active' : '' }}"
                        href="{{ route('home', array_filter([
                             'search'    => request('search'),
                             'kategori'  => request('kategori'),
                             'kabupaten' => request('kabupaten'),
                             'urutan'    => $key,
                        ])) }}">
-                        {{ $label }}
+                        <i class="bi {{ $opsi['icon'] }}" style="color:{{ $urutan === $key ? '#fff' : '#C85C2E' }};"></i>
+                        {{ $opsi['label'] }}
                     </a>
                 </li>
 

@@ -40,7 +40,7 @@
 
                     <a class="nav-link px-3 py-2 rounded-pill {{ request()->routeIs('home') ? 'active' : '' }}"
                         href="{{ route('home') }}"
-                        style="font-size:15px;{{ request()->routeIs('home') ? 'background:#FCE8CC;color:#C85C2E;font-weight:600;' : '' }}">
+                        style="font-size:13px;{{ request()->routeIs('home') ? 'background:#FCE8CC;color:#C85C2E;font-weight:600;' : '' }}">
 
                         Beranda
 
@@ -52,7 +52,7 @@
 
                     <a class="nav-link px-3 py-2 rounded-pill {{ request()->routeIs('favorit.index') ? 'active' : '' }}"
                         href="{{ route('favorit.index') }}"
-                        style="font-size:15px;{{ request()->routeIs('favorit.index') ? 'background:#FCE8CC;color:#C85C2E;font-weight:600;' : '' }}">
+                        style="font-size:13px;{{ request()->routeIs('favorit.index') ? 'background:#FCE8CC;color:#C85C2E;font-weight:600;' : '' }}">
 
                         Favorit Saya
 
@@ -64,7 +64,7 @@
 
                     <a class="nav-link px-3 py-2 rounded-pill {{ request()->routeIs('tentang') ? 'active' : '' }}"
                         href="{{ route('tentang') }}"
-                        style="font-size:15px;{{ request()->routeIs('tentang') ? 'background:#FCE8CC;color:#C85C2E;font-weight:600;' : '' }}">
+                        style="font-size:13px;{{ request()->routeIs('tentang') ? 'background:#FCE8CC;color:#C85C2E;font-weight:600;' : '' }}">
 
                         Tentang Kami
 
@@ -96,8 +96,8 @@
         </a>
 
         <a href="{{ route('pemilik.warung.create') }}"
-            class="btn btn-sm rounded-pill text-white px-3 py-2"
-            style="background:#C85C2E;font-size:14px;">
+            class="btn btn-sm rounded-pill text-white px-3 py-1 me-2"
+            style="background:#C85C2E;font-size:13px;">
 
              Daftarkan Warung
 
@@ -110,8 +110,8 @@
         @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'pemilik')
 
             <a href="{{ route('pemilik.warung.create') }}"
-                class="btn btn-sm rounded-pill text-white px-3 py-2 me-3"
-                style="background:#C85C2E;font-size:14px;">
+                class="btn btn-sm rounded-pill text-white px-3 py-1 me-3"
+                style="background:#C85C2E;font-size:13px;">
 
                  Daftarkan Warung
 
@@ -126,16 +126,16 @@
                 class="d-flex align-items-center text-decoration-none dropdown-toggle"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                style="gap:8px;">
+                style="gap:8px;background:#F3ECE4;border:1px solid #E3D5C4;border-radius:999px;padding:4px 12px 4px 4px;">
 
                 <span class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
-                    style="width:34px;height:34px;background:#C85C2E;font-size:15px;">
+                    style="width:32px;height:32px;background:#C85C2E;font-size:14px;">
 
                     {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
 
                 </span>
 
-                <span class="fw-semibold d-none d-lg-inline" style="font-size:14px;color:#2D201C;">
+                <span class="fw-bold d-none d-lg-inline" style="font-size:14px;color:#2D201C;">
 
                     {{ Auth::user()->nama }}
 
