@@ -9,7 +9,7 @@ body {
 
 .statistik {
     background: #fff4e6;
-    padding: 50px 0;
+    padding: 20px 0;
 }
 
 .statistik-wrapper {
@@ -296,6 +296,8 @@ body {
 .kategori-card-label {
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
+    /* autoprefixer: ignore next */
     -webkit-box-orient: vertical;
     overflow: hidden;
     width: 100%;

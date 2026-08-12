@@ -26,11 +26,13 @@
 
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 @include('partials.navbar')
 
-@yield('content')
+<main class="flex-grow-1">
+    @yield('content')
+</main>
 
 @include('partials.footer')
 

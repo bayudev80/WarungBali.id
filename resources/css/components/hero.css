@@ -4,14 +4,14 @@
 
 .hero {
     position: relative;
-    min-height: 60vh;
+    min-height: 85vh;
     background-image: url("/images/hero.jpeg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     display: flex;
     align-items: center;
-    padding: 60px 0;
+    padding: 80px 0 100px;
 }
 
 .hero-overlay {
@@ -186,8 +186,8 @@
 
 @media (max-width: 768px) {
     .hero {
-        min-height: auto;
-        padding: 50px 0;
+        min-height: 70vh;
+        padding: 60px 0 80px;
     }
 
     .hero h1 {

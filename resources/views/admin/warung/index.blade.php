@@ -209,8 +209,8 @@
                             <th style="width:250px;">Nama Warung</th>
                             <th>Kategori</th>
                             <th>Telepon</th>
-                            <th>Catering</th>
-                            <th>Status</th>
+                            <th class="text-center">Catering</th>
+                            <th class="text-center">Status</th>
                             <th style="width:140px;" class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -257,35 +257,35 @@
                                     <span class="badge bg-secondary"><i class="bi bi-x-circle me-1"></i>Tidak</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <span class="badge {{ $statusBadge['class'] }}">{{ $statusBadge['label'] }}</span>
                             </td>
                             <td>
-                                <div class="action-buttons">
+                                <div class="d-flex justify-content-center align-items-center gap-2">
                                     @if($item->status === 'pending')
                                         <form action="{{ route('admin.warung.approve', $item->id_warung) }}" method="POST" class="m-0">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="btn btn-success text-white" title="Setujui" onclick="return confirm('Setujui warung ini?')">
+                                            <button type="submit" class="btn btn-sm btn-success text-white rounded-3 shadow-sm" style="padding: 0.35rem 0.6rem;" title="Setujui" onclick="return confirm('Setujui warung ini?')">
                                                 <i class="bi bi-check-lg"></i>
                                             </button>
                                         </form>
                                         <form action="{{ route('admin.warung.reject', $item->id_warung) }}" method="POST" class="m-0">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="btn btn-outline-danger bg-white" title="Tolak" onclick="return confirm('Tolak warung ini?')">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger bg-white rounded-3 shadow-sm" style="padding: 0.35rem 0.6rem;" title="Tolak" onclick="return confirm('Tolak warung ini?')">
                                                 <i class="bi bi-x-lg"></i>
                                             </button>
                                         </form>
                                     @endif
 
-                                    <a href="{{ route('admin.warung.edit', $item->id_warung) }}" class="btn btn-warning text-white" title="Edit">
+                                    <a href="{{ route('admin.warung.edit', $item->id_warung) }}" class="btn btn-sm btn-warning text-white rounded-3 shadow-sm" style="padding: 0.35rem 0.6rem;" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
 
                                     {{-- Dropdown untuk aksi lainnya --}}
                                     <div class="dropdown">
-                                        <button class="btn btn-secondary text-white" type="button" data-bs-toggle="dropdown" title="Lainnya">
+                                        <button class="btn btn-sm btn-secondary text-white rounded-3 shadow-sm" style="padding: 0.35rem 0.6rem;" type="button" data-bs-toggle="dropdown" title="Lainnya">
                                             <i class="bi bi-three-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end border-0 shadow rounded-3" style="min-width:160px;font-size:0.85rem;">

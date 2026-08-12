@@ -21,5 +21,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrapFive();
+
+        \Illuminate\Support\Facades\View::composer('partials.navbar', function ($view) {
+            $view->with('navbarKategori', \App\Models\Kategori::orderBy('nama_kategori', 'asc')->get());
+        });
     }
 }

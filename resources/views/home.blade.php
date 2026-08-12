@@ -50,7 +50,7 @@
 
       <p> <br>
         Setiap warung memiliki cerita dan potensi untuk berkembang. WarungBali.id hadir sebagai jembatan yang menghubungkan masyarakat dengan berbagai warung lokal di Bali, membantu pelaku UMKM menjangkau lebih banyak pelanggan sekaligus memperkenalkan kekayaan usaha lokal kepada lebih banyak orang.
-      </p> </br>
+      </p><br>
 
       <form class="hero-search" method="GET" action="{{ route('home') }}">
 
@@ -70,6 +70,7 @@
 
 </section>
 
+@if(!$sedangFilter)
  <section class="statistik">
     <div class="container">
         <div class="statistik-wrapper">
@@ -93,6 +94,7 @@
             <h2>{{ number_format($totalPengunjungBulanIni) }}</h2>
             <p>Pengunjung Bulan Ini</p>
         </div>
+    </div>
 </section>
 <!-- KATEGORI -->
 <section class="py-5 bg-light">
@@ -119,7 +121,7 @@
     @endphp
 
     <div class="kategori-item">
-        <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark">
+        <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark kategori-ajax-link">
             <div class="card kategori-card border-0 shadow-sm {{ !request('kategori') ? 'border border-warning border-2' : '' }}">
                 <div class="kategori-card-icon">
                     <i class="bi bi-grid-3x3-gap-fill"></i>
@@ -131,7 +133,7 @@
 
     @foreach($kategori->take(6) as $item)
         <div class="kategori-item">
-            <a href="{{ route('kategori.show', $item->slug) }}" class="text-decoration-none text-dark">
+            <a href="{{ route('kategori.show', $item->slug) }}" class="text-decoration-none text-dark kategori-ajax-link">
                 <div class="card kategori-card border-0 shadow-sm {{ request('kategori') == $item->id_kategori ? 'border border-warning border-2' : '' }}">
                     <div class="kategori-card-icon">
                         <i class="bi {{ $icons[$item->nama_kategori] ?? 'bi-shop' }}"></i>
@@ -161,8 +163,7 @@
   </div>
 
 </section>
-
-
+@endif
 
 <!-- WARUNG -->
 <section class="py-5" id="warung">
@@ -219,7 +220,7 @@
       <div class="modal-body pb-4 pt-3">
         <div class="kategori-grid" style="justify-content: flex-start;">
             <div class="kategori-item">
-                <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark">
+                <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark kategori-ajax-link">
                     <div class="card kategori-card border-0 shadow-sm {{ !request('kategori') ? 'border border-warning border-2' : '' }}">
                         <div class="kategori-card-icon">
                             <i class="bi bi-grid-3x3-gap-fill"></i>
@@ -230,7 +231,7 @@
             </div>
             @foreach($kategori as $item)
                 <div class="kategori-item">
-                    <a href="{{ route('kategori.show', $item->slug) }}" class="text-decoration-none text-dark">
+                    <a href="{{ route('kategori.show', $item->slug) }}" class="text-decoration-none text-dark kategori-ajax-link">
                         <div class="card kategori-card border-0 shadow-sm {{ request('kategori') == $item->id_kategori ? 'border border-warning border-2' : '' }}">
                             <div class="kategori-card-icon">
                                 <i class="bi {{ $icons[$item->nama_kategori] ?? 'bi-shop' }}"></i>
@@ -395,7 +396,6 @@
     // setiap kali #warung-hasil di-render ulang.
 
     const warungHasilEl = document.getElementById('warung-hasil');
-    const searchAjaxPath = new URL('{{ route("search.ajax") }}', window.location.href).pathname;
 
     function muatHasilWarung(url, { pushState = true } = {}) {
         if (!warungHasilEl) return;
@@ -403,9 +403,13 @@
         warungHasilEl.classList.add('is-loading');
 
         const urlAjax = new URL(url, window.location.href);
-        urlAjax.pathname = searchAjaxPath;
 
-        fetch(urlAjax.toString(), { headers: { 'Accept': 'application/json' } })
+        fetch(urlAjax.toString(), { 
+            headers: { 
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            } 
+        })
             .then(res => res.json())
             .then(data => {
                 warungHasilEl.innerHTML = data.html;
@@ -449,11 +453,10 @@
         });
     }
 
-    // Dropdown urutan + chip hapus filter + pagination (link-link di
-    // dalam #warung-hasil yang menunjuk balik ke route('home'))
+    // dalam #warung-hasil yang menunjuk balik ke route('home'), serta kategori links
     document.addEventListener('click', function (e) {
         const link = e.target.closest(
-            '#warung-hasil .warung-dropdown-item, #warung-hasil .hasil-chip a, #warung-hasil .pagination a'
+            '#warung-hasil .warung-dropdown-item, #warung-hasil .hasil-chip a, #warung-hasil .pagination a, .kategori-ajax-link'
         );
         if (!link) return;
 

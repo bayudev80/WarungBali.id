@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Warung;
 use App\Models\Kategori;
 use App\Models\Review;
+use App\Models\Kabupaten;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -37,14 +38,31 @@ class HomeController extends Controller
         ])
         ->withAvg('review', 'rating')
         ->when($search, function ($q) use ($search) {
-            $q->where(function ($qq) use ($search) {
-                $qq->where('nama_warung', 'like', "%{$search}%")
-                   ->orWhere('alamat', 'like', "%{$search}%")
-                   ->orWhere('deskripsi', 'like', "%{$search}%")
-                   ->orWhereHas('kategori', function ($kq) use ($search) {
-                        $kq->where('nama_kategori', 'like', "%{$search}%");
-                   });
+            // Bersihkan kata hubung agar pencarian lebih fokus ke inti kata
+            $stopWords = ['di', 'ke', 'dari', 'yang', 'dan', 'atau', 'pada', 'daerah', 'wilayah', 'kabupaten', 'kota'];
+            $keywords = array_filter(explode(' ', strtolower(trim($search))), function($word) use ($stopWords) {
+                return !in_array($word, $stopWords) && strlen($word) > 1;
             });
+
+            // Jika kosong setelah dibersihkan, gunakan pencarian aslinya
+            if (empty($keywords)) {
+                $keywords = [$search];
+            }
+
+            // Setiap kata kunci harus cocok (AND) di salah satu kolom (OR)
+            foreach ($keywords as $word) {
+                $q->where(function ($qq) use ($word) {
+                    $qq->where('nama_warung', 'like', "%{$word}%")
+                       ->orWhere('alamat', 'like', "%{$word}%")
+                       ->orWhere('deskripsi', 'like', "%{$word}%")
+                       ->orWhereHas('kategori', function ($kq) use ($word) {
+                            $kq->where('nama_kategori', 'like', "%{$word}%");
+                       })
+                       ->orWhereHas('kabupaten', function ($kabq) use ($word) {
+                            $kabq->where('nama_kabupaten', 'like', "%{$word}%");
+                       });
+                });
+            }
         })
         ->when($kategoriFilter, function ($q) use ($kategoriFilter) {
             $q->where('id_kategori', $kategoriFilter);
@@ -154,6 +172,9 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
+        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return $this->searchAjax($request);
+        }
         $hasil = $this->buildHasil($request);
 
         // Semua kategori (untuk bagian Kategori Populer)
@@ -190,6 +211,10 @@ class HomeController extends Controller
         abort_unless($kategori, 404);
 
         $request->merge(['kategori' => $kategori->id_kategori]);
+
+        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest') {
+            return $this->searchAjax($request);
+        }
 
         return $this->index($request);
     }
