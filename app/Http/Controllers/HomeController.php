@@ -22,6 +22,38 @@ class HomeController extends Controller
         $kabupatenFilter = $request->input('kabupaten');
         $urutan = $request->input('urutan', 'populer');
 
+        // Deteksi pintar: Ekstrak kategori dan kabupaten dari teks pencarian
+        if ($search) {
+            $searchLower = strtolower(trim($search));
+
+            // Deteksi Kabupaten (termasuk prefix 'di' seperti 'dibadung' atau 'di badung')
+            $kabupatens = Kabupaten::all();
+            foreach ($kabupatens as $kab) {
+                $namaKab = strtolower($kab->nama_kabupaten);
+                if (str_contains($searchLower, $namaKab)) {
+                    if (!$kabupatenFilter) {
+                        $kabupatenFilter = $kab->id_kabupaten;
+                    }
+                    $searchLower = str_replace(['di ' . $namaKab, 'di' . $namaKab, 'ke ' . $namaKab, 'ke' . $namaKab, $namaKab], '', $searchLower);
+                }
+            }
+
+            // Deteksi Kategori
+            $kategoris = Kategori::all();
+            foreach ($kategoris as $kat) {
+                $namaKat = strtolower($kat->nama_kategori);
+                if (str_contains($searchLower, $namaKat)) {
+                    if (!$kategoriFilter) {
+                        $kategoriFilter = $kat->id_kategori;
+                    }
+                    $searchLower = str_replace($namaKat, '', $searchLower);
+                }
+            }
+
+            // Kembalikan sisa teks yang tidak dikenali sebagai filter spesifik
+            $search = trim(preg_replace('/\s+/', ' ', $searchLower));
+        }
+
         $query = Warung::with([
             'menu',
             'review.user',
@@ -235,9 +267,13 @@ class HomeController extends Controller
             'icons' => $this->iconMap(),
         ]))->render();
 
+        $totalItems = $hasil['warungPilihan'] instanceof \Illuminate\Pagination\LengthAwarePaginator
+            ? $hasil['warungPilihan']->total()
+            : $hasil['warungPilihan']->count();
+
         return response()->json([
             'html'  => $html,
-            'total' => $hasil['warungPilihan']->count(),
+            'total' => $totalItems,
         ]);
     }
 
