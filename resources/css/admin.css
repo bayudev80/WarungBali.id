@@ -30,28 +30,35 @@ SIDEBAR
     top: 0;
     width: 270px;
     height: 100vh;
-    background: #ffffff; /* Bright and clean */
+    background: #ffffff; /* Clean white background */
     overflow-y: auto;
     z-index: 999;
-    border-right: 1px solid #e9ecef;
-    box-shadow: 2px 0 15px rgba(0,0,0,0.02);
+    border-right: 1px solid #f1f5f9;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.03);
 }
 
 .sidebar-header {
     text-align: center;
     padding: 35px 20px 25px;
+    background: #ffffff;
+}
+
+.sidebar-header img {
+    margin-bottom: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .sidebar-header h3 {
-    color: #2D201C; /* Main website dark brown */
+    color: #1e293b; /* Dark slate text for high contrast */
     font-weight: 800;
-    font-size: 1.4rem;
-    margin-bottom: 4px;
+    font-size: 1.25rem; /* Slightly smaller to align with logo */
+    margin-bottom: 0;
     letter-spacing: -0.5px;
 }
 
 .sidebar-header h3 span {
-    color: #C85C2E; /* Main website orange */
+    color: #d97706; /* Vibrant orange */
     font-weight: 800;
 }
 
@@ -61,13 +68,16 @@ SIDEBAR
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
+    display: block;
+    margin-top: 10px;
 }
 
+
 .sidebar-menu {
-    padding: 15px 16px;
+    padding: 10px 16px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
 }
 
 .sidebar-menu a {
@@ -75,33 +85,36 @@ SIDEBAR
     align-items: center;
     gap: 14px;
     padding: 12px 18px;
-    color: #64748b; /* Soft slate gray */
+    color: #64748b; /* Medium slate text */
     text-decoration: none;
-    transition: all 0.25s ease;
+    transition: all 0.3s ease;
     font-size: 14.5px;
-    font-weight: 600;
+    font-weight: 500;
     border-radius: 12px;
 }
 
 .sidebar-menu a i {
-    font-size: 1.1rem;
-    width: 22px;
+    font-size: 1.2rem;
+    width: 24px;
     text-align: center;
-    transition: all 0.25s ease;
+    transition: all 0.3s ease;
 }
 
 .sidebar-menu a:hover {
-    background: #f8f9fa;
-    color: #2D201C;
+    background: #f8fafc;
+    color: #1e293b;
+    transform: translateX(4px);
 }
 
 .sidebar-menu a.active {
-    background: #FCE8CC; /* Main website light orange bg */
-    color: #C85C2E; /* Main website orange text */
+    background: #fffbeb; /* Very light amber background */
+    color: #d97706; /* Vibrant orange text */
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.15);
+    font-weight: 600;
 }
 
 .sidebar-menu a.active i {
-    color: #C85C2E;
+    color: #d97706;
 }
 
 /* ===========================

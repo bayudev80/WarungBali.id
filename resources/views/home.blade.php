@@ -103,8 +103,7 @@
         Jelajahi Berdasarkan Kategori
     </h2>
 
-    <div class="kategori-scroll-wrapper">
-    <div class="kategori-grid">
+    <div class="kategori-grid" id="kategori-grid">
 
     @php
         $icons = [
@@ -120,50 +119,43 @@
     @endphp
 
     <div class="kategori-item">
-
         <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark">
-
             <div class="card kategori-card border-0 shadow-sm {{ !request('kategori') ? 'border border-warning border-2' : '' }}">
-
                 <div class="kategori-card-icon">
                     <i class="bi bi-grid-3x3-gap-fill"></i>
                 </div>
-
-                <h6 class="kategori-card-label">
-                    Semua
-                </h6>
-
+                <h6 class="kategori-card-label">Semua</h6>
             </div>
-
         </a>
-
     </div>
 
-    @foreach($kategori as $item)
-
+    @foreach($kategori->take(6) as $item)
         <div class="kategori-item">
-
             <a href="{{ route('kategori.show', $item->slug) }}" class="text-decoration-none text-dark">
-
                 <div class="card kategori-card border-0 shadow-sm {{ request('kategori') == $item->id_kategori ? 'border border-warning border-2' : '' }}">
-
                     <div class="kategori-card-icon">
                         <i class="bi {{ $icons[$item->nama_kategori] ?? 'bi-shop' }}"></i>
                     </div>
-
-                    <h6 class="kategori-card-label">
-                        {{ $item->nama_kategori }}
-                    </h6>
-
+                    <h6 class="kategori-card-label">{{ $item->nama_kategori }}</h6>
                 </div>
-
             </a>
-
         </div>
-
     @endforeach
 
-</div>
+    @if(count($kategori) > 6)
+        <div class="kategori-item">
+            <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#kategoriModal" class="text-decoration-none text-dark">
+                <div class="card kategori-card border-0 shadow-sm" style="background-color: #f8f9fa;">
+                    <div class="kategori-card-icon">
+                        <i class="bi bi-grid-fill"></i>
+                    </div>
+                    <h6 class="kategori-card-label">Lainnya</h6>
+                </div>
+            </a>
+        </div>
+    @endif
+
+    </div>
     </div>
 
   </div>
@@ -215,6 +207,44 @@
     </div>
 
 </section>
+
+<!-- MODAL SEMUA KATEGORI -->
+<div class="modal fade" id="kategoriModal" tabindex="-1" aria-labelledby="kategoriModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content rounded-4 border-0 shadow">
+      <div class="modal-header border-bottom-0 pb-0">
+        <h5 class="modal-title fw-bold" id="kategoriModalLabel">Semua Kategori Warung</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pb-4 pt-3">
+        <div class="kategori-grid" style="justify-content: flex-start;">
+            <div class="kategori-item">
+                <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark">
+                    <div class="card kategori-card border-0 shadow-sm {{ !request('kategori') ? 'border border-warning border-2' : '' }}">
+                        <div class="kategori-card-icon">
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
+                        </div>
+                        <h6 class="kategori-card-label">Semua</h6>
+                    </div>
+                </a>
+            </div>
+            @foreach($kategori as $item)
+                <div class="kategori-item">
+                    <a href="{{ route('kategori.show', $item->slug) }}" class="text-decoration-none text-dark">
+                        <div class="card kategori-card border-0 shadow-sm {{ request('kategori') == $item->id_kategori ? 'border border-warning border-2' : '' }}">
+                            <div class="kategori-card-icon">
+                                <i class="bi {{ $icons[$item->nama_kategori] ?? 'bi-shop' }}"></i>
+                            </div>
+                            <h6 class="kategori-card-label">{{ $item->nama_kategori }}</h6>
+                        </div>
+                    </a>
+                </div>
+            @endforeach
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <style>
     /* ===== Loading state hasil warung (AJAX) ===== */

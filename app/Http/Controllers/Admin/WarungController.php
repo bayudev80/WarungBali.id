@@ -15,20 +15,31 @@ class WarungController extends Controller
     {
         $search        = trim((string) $request->input('search'));
         $kategoriTerpilih = $request->input('kategori');
+        $kabupatenTerpilih = $request->input('kabupaten');
 
         $warung = Warung::with(['kategori', 'kabupaten'])
             ->when($search !== '', function ($query) use ($search) {
-                $query->where(function ($q) use ($search) {
+                // Mendukung pencarian dengan format kode (misal: WRG-0006 atau 0006)
+                $idSearch = preg_replace('/^WRG-0*/i', '', $search);
+                $idSearch = ltrim($idSearch, '0');
+
+                $query->where(function ($q) use ($search, $idSearch) {
                     $q->where('nama_warung', 'like', "%{$search}%")
                         ->orWhere('alamat', 'like', "%{$search}%")
                         ->orWhere('telepon', 'like', "%{$search}%");
+                        
+                    if (is_numeric($idSearch) && $idSearch > 0) {
+                        $q->orWhere('warung.id_warung', $idSearch);
+                    }
                 });
             })
             ->when($kategoriTerpilih, function ($query) use ($kategoriTerpilih) {
                 $query->where('warung.id_kategori', $kategoriTerpilih);
             })
-            // Diurutkan per kabupaten dulu supaya mudah dikelompokkan di tampilan,
-            // lalu berdasarkan kategori, dan terakhir nama warung.
+            ->when($kabupatenTerpilih, function ($query) use ($kabupatenTerpilih) {
+                $query->where('warung.id_kabupaten', $kabupatenTerpilih);
+            })
+            // Diurutkan berdasarkan kabupaten, lalu kategori dan nama warung.
             ->join('kategori', 'kategori.id_kategori', '=', 'warung.id_kategori')
             ->join('kabupaten', 'kabupaten.id_kabupaten', '=', 'warung.id_kabupaten')
             ->orderBy('kabupaten.nama_kabupaten', 'asc')
@@ -39,8 +50,9 @@ class WarungController extends Controller
             ->withQueryString();
 
         $kategori = Kategori::orderBy('nama_kategori')->get();
+        $semuaKabupaten = Kabupaten::orderBy('nama_kabupaten')->get();
 
-        return view('admin.warung.index', compact('warung', 'kategori', 'search', 'kategoriTerpilih'));
+        return view('admin.warung.index', compact('warung', 'kategori', 'search', 'kategoriTerpilih', 'semuaKabupaten', 'kabupatenTerpilih'));
     }
 
     /**

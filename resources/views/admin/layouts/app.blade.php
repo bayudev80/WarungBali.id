@@ -29,7 +29,7 @@
 
         <div class="sidebar-header">
             <div class="d-flex align-items-center justify-content-center mb-1">
-                <img src="{{ asset('images/logo.png') }}" alt="WarungBali Logo" width="30" height="30" class="rounded-3 me-2" style="object-fit:cover; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                <img src="{{ asset('images/logo.png') }}" alt="WarungBali Logo" width="32" height="32" class="rounded-2 me-2" style="object-fit:cover;">
                 <h3 class="mb-0 lh-1">WarungBali<span>.id</span></h3>
             </div>
             <span>Admin Panel</span>

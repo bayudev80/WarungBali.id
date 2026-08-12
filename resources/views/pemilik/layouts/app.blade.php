@@ -28,7 +28,10 @@
     <aside class="sidebar">
 
         <div class="sidebar-header">
-            <h3>WarungBali.id</h3>
+            <div class="d-flex align-items-center justify-content-center mb-1">
+                <img src="{{ asset('images/logo.png') }}" alt="WarungBali Logo" width="32" height="32" class="rounded-2 me-2" style="object-fit:cover;">
+                <h3 class="mb-0 lh-1">WarungBali<span>.id</span></h3>
+            </div>
             <span>Pemilik Warung</span>
         </div>
 

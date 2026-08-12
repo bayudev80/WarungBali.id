@@ -191,7 +191,7 @@ body {
     top: 0;
     right: 0;
     bottom: 1rem;
-    width: 48px;
+    width: 60px;
     background: linear-gradient(
         to right,
         rgba(248, 249, 250, 0),
@@ -212,11 +212,13 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     gap: 1rem;
-    padding: 0.5rem 0 1rem;
+    padding: 0.5rem 0 1.5rem;
 }
 
-/* Layar sempit (HP): kategori nggak muat semua sekaligus,
-   jadi mode-nya diganti scroll horizontal (geser ke samping) */
+.kategori-item {
+    scroll-snap-align: start;
+}
+
 @media (max-width: 768px) {
     .kategori-grid {
         flex-wrap: nowrap;
@@ -226,9 +228,8 @@ body {
         -ms-overflow-style: none;
         scrollbar-width: thin;
     }
-
-    .kategori-item {
-        scroll-snap-align: start;
+    .kategori-grid::-webkit-scrollbar {
+        display: none;
     }
 }
 

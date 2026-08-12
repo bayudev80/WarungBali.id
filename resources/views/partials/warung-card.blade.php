@@ -3,9 +3,9 @@
         $item->favorit->where('id_user', auth()->user()->id_user)->count() > 0;
       @endphp
 
-<div class="warung-card-item mb-4">
+<div class="warung-card-item mb-4 d-flex flex-column">
 
-    <div class="card warung-card border-0 shadow">
+    <div class="card warung-card border-0 shadow flex-fill w-100">
 
         <div class="position-relative">
 

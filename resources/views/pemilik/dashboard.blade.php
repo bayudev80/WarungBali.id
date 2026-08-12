@@ -121,10 +121,13 @@
             ];
         @endphp
 
-        <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
-            <h5 class="fw-bold mb-0">Cabang Warung</h5>
-            <a href="{{ route('pemilik.warung.cabang.create') }}" class="btn btn-success btn-sm">
-                <i class="bi bi-plus-circle"></i> Tambah Cabang Baru
+        <div class="d-flex justify-content-between align-items-center mt-5 mb-3 pt-3 border-top">
+            <div>
+                <h5 class="fw-bold mb-0 text-dark">Cabang Warung</h5>
+                <p class="text-muted small mb-0 mt-1">Kelola cabang dari warung utama Anda.</p>
+            </div>
+            <a href="{{ route('pemilik.warung.cabang.create') }}" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm" style="transition: 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                <i class="bi bi-plus-lg me-1"></i> Tambah Cabang Baru
             </a>
         </div>
 
