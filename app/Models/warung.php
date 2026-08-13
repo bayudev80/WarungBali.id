@@ -163,6 +163,43 @@ class Warung extends Model
     }
 
     /**
+     * Label dinamis untuk layanan khusus tambahan berdasarkan kategori warung.
+     */
+    public function getLayananLabelAttribute()
+    {
+        $kategoriNama = strtolower($this->kategori->nama_kategori ?? '');
+
+        if ($this->is_kuliner) {
+            return 'Menerima Catering';
+        }
+        if (str_contains($kategoriNama, 'atk') || str_contains($kategoriNama, 'fotokopi')) {
+            return 'Menerima Jasa Cetak & Jilid';
+        }
+        if (str_contains($kategoriNama, 'pulsa') || str_contains($kategoriNama, 'ppob')) {
+            return 'Menerima Pembayaran Tagihan';
+        }
+        if (str_contains($kategoriNama, 'sembako')) {
+            return 'Menerima Layanan Antar (Delivery)';
+        }
+        if (str_contains($kategoriNama, 'oleh-oleh') || str_contains($kategoriNama, 'bali')) {
+            return 'Menerima Paket Oleh-oleh Custom';
+        }
+        if (str_contains($kategoriNama, 'buah') || str_contains($kategoriNama, 'sayur')) {
+            return 'Menerima Pesanan Parsel / Grosir';
+        }
+        if (str_contains($kategoriNama, 'herbal')) {
+            return 'Menerima Konsultasi & Pesanan';
+        }
+
+        return 'Menerima Pesanan Khusus';
+    }
+
+    public function getLayananEmojiAttribute()
+    {
+        return '';
+    }
+
+    /**
      * True kalau warung ini termasuk kategori kuliner (makanan/minuman).
      * Dipakai untuk menentukan apakah opsi "menerima catering" relevan
      * ditampilkan atau tidak, karena catering cuma masuk akal untuk warung makanan.

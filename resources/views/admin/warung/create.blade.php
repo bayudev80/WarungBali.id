@@ -63,10 +63,16 @@
                 <div class="row g-4 mb-4">
                     <div class="col-md-6">
                         <label class="form-label">Kategori</label>
-                        <select name="id_kategori" class="form-select" required>
+                        <select name="id_kategori" id="id_kategori" class="form-select" required>
                             <option value="">-- Pilih Kategori --</option>
                             @foreach($kategori as $k)
-                                <option value="{{ $k->id_kategori }}" {{ old('id_kategori') == $k->id_kategori ? 'selected' : '' }}>
+                                @php
+                                    $tempWarung = new \App\Models\Warung(['id_kategori' => $k->id_kategori]);
+                                    $tempWarung->kategori = $k;
+                                @endphp
+                                <option value="{{ $k->id_kategori }}" 
+                                        data-layanan="{{ $tempWarung->layanan_label }}" 
+                                        {{ old('id_kategori') == $k->id_kategori ? 'selected' : '' }}>
                                     {{ $k->nama_kategori }}
                                 </option>
                             @endforeach
@@ -131,8 +137,8 @@
                 <div class="mb-4 form-check bg-light p-3 rounded border">
                     <input type="hidden" name="menerima_catering" value="0">
                     <input type="checkbox" name="menerima_catering" id="menerima_catering" class="form-check-input ms-1" value="1" {{ old('menerima_catering') ? 'checked' : '' }}>
-                    <label class="form-check-label fw-bold ms-2 text-dark" for="menerima_catering">
-                        Warung ini menerima layanan catering
+                    <label class="form-check-label fw-bold ms-2 text-dark" for="menerima_catering" id="label_layanan_checkbox">
+                        Menerima Layanan Khusus
                     </label>
                 </div>
 
@@ -156,3 +162,28 @@
     </div>
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const kategoriSelect = document.getElementById('id_kategori');
+    const labelLayanan = document.getElementById('label_layanan_checkbox');
+
+    function updateCheckboxLabel() {
+        if (!kategoriSelect || !labelLayanan) return;
+        const selectedOption = kategoriSelect.options[kategoriSelect.selectedIndex];
+        if (selectedOption && selectedOption.value) {
+            const label = selectedOption.getAttribute('data-layanan');
+            labelLayanan.textContent = label;
+        } else {
+            labelLayanan.textContent = 'Menerima Layanan Khusus';
+        }
+    }
+
+    if (kategoriSelect) {
+        kategoriSelect.addEventListener('change', updateCheckboxLabel);
+        updateCheckboxLabel();
+    }
+});
+</script>
+@endpush

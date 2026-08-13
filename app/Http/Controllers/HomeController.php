@@ -190,7 +190,7 @@ class HomeController extends Controller
         // "jelajahi" default di homepage yang dikelompokkan per kategori
         // dalam slider horizontal. Kalau semuanya di-load sekaligus tanpa
         // pagination, kabupaten yang warungnya banyak bikin halaman berat.
-        $sedangFilter = (bool) ($request->filled('search') || $request->filled('kabupaten'));
+        $sedangFilter = (bool) ($request->filled('search') || $request->filled('kabupaten') || $request->filled('kategori'));
 
         $warungPilihan = $sedangFilter
             ? $query->paginate(12)->withQueryString()
@@ -199,7 +199,10 @@ class HomeController extends Controller
         $kabupatenList = \App\Models\Kabupaten::orderBy('nama_kabupaten')->get();
         $kabupatenAktif = $kabupatenList->firstWhere('id_kabupaten', (int) $request->input('kabupaten'));
 
-        return compact('warungPilihan', 'sedangFilter', 'kabupatenAktif', 'urutan', 'kabupatenList');
+        $kategoriList = Kategori::all();
+        $kategoriAktif = $kategoriList->firstWhere('id_kategori', (int) $request->input('kategori'));
+
+        return compact('warungPilihan', 'sedangFilter', 'kabupatenAktif', 'kategoriAktif', 'urutan', 'kabupatenList');
     }
 
     public function index(Request $request)

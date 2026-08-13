@@ -22,7 +22,7 @@
                     </h2>
 
                     <p class="text-secondary">
-                        Selamat datang kembali 👋
+                        Silakan masuk ke akun Anda
                     </p>
 
                 </div>

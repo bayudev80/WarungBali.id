@@ -101,12 +101,6 @@ class WarungController extends Controller
         $data['id_user'] = auth()->id();
         $data['menerima_catering'] = $request->boolean('menerima_catering');
 
-        // Jaga-jaga: catering cuma relevan untuk warung kategori kuliner.
-        $kategoriDipilih = Kategori::find($data['id_kategori'] ?? null);
-        if (!$kategoriDipilih || !$kategoriDipilih->is_kuliner) {
-            $data['menerima_catering'] = false;
-        }
-
         if ($request->hasFile('foto')) {
             $data['foto'] = $this->uploadFoto($request->file('foto'));
         }
@@ -151,12 +145,6 @@ class WarungController extends Controller
         // jadi cabang dari warung sembarangan.
         $data = $request->except('foto', '_token', '_method', 'id_warung_induk');
         $data['menerima_catering'] = $request->boolean('menerima_catering');
-
-        // Jaga-jaga: catering cuma relevan untuk warung kategori kuliner.
-        $kategoriDipilih = Kategori::find($data['id_kategori'] ?? null);
-        if (!$kategoriDipilih || !$kategoriDipilih->is_kuliner) {
-            $data['menerima_catering'] = false;
-        }
 
         if ($request->hasFile('foto')) {
             $this->deleteFoto($warung->foto);
@@ -252,7 +240,7 @@ class WarungController extends Controller
         $data['id_kategori']     = $warung->id_kategori;
         $data['id_warung_induk'] = $warung->id_warung;
         $data['id_user']         = $warung->id_user;
-        $data['menerima_catering'] = $warung->is_kuliner ? $request->boolean('menerima_catering') : false;
+        $data['menerima_catering'] = $request->boolean('menerima_catering');
 
         if ($request->hasFile('foto')) {
             $data['foto'] = $this->uploadFoto($request->file('foto'));

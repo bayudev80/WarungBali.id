@@ -124,13 +124,10 @@
         </div>
     @endif
 
-    {{-- Form pencarian & filter kategori --}}
+    {{-- Form pencarian & filter --}}
     <form action="{{ route('admin.warung.index') }}" method="GET" class="card modern-card p-2 px-3 mb-3">
-        @if($kabupatenTerpilih)
-            <input type="hidden" name="kabupaten" value="{{ $kabupatenTerpilih }}">
-        @endif
         <div class="row g-2 align-items-center">
-            <div class="col-12 col-md-5">
+            <div class="col-12 col-md-4">
                 <div class="position-relative">
                     <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted ms-3"></i>
                     <input type="text" name="search" value="{{ $search }}" class="form-control modern-input ps-5"
@@ -138,8 +135,19 @@
                 </div>
             </div>
 
-            <div class="col-8 col-md-4">
-                <select name="kategori" class="form-select modern-input text-secondary">
+            <div class="col-12 col-sm-6 col-md-3">
+                <select name="kabupaten" class="form-select modern-input text-secondary" onchange="this.form.submit()">
+                    <option value="">Semua Kabupaten</option>
+                    @foreach($semuaKabupaten as $kab)
+                        <option value="{{ $kab->id_kabupaten }}" @selected((string) $kabupatenTerpilih === (string) $kab->id_kabupaten)>
+                            {{ $kab->nama_kabupaten }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <select name="kategori" class="form-select modern-input text-secondary" onchange="this.form.submit()">
                     <option value="">Semua Kategori</option>
                     @foreach($kategori as $k)
                         <option value="{{ $k->id_kategori }}" @selected((string) $kategoriTerpilih === (string) $k->id_kategori)>
@@ -149,32 +157,18 @@
                 </select>
             </div>
 
-            <div class="col-4 col-md-3 d-flex gap-2">
+            <div class="col-12 col-md-2 d-flex gap-2">
                 <button type="submit" class="btn btn-primary text-white w-100 border-0 shadow-sm" style="border-radius: 10px; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
                     <i class="bi bi-search me-1"></i> Cari
                 </button>
-                @if($search !== '' || $kategoriTerpilih)
-                    <a href="{{ route('admin.warung.index') }}" class="btn btn-light text-secondary border w-100 d-flex align-items-center justify-content-center" style="border-radius: 10px; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                @if($search !== '' || $kategoriTerpilih || $kabupatenTerpilih)
+                    <a href="{{ route('admin.warung.index') }}" class="btn btn-light text-secondary border w-100 d-flex align-items-center justify-content-center" style="border-radius: 10px; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'" title="Reset Filter">
                         <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                     </a>
                 @endif
             </div>
         </div>
     </form>
-
-    {{-- Navbar Kabupaten --}}
-    <div class="d-flex overflow-auto gap-2 mb-3 pb-2" style="white-space: nowrap;">
-        <a href="{{ request()->fullUrlWithQuery(['kabupaten' => null, 'page' => 1]) }}" 
-           class="btn btn-sm rounded-pill px-3 {{ !$kabupatenTerpilih ? 'btn-primary shadow-sm' : 'btn-outline-secondary bg-white text-secondary border' }}">
-           Semua Kabupaten
-        </a>
-        @foreach($semuaKabupaten as $kab)
-            <a href="{{ request()->fullUrlWithQuery(['kabupaten' => $kab->id_kabupaten, 'page' => 1]) }}" 
-               class="btn btn-sm rounded-pill px-3 {{ (string)$kabupatenTerpilih === (string)$kab->id_kabupaten ? 'btn-primary shadow-sm' : 'btn-outline-secondary bg-white text-secondary border' }}">
-               {{ $kab->nama_kabupaten }}
-            </a>
-        @endforeach
-    </div>
 
     @if($warung->isEmpty())
         <div class="card modern-card p-5 text-center mb-4">
@@ -209,7 +203,7 @@
                             <th style="width:250px;">Nama Warung</th>
                             <th>Kategori</th>
                             <th>Telepon</th>
-                            <th class="text-center">Catering</th>
+                            <th class="text-center">Layanan</th>
                             <th class="text-center">Status</th>
                             <th style="width:140px;" class="text-center">Aksi</th>
                         </tr>
@@ -249,10 +243,8 @@
                             <td class="text-truncate">{{ $item->kategori->nama_kategori ?? '-' }}</td>
                             <td class="text-nowrap">{{ $item->telepon }}</td>
                             <td class="text-center">
-                                @if(!$item->is_kuliner)
-                                    <span class="text-muted small">-</span>
-                                @elseif($item->menerima_catering)
-                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Ya</span>
+                                @if($item->menerima_catering)
+                                    <span class="badge bg-success" title="{{ $item->layanan_label }}"><i class="bi bi-check-circle me-1"></i>Ya</span>
                                 @else
                                     <span class="badge bg-secondary"><i class="bi bi-x-circle me-1"></i>Tidak</span>
                                 @endif

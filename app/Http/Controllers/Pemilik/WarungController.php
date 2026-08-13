@@ -70,12 +70,6 @@ class WarungController extends Controller
         $data['status']  = 'pending';
         $data['menerima_catering'] = $request->boolean('menerima_catering');
 
-        // Jaga-jaga: catering cuma relevan untuk warung kategori kuliner.
-        $kategoriDipilih = Kategori::find($data['id_kategori'] ?? null);
-        if (!$kategoriDipilih || !$kategoriDipilih->is_kuliner) {
-            $data['menerima_catering'] = false;
-        }
-
         if ($request->hasFile('foto')) {
             $data['foto'] = $this->uploadFoto($request->file('foto'));
         }
@@ -147,12 +141,6 @@ class WarungController extends Controller
             'harga_min', 'harga_max',
         ]);
         $data['menerima_catering'] = $request->boolean('menerima_catering');
-
-        // Jaga-jaga: catering cuma relevan untuk warung kategori kuliner.
-        $kategoriDipilih = Kategori::find($data['id_kategori'] ?? null);
-        if (!$kategoriDipilih || !$kategoriDipilih->is_kuliner) {
-            $data['menerima_catering'] = false;
-        }
 
         // Perubahan data warung setelah disetujui perlu ditinjau ulang oleh admin.
         if ($warung->status === 'approved') {
@@ -244,7 +232,7 @@ class WarungController extends Controller
         $data['id_warung_induk'] = $warung->id_warung;
         $data['id_user']         = $warung->id_user;
         $data['status']          = 'pending';
-        $data['menerima_catering'] = $warung->is_kuliner ? $request->boolean('menerima_catering') : false;
+        $data['menerima_catering'] = $request->boolean('menerima_catering');
 
         if ($request->hasFile('foto')) {
             $data['foto'] = $this->uploadFoto($request->file('foto'));
@@ -313,7 +301,7 @@ class WarungController extends Controller
             'harga_min', 'harga_max',
         ]);
 
-        $data['menerima_catering'] = $warung->is_kuliner ? $request->boolean('menerima_catering') : false;
+        $data['menerima_catering'] = $request->boolean('menerima_catering');
 
         // Perubahan data cabang yang sudah disetujui perlu ditinjau ulang admin.
         if ($cabang->status === 'approved') {

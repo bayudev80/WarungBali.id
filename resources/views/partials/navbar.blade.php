@@ -61,7 +61,9 @@
                             @foreach($navbarKategori as $kat)
                                 <li>
                                     <a class="dropdown-item rounded-3 py-2 mb-1 kategori-ajax-link {{ request()->is('kategori/'.$kat->slug) ? 'bg-light text-primary fw-medium' : '' }}" 
-                                        href="{{ route('kategori.show', $kat->slug) }}">
+                                        href="{{ route('kategori.show', array_merge(['slug' => $kat->slug], array_filter(['search' => request('search'), 'kabupaten' => request('kabupaten'), 'urutan' => request('urutan')]))) }}"
+                                        data-kategori-id="{{ $kat->id_kategori }}"
+                                        data-kategori-slug="{{ $kat->slug }}">
                                         {{ $kat->nama_kategori }}
                                     </a>
                                 </li>

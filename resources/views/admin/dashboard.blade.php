@@ -7,7 +7,7 @@
 {{-- ================= GREETING ================= --}}
 <div class="dash-greeting mb-4">
     <h2 class="fw-bold mb-1" style="letter-spacing: -0.5px;">
-        Selamat datang, {{ explode(' ', Auth::user()->nama)[0] }}! 👋
+        Selamat datang, {{ explode(' ', Auth::user()->nama)[0] }}!
     </h2>
     <p class="text-muted mb-0">
         Siap mengelola <span class="fw-medium text-dark">WarungBali.id</span> hari ini? Ini ringkasan aktivitas per {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}.

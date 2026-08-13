@@ -6,43 +6,23 @@
     hasil pencarian selalu sama persis di kedua mode.
 --}}
 
-<div class="mb-4 d-flex flex-wrap gap-2 mt-4">
-
-    @php
-        $urutanAktif = $urutanOptions[$urutan] ?? $urutanOptions['populer'];
-    @endphp
-
-    <div class="warung-dropdown">
-
-        <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded-pill d-inline-flex align-items-center gap-2"
-            onclick="toggleDropdown('urutanDropdownMenu')">
-            <i class="bi {{ $urutanAktif['icon'] }}" style="color:#C85C2E;"></i>
-            {{ $urutanAktif['label'] }} ▾
-        </button>
-
-        <ul id="urutanDropdownMenu" class="warung-dropdown-menu shadow border-0">
-
-            @foreach($urutanOptions as $key => $opsi)
-
-                <li>
-                    <a class="warung-dropdown-item d-flex align-items-center gap-2 {{ $urutan === $key ? 'active' : '' }}"
-                       href="{{ route('home', array_filter([
-                            'search'    => request('search'),
-                            'kategori'  => request('kategori'),
-                            'kabupaten' => request('kabupaten'),
-                            'urutan'    => $key,
-                       ])) }}">
-                        <i class="bi {{ $opsi['icon'] }}" style="color:{{ $urutan === $key ? '#fff' : '#C85C2E' }};"></i>
-                        {{ $opsi['label'] }}
-                    </a>
-                </li>
-
-            @endforeach
-
-        </ul>
-
+<div class="mb-4 mt-4">
+    <div class="d-flex overflow-auto gap-2 pb-2" style="white-space: nowrap; scrollbar-width: none; -ms-overflow-style: none;">
+        @foreach($urutanOptions as $key => $opsi)
+            @php $isAktif = $urutan === $key; @endphp
+            <a class="btn btn-sm rounded-pill px-3 py-2 d-inline-flex align-items-center gap-2 text-decoration-none urutan-pill-link {{ $isAktif ? 'btn-warning text-white fw-bold shadow-sm' : 'btn-outline-secondary bg-white text-secondary border' }}"
+               style="font-size: 0.875rem; transition: all 0.2s;"
+               href="{{ route('home', array_filter([
+                    'search'    => request('search'),
+                    'kategori'  => request('kategori'),
+                    'kabupaten' => request('kabupaten'),
+                    'urutan'    => $key,
+               ])) }}">
+                <i class="bi {{ $opsi['icon'] }}" style="color: {{ $isAktif ? '#fff' : '#C85C2E' }};"></i>
+                {{ $opsi['label'] }}
+            </a>
+        @endforeach
     </div>
-
 </div>
 
 @if($sedangFilter)
@@ -51,6 +31,7 @@
 
         <div class="hasil-context-count">
             <strong>{{ $warungPilihan->total() }}</strong> warung ditemukan
+            @if(isset($kategoriAktif) && $kategoriAktif) kategori <strong>{{ $kategoriAktif->nama_kategori }}</strong> @endif
             @if($kabupatenAktif) di <strong>{{ $kabupatenAktif->nama_kabupaten }}</strong> @endif
             @if(request('search')) untuk &ldquo;<strong>{{ request('search') }}</strong>&rdquo; @endif
         </div>
@@ -79,6 +60,17 @@
                 </span>
             @endif
 
+            @if(isset($kategoriAktif) && $kategoriAktif)
+                <span class="hasil-chip">
+                    🏷️ {{ $kategoriAktif->nama_kategori }}
+                    <a href="{{ route('home', array_filter([
+                        'search'    => request('search'),
+                        'kabupaten' => request('kabupaten'),
+                        'urutan'    => request('urutan'),
+                    ])) }}" aria-label="Hapus filter kategori">✕</a>
+                </span>
+            @endif
+
         </div>
 
     </div>
@@ -103,9 +95,10 @@
 
         <div class="alert alert-warning text-center rounded-4">
             Belum ada warung yang cocok
-            @if($kabupatenAktif) di {{ $kabupatenAktif->nama_kabupaten }} @endif
-            @if(request('search')) untuk &ldquo;{{ request('search') }}&rdquo; @endif
-            . Coba kata kunci atau kabupaten lain.
+            @if(isset($kategoriAktif) && $kategoriAktif) untuk kategori <strong>{{ $kategoriAktif->nama_kategori }}</strong> @endif
+            @if($kabupatenAktif) di <strong>{{ $kabupatenAktif->nama_kabupaten }}</strong> @endif
+            @if(request('search')) dengan pencarian &ldquo;<strong>{{ request('search') }}</strong>&rdquo; @endif
+            . Coba kata kunci, kategori, atau kabupaten lain.
         </div>
 
     @endif

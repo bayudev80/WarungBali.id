@@ -47,9 +47,9 @@
             </p>
 
             <div class="warung-catering-slot mb-2">
-                @if($item->is_kuliner && $item->menerima_catering)
+                @if($item->menerima_catering)
                     <span class="badge bg-success-subtle text-success align-self-start">
-                        🍱 Menerima Catering
+                        {{ $item->layanan_label }}
                     </span>
                 @endif
             </div>
@@ -271,16 +271,14 @@
 
                   <div class="mt-4">
 
-                    @if($item->is_kuliner)
-                      @if($item->menerima_catering)
-                        <span class="badge bg-success p-2">
-                          🍱 Menerima Layanan Catering
-                        </span>
-                      @else
-                        <span class="badge bg-secondary p-2">
-                          Tidak Menerima Layanan Catering
-                        </span>
-                      @endif
+                    @if($item->menerima_catering)
+                      <span class="badge bg-success p-2">
+                        {{ $item->layanan_label }}
+                      </span>
+                    @else
+                      <span class="badge bg-secondary p-2">
+                        Tidak {{ $item->layanan_label }}
+                      </span>
                     @endif
 
                   </div>

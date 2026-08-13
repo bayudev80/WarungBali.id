@@ -86,15 +86,13 @@
             </div>
         </div>
 
-        @if($warung->is_kuliner)
-            <div class="mb-3 form-check">
-                <input type="hidden" name="menerima_catering" value="0">
-                <input type="checkbox" name="menerima_catering" id="menerima_catering" class="form-check-input" value="1" {{ old('menerima_catering', $cabang->menerima_catering) ? 'checked' : '' }}>
-                <label class="form-check-label" for="menerima_catering">
-                    Cabang ini menerima layanan catering
-                </label>
-            </div>
-        @endif
+        <div class="mb-3 form-check">
+            <input type="hidden" name="menerima_catering" value="0">
+            <input type="checkbox" name="menerima_catering" id="menerima_catering" class="form-check-input" value="1" {{ old('menerima_catering', $cabang->menerima_catering) ? 'checked' : '' }}>
+            <label class="form-check-label" for="menerima_catering">
+                Cabang ini {{ strtolower($cabang->layanan_label) }}
+            </label>
+        </div>
 
         @if($cabang->foto)
             <div class="mb-3">

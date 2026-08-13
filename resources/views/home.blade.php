@@ -121,7 +121,7 @@
     @endphp
 
     <div class="kategori-item">
-        <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark kategori-ajax-link">
+        <a href="{{ route('home', array_filter(['search' => request('search'), 'kabupaten' => request('kabupaten'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark kategori-ajax-link" data-kategori-id="">
             <div class="card kategori-card border-0 shadow-sm {{ !request('kategori') ? 'border border-warning border-2' : '' }}">
                 <div class="kategori-card-icon">
                     <i class="bi bi-grid-3x3-gap-fill"></i>
@@ -133,8 +133,8 @@
 
     @foreach($kategori->take(6) as $item)
         <div class="kategori-item">
-            <a href="{{ route('kategori.show', $item->slug) }}" class="text-decoration-none text-dark kategori-ajax-link">
-                <div class="card kategori-card border-0 shadow-sm {{ request('kategori') == $item->id_kategori ? 'border border-warning border-2' : '' }}">
+            <a href="{{ route('kategori.show', array_merge(['slug' => $item->slug], array_filter(['search' => request('search'), 'kabupaten' => request('kabupaten'), 'urutan' => request('urutan')]))) }}" class="text-decoration-none text-dark kategori-ajax-link" data-kategori-id="{{ $item->id_kategori }}" data-kategori-slug="{{ $item->slug }}">
+                <div class="card kategori-card border-0 shadow-sm {{ (string)request('kategori') === (string)$item->id_kategori ? 'border border-warning border-2' : '' }}">
                     <div class="kategori-card-icon">
                         <i class="bi {{ $icons[$item->nama_kategori] ?? 'bi-shop' }}"></i>
                     </div>
@@ -220,7 +220,7 @@
       <div class="modal-body pb-4 pt-3">
         <div class="kategori-grid" style="justify-content: flex-start;">
             <div class="kategori-item">
-                <a href="{{ route('home', array_filter(['search' => request('search'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark kategori-ajax-link">
+                <a href="{{ route('home', array_filter(['search' => request('search'), 'kabupaten' => request('kabupaten'), 'urutan' => request('urutan')])) }}" class="text-decoration-none text-dark kategori-ajax-link" data-kategori-id="">
                     <div class="card kategori-card border-0 shadow-sm {{ !request('kategori') ? 'border border-warning border-2' : '' }}">
                         <div class="kategori-card-icon">
                             <i class="bi bi-grid-3x3-gap-fill"></i>
@@ -231,8 +231,8 @@
             </div>
             @foreach($kategori as $item)
                 <div class="kategori-item">
-                    <a href="{{ route('kategori.show', $item->slug) }}" class="text-decoration-none text-dark kategori-ajax-link">
-                        <div class="card kategori-card border-0 shadow-sm {{ request('kategori') == $item->id_kategori ? 'border border-warning border-2' : '' }}">
+                    <a href="{{ route('kategori.show', array_merge(['slug' => $item->slug], array_filter(['search' => request('search'), 'kabupaten' => request('kabupaten'), 'urutan' => request('urutan')]))) }}" class="text-decoration-none text-dark kategori-ajax-link" data-kategori-id="{{ $item->id_kategori }}" data-kategori-slug="{{ $item->slug }}">
+                        <div class="card kategori-card border-0 shadow-sm {{ (string)request('kategori') === (string)$item->id_kategori ? 'border border-warning border-2' : '' }}">
                             <div class="kategori-card-icon">
                                 <i class="bi {{ $icons[$item->nama_kategori] ?? 'bi-shop' }}"></i>
                             </div>
@@ -395,10 +395,48 @@
     // di tiap link) supaya tetap jalan meski link-nya diganti baru
     // setiap kali #warung-hasil di-render ulang.
 
+    function updateActiveCategoryCards(urlStr) {
+        if (!urlStr) return;
+        try {
+            const urlObj = new URL(urlStr, window.location.href);
+            let katId = urlObj.searchParams.get('kategori') || '';
+            const path = urlObj.pathname;
+
+            if (!katId && path.includes('/kategori/')) {
+                const slug = path.split('/kategori/')[1]?.split('?')[0];
+                if (slug) {
+                    const matchedLink = document.querySelector(`.kategori-ajax-link[data-kategori-slug="${slug}"]`);
+                    if (matchedLink) {
+                        katId = matchedLink.getAttribute('data-kategori-id') || '';
+                    }
+                }
+            }
+
+            document.querySelectorAll('.kategori-item').forEach(item => {
+                const link = item.querySelector('.kategori-ajax-link');
+                const card = item.querySelector('.kategori-card');
+                if (!card || !link) return;
+
+                const linkKatId = link.getAttribute('data-kategori-id') || '';
+                if (String(linkKatId) === String(katId)) {
+                    card.classList.add('border', 'border-warning', 'border-2');
+                    card.classList.remove('border-0');
+                } else {
+                    card.classList.remove('border', 'border-warning', 'border-2');
+                    card.classList.add('border-0');
+                }
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     const warungHasilEl = document.getElementById('warung-hasil');
 
     function muatHasilWarung(url, { pushState = true } = {}) {
         if (!warungHasilEl) return;
+
+        updateActiveCategoryCards(url);
 
         warungHasilEl.classList.add('is-loading');
 
@@ -456,11 +494,21 @@
     // dalam #warung-hasil yang menunjuk balik ke route('home'), serta kategori links
     document.addEventListener('click', function (e) {
         const link = e.target.closest(
-            '#warung-hasil .warung-dropdown-item, #warung-hasil .hasil-chip a, #warung-hasil .pagination a, .kategori-ajax-link'
+            '#warung-hasil .warung-dropdown-item, #warung-hasil .urutan-pill-link, #warung-hasil .hasil-chip a, #warung-hasil .pagination a, .kategori-ajax-link'
         );
         if (!link) return;
 
         e.preventDefault();
+
+        // Otomatis hilangkan/tutup modal jika pilihan diklik dari dalam pop-up modal (seperti #kategoriModal)
+        const modalEl = link.closest('.modal');
+        if (modalEl) {
+            const modalInstance = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        }
+
         muatHasilWarung(link.getAttribute('href'));
     });
 
