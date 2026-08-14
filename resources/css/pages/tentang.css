@@ -26,16 +26,20 @@
 }
 
 .tentang-hero h1 {
-    font-family: "Playfair Display", serif;
+    font-family: var(--font-serif, 'Playfair Display', serif);
     color: #fff;
     font-weight: 800;
     font-size: 46px;
+    letter-spacing: -0.02em;
     margin-bottom: 10px;
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
 }
 
 .tentang-hero p {
-    color: rgba(255, 255, 255, 0.9);
+    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+    color: rgba(255, 255, 255, 0.95);
     font-size: 17px;
+    letter-spacing: -0.01em;
 }
 
 /* ===========================
@@ -43,10 +47,11 @@
 =========================== */
 
 .tentang-section-title {
-    font-family: "Playfair Display", serif;
+    font-family: var(--font-display, 'Outfit', 'Plus Jakarta Sans', sans-serif);
     color: #2d201c;
-    font-weight: 700;
-    font-size: 28px;
+    font-weight: 800;
+    font-size: 30px;
+    letter-spacing: -0.03em;
     margin-bottom: 24px;
 }
 
@@ -55,9 +60,11 @@
 =========================== */
 
 .misi-text p {
+    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
     color: #5c4a42;
     line-height: 1.8;
     font-size: 15.5px;
+    letter-spacing: -0.005em;
 }
 
 .misi-image {
@@ -198,9 +205,10 @@
 }
 
 .tentang-cta h4 {
-    font-family: "Playfair Display", serif;
+    font-family: var(--font-display, 'Outfit', 'Plus Jakarta Sans', sans-serif);
     color: #2d201c;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: -0.02em;
     margin-bottom: 8px;
 }
 

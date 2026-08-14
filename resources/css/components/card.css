@@ -1,97 +1,320 @@
 /* ===========================
-   WARUNG CARD
+   WARUNG CARD — Modern Redesign
 =========================== */
 
+/* ---------- Wrapper ---------- */
+.warung-card-item {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* ---------- Card Shell ---------- */
 .warung-card {
     display: flex;
     flex-direction: column;
     height: 100%;
+    border-radius: 20px;
     overflow: hidden;
-    border-radius: 18px;
-    transition: all 0.35s ease;
     background: #fff;
+    transition: transform 0.32s ease, box-shadow 0.32s ease;
 }
 
 .warung-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18) !important;
+    transform: translateY(-8px);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.14) !important;
 }
 
-.warung-image {
-    height: 160px;
+/* ---------- Gambar ---------- */
+.warung-card__img-wrap {
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.warung-card__img {
+    height: 175px;
     width: 100%;
     object-fit: cover;
+    display: block;
     transition: transform 0.5s ease;
 }
 
-.warung-card:hover .warung-image {
-    transform: scale(1.08);
+.warung-card:hover .warung-card__img {
+    transform: scale(1.07);
 }
 
-.warung-card .card-body {
+/* Gradient gelap tipis di bawah gambar */
+.warung-card__img-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.35) 0%, transparent 55%);
+    pointer-events: none;
+}
+
+/* Badge kategori — pojok kiri bawah gambar */
+.warung-card__cat-badge {
+    position: absolute;
+    bottom: 10px;
+    left: 12px;
+    background: rgba(255,255,255,.92);
+    color: #c05f00;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+    line-height: 1.6;
+    box-shadow: 0 1px 6px rgba(0,0,0,.12);
+}
+
+/* Tombol favorit — pojok kanan atas */
+.warung-card__fav-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,.9);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+
+.warung-card__fav-btn:hover {
+    background: #fff;
+    transform: scale(1.1);
+}
+
+/* ---------- Body ---------- */
+.warung-card__body {
     display: flex;
     flex-direction: column;
     flex: 1;
-    padding: 14px;
+    padding: 14px 16px 16px;
+    gap: 6px;
 }
 
-/* Nama Warung */
-.warung-title {
-    font-size: 1rem;
+/* Nama Warung — selalu 2 baris, tidak lebih tidak kurang */
+.warung-card__name {
+    font-family: var(--font-display, 'Outfit', 'Plus Jakarta Sans', sans-serif);
+    font-size: 1.02rem;
     font-weight: 700;
-    min-height: 42px;
+    letter-spacing: -0.02em;
+    color: #1e1511;
+    line-height: 1.35;
+    margin: 0;
+    /* 2 baris × line-height 1.35 × font-size 1.02rem ≈ 44px */
+    height: 2.7em;
+    overflow: hidden;
 
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
+    /* autoprefixer: ignore next */
     -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
-/* Alamat */
-.warung-address {
-    min-height: 36px;
-    font-size: 0.85rem;
-    color: #6c757d;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* Deskripsi */
-.warung-description {
-    min-height: 38px;
-    font-size: 0.85rem;
-    color: #666;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* Slot badge catering: tinggi selalu sama, ada isi ataupun kosong,
-   supaya kartu warung yang menerima catering tidak jadi lebih panjang
-   dibanding kartu lain */
-.warung-catering-slot {
-    min-height: 22px;
+/* Lokasi — 1 baris tetap */
+.warung-card__location {
     display: flex;
     align-items: center;
+    gap: 5px;
+    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+    font-size: 0.82rem;
+    color: #78655d;
+    margin: 0;
+    height: 1.5em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.warung-card__location .bi {
+    color: #e25444;
     font-size: 0.85rem;
+    flex-shrink: 0;
 }
 
-/* Harga + Jam + Tombol selalu di bawah */
-.warung-card .mt-auto {
+/* Rating — tinggi minimum 22px, kiri bisa truncate kalau sempit */
+.warung-card__rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+    font-size: 0.83rem;
+    min-height: 22px;
+    flex-wrap: nowrap;
+    overflow: hidden;      /* cegah row meluber ke luar card */
+}
+
+.warung-card__stars {
+    display: inline-flex;
+    gap: 1px;
+    color: #f59e0b;
+    font-size: 0.78rem;
+    flex-shrink: 0;        /* bintang tidak boleh menyusut */
+}
+
+.warung-card__rating strong {
+    font-size: 0.88rem;
+    color: #1e1511;
+    flex-shrink: 0;
+}
+
+.warung-card__review-count {
+    color: #9c8078;
+    font-size: 0.80rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;          /* wajib agar ellipsis bekerja di flex */
+}
+
+.warung-card__no-review {
+    color: #b0a099;
+    font-size: 0.80rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;          /* wajib agar ellipsis bekerja di flex */
+}
+
+/* Badge layanan — teks panjang dipotong dengan (...) */
+.warung-card__catering-badge {
+    background: #d1fae5;
+    color: #065f46;
+    font-size: 0.70rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+
+    /* Truncate jika terlalu panjang */
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+}
+
+/* Chip menu — selalu ada ruang 26px, ada isi atau tidak */
+.warung-card__menu-chips {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    gap: 5px;
+    margin: 0;
+    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+    font-size: 0.80rem;
+    color: #78655d;
+    height: 26px;
+}
+
+.warung-card__menu-chips .bi {
+    color: #e07832;
+    font-size: 0.88rem;
+    flex-shrink: 0;
+}
+
+.warung-card__chip {
+    background: #fff4e6;
+    color: #b85c00;
+    font-size: 0.73rem;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 20px;
+    border: 1px solid #fddcb0;
+    white-space: nowrap;
+}
+
+/* ---------- Footer ---------- */
+.warung-card__footer {
     margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid #f2ede8;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.warung-card .mt-auto p {
-    font-size: 0.9rem;
+.warung-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
 }
 
-.warung-card .btn {
-    border-radius: 10px;
+.warung-card__price {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #c07000;
+}
+
+.warung-card__price .bi {
+    font-size: 0.92rem;
+    color: #f59e0b;
+}
+
+.warung-card__hours {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.80rem;
+    color: #9c8078;
+    white-space: nowrap;
+}
+
+.warung-card__hours .bi {
+    font-size: 0.85rem;
+    color: #b0a099;
+}
+
+/* CTA Button */
+.warung-card__cta {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #f59e0b 0%, #e07832 100%);
+    color: #fff;
+    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    border: none;
+    border-radius: 12px;
+    padding: 0.55rem 1rem;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(240, 140, 40, 0.35);
+}
+
+.warung-card__cta:hover {
+    opacity: 0.93;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(240, 140, 40, 0.45);
+}
+
+.warung-card__cta .bi {
     font-size: 0.9rem;
-    padding: 0.45rem 0.75rem;
+    transition: transform 0.2s;
+}
+
+.warung-card__cta:hover .bi {
+    transform: translateX(3px);
 }

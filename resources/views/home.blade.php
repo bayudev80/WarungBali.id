@@ -36,7 +36,7 @@
     <div class="hero-content text-center">
 
       <span class="hero-badge">
-        🌴 Temukan Berbagai Jenis Warung di Bali |
+        <i class="bi bi-geo-alt-fill text-warning me-1"></i> Temukan Berbagai Jenis Warung di Bali |
           Warung Makan • Minuman • Sembako • Oleh-Oleh • Herbal • ATK • Pulsa
       </span>
 

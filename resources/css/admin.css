@@ -16,8 +16,10 @@
 
 body {
     background: var(--bg);
-    font-family: "Segoe UI", sans-serif;
+    font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
     color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* ===========================

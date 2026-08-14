@@ -1,80 +1,113 @@
 @php
-    $isFavorit = auth()->check() &&
+    $avgRating   = round($item->review->avg('rating') ?? 0, 1);
+    $totalReview = $item->review->count();
+    $isFavorit   = auth()->check() &&
         $item->favorit->where('id_user', auth()->user()->id_user)->count() > 0;
-      @endphp
+    // Ambil 2 menu unggulan (nama saja)
+    $menuUnggulan = $item->menu_tampil->take(2)->pluck('nama_menu');
+@endphp
 
 <div class="warung-card-item mb-4 d-flex flex-column">
 
     <div class="card warung-card border-0 shadow flex-fill w-100">
 
-        <div class="position-relative">
+        {{-- GAMBAR --}}
+        <div class="warung-card__img-wrap position-relative">
 
             <img src="{{ asset('images/warung/'.$item->foto) }}"
-                class="card-img-top warung-image">
+                 class="warung-card__img" alt="{{ $item->nama_warung }}">
 
+            {{-- Overlay gradient bawah --}}
+            <div class="warung-card__img-overlay"></div>
+
+
+            {{-- Tombol favorit --}}
             <button
-                class="btn btn-light rounded-circle shadow favorite-btn position-absolute top-0 end-0 m-2"
+                class="warung-card__fav-btn favorite-btn"
                 data-id="{{ $item->id_warung }}"
                 data-login="{{ auth()->check() ? 'true' : 'false' }}"
-                style="width:45px;height:45px;">
-
+                aria-label="Favorit">
                 @auth
-                    @if($isFavorit)
-                        <i class="fa-solid fa-heart text-danger"></i>
-                    @else
-                        <i class="fa-regular fa-heart"></i>
-                    @endif
+                    <i class="{{ $isFavorit ? 'fa-solid fa-heart text-danger' : 'fa-regular fa-heart' }}"></i>
                 @else
                     <i class="fa-regular fa-heart"></i>
                 @endauth
-
             </button>
 
         </div>
 
-        <div class="card-body d-flex flex-column">
+        {{-- BODY --}}
+        <div class="warung-card__body">
 
-            <h4 class="fw-bold warung-title">
-                {{ $item->nama_warung }}
-            </h4>
+            {{-- Nama Warung --}}
+            <h4 class="warung-card__name">{{ $item->nama_warung }}</h4>
 
-            <p class="text-secondary warung-address">
-                📍 {{ $item->alamat }}
+            {{-- Baris 1: Lokasi --}}
+            <p class="warung-card__location">
+                <i class="bi bi-geo-alt-fill"></i>
+                {{ $item->kabupaten->nama_kabupaten ?? $item->alamat }}
             </p>
 
-            <p class="warung-description">
-                {{ $item->deskripsi }}
-            </p>
+            {{-- Baris 2: Rating & Ulasan --}}
+            <div class="warung-card__rating">
+                @if($totalReview > 0)
+                    <span class="warung-card__stars">
+                        @for($s = 1; $s <= 5; $s++)
+                            @if($s <= floor($avgRating))
+                                <i class="bi bi-star-fill"></i>
+                            @elseif($s - $avgRating < 1 && $s - $avgRating > 0)
+                                <i class="bi bi-star-half"></i>
+                            @else
+                                <i class="bi bi-star"></i>
+                            @endif
+                        @endfor
+                    </span>
+                    <strong>{{ number_format($avgRating, 1) }}</strong>
+                    <span class="warung-card__review-count">· {{ $totalReview }} ulasan</span>
+                @else
+                    <span class="warung-card__no-review">
+                        <i class="bi bi-star"></i> Belum ada ulasan
+                    </span>
+                @endif
 
-            <div class="warung-catering-slot mb-2">
+                {{-- Badge layanan -- dinamis sesuai kategori warung --}}
                 @if($item->menerima_catering)
-                    <span class="badge bg-success-subtle text-success align-self-start">
-                        {{ $item->layanan_label }}
+                    <span class="warung-card__catering-badge ms-auto">
+                        <i class="{{ $item->layanan_icon }} me-1"></i>{{ $item->layanan_label }}
                     </span>
                 @endif
             </div>
 
-            <div class="mt-auto">
+            {{-- Baris 3: Menu unggulan — selalu render supaya tinggi card konsisten --}}
+            <p class="warung-card__menu-chips">
+                @if($menuUnggulan->isNotEmpty())
+                    <i class="bi bi-bowl-hot-fill"></i>
+                    @foreach($menuUnggulan as $mn)
+                        <span class="warung-card__chip">{{ $mn }}</span>
+                    @endforeach
+                @endif
+            </p>
 
-                <p class="text-warning fw-bold mb-2">
-                    Rp{{ number_format($item->harga_min,0,',','.') }}
-                    -
-                    Rp{{ number_format($item->harga_max,0,',','.') }}
-                </p>
+            {{-- Footer: Harga & Jam --}}
+            <div class="warung-card__footer">
 
-                <p class="mb-3">
-                    🕒 {{ substr($item->jam_buka,0,5) }}
-                    -
-                    {{ substr($item->jam_tutup,0,5) }}
-                </p>
+                <div class="warung-card__meta">
+                    <span class="warung-card__price">
+                        <i class="bi bi-currency-exchange"></i>
+                        Mulai Rp{{ number_format($item->harga_min, 0, ',', '.') }}
+                    </span>
+                    <span class="warung-card__hours">
+                        <i class="bi bi-clock"></i>
+                        {{ substr($item->jam_buka, 0, 5) }} – {{ substr($item->jam_tutup, 0, 5) }}
+                    </span>
+                </div>
 
                 <button
-                    class="btn btn-warning text-white w-100"
+                    class="warung-card__cta"
                     data-bs-toggle="modal"
                     data-bs-target="#detail{{ $item->id_warung }}">
-
                     Lihat Detail
-
+                    <i class="bi bi-arrow-right"></i>
                 </button>
 
             </div>
@@ -88,42 +121,42 @@
       <!-- MODAL DETAIL WARUNG -->
       <div class="modal fade" id="detail{{ $item->id_warung }}" tabindex="-1" aria-hidden="true">
 
-        <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
 
           <div class="modal-content border-0 rounded-4 overflow-hidden">
 
             <!-- HEADER IMAGE -->
             <div class="position-relative">
 
-              <img src="{{ asset('images/warung/'.$item->foto) }}" class="w-100" style="height:320px;object-fit:cover;">
+              <img src="{{ asset('images/warung/'.$item->foto) }}" class="w-100" style="height:200px;object-fit:cover;">
 
-              <button type="button" class="btn btn-light rounded-circle position-absolute top-0 end-0 m-3"
-                data-bs-dismiss="modal" style="width:50px;height:50px;">
+              <button type="button" class="btn btn-light rounded-circle position-absolute top-0 end-0 m-2"
+                data-bs-dismiss="modal" style="width:38px;height:38px;font-size:0.8rem;">
                 ✕
               </button>
 
-              <div class="position-absolute bottom-0 start-0 p-4 text-white w-100"
+              <div class="position-absolute bottom-0 start-0 p-3 text-white w-100"
                 style="background:linear-gradient(transparent,rgba(0,0,0,.75));">
 
-                <span class="badge bg-warning text-dark px-3 py-2 mb-3">
+                <span class="badge bg-warning text-dark px-2 py-1 mb-2" style="font-size:0.75rem;">
                   Kuliner Bali
                 </span>
 
-                <h2 class="fw-bold mb-3">
+                <h5 class="fw-bold mb-2">
                   {{ $item->nama_warung }}
-                </h2>
+                </h5>
 
                 <div class="d-flex flex-wrap gap-4">
 
                   <div id="review-summary-{{ $item->id_warung }}">
                     @if($item->review->count() > 0)
-                    ⭐
+                    <i class="bi bi-star-fill text-warning me-1"></i>
                     <strong class="review-summary-avg">{{ number_format($item->review->avg('rating'), 1) }}</strong>
                     <span class="text-light review-summary-count">
                       ({{ $item->review->count() }} Ulasan)
                     </span>
                     @else
-                    ⭐
+                    <i class="bi bi-star text-warning me-1"></i>
                     <strong class="review-summary-avg">0.0</strong>
                     <span class="text-light review-summary-count">
                       (Belum ada ulasan)
@@ -132,7 +165,7 @@
                   </div>
 
                   <div>
-                    🕒
+                    <i class="bi bi-clock me-1 text-light"></i>
                     {{ substr($item->jam_buka,0,5) }}
                     -
                     {{ substr($item->jam_tutup,0,5) }}
@@ -144,7 +177,7 @@
                         <i class="fa-brands fa-whatsapp"></i> {{ $item->telepon }}
                       </a>
                     @else
-                      📞 Telepon belum tersedia
+                      <i class="bi bi-telephone-fill me-1 text-light"></i> Telepon belum tersedia
                     @endif
                   </div>
 
@@ -155,7 +188,7 @@
             </div>
 
             <!-- BODY -->
-            <div class="modal-body p-4">
+            <div class="modal-body p-3">
 
               <!-- TAB -->
               <ul class="nav nav-tabs mb-4">
@@ -185,17 +218,16 @@
                 <!-- INFORMASI -->
                 <div class="tab-pane fade show active" id="info{{ $item->id_warung }}">
 
-                  <p class="fs-5 text-secondary">
+                  <p class="text-secondary" style="font-size:0.9rem;">
 
                     {{ $item->deskripsi }}
 
                   </p>
 
-                  <div class="rounded-4 p-4 mt-4" style="background:#FFF8EC;">
+                  <div class="rounded-3 p-3 mt-3" style="background:#FFF8EC;">
 
                     <p class="mb-3">
-                      📍
-                      <strong>Alamat</strong><br>
+                      <i class="bi bi-geo-alt-fill text-danger me-1"></i>
                       {{ $item->alamat }}
                       <br>
                       <a href="{{ $item->maps_link }}" target="_blank" rel="noopener" class="text-warning fw-bold">
@@ -204,35 +236,24 @@
                     </p>
 
                     <p class="mb-3">
-                      🕒
-                      <strong>Jam Operasional</strong><br>
-
-                      {{ substr($item->jam_buka,0,5) }}
-
-                      -
-
-                      {{ substr($item->jam_tutup,0,5) }}
-
+                      <i class="bi bi-clock me-1 text-muted"></i>
+                      {{ substr($item->jam_buka,0,5) }} - {{ substr($item->jam_tutup,0,5) }}
                     </p>
 
                     <p class="mb-0">
-                      📞
-                      <strong>Telepon</strong><br>
-
                       @if($item->wa_link)
                         <a href="{{ $item->wa_link }}" target="_blank" rel="noopener" class="text-success fw-bold">
-                          <i class="fa-brands fa-whatsapp"></i> {{ $item->telepon }} (Chat WhatsApp)
+                          <i class="fa-brands fa-whatsapp"></i> {{ $item->telepon }}
                         </a>
                       @else
-                        Belum tersedia
+                        <i class="bi bi-telephone-fill me-1 text-muted"></i> Belum tersedia
                       @endif
-
                     </p>
 
                     @if($item->is_cabang && $item->indukWarung)
                       <hr>
                       <p class="mb-0">
-                        🏬
+                        <i class="bi bi-shop me-1 text-warning"></i>
                         <strong>Cabang dari</strong><br>
                         Warung ini adalah cabang dari
                         <a href="#" class="fw-bold text-warning btn-lihat-cabang"
@@ -249,7 +270,7 @@
                     <div class="rounded-4 p-4 mt-4" style="background:#FFF8EC;">
 
                       <p class="mb-3">
-                        🏬
+                        <i class="bi bi-shop me-1 text-warning"></i>
                         <strong>Cabang Warung Ini ({{ $item->cabang->count() }})</strong>
                       </p>
 
@@ -257,7 +278,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-2 {{ !$loop->last ? 'border-bottom pb-2' : '' }}">
                           <div>
                             <strong>{{ $cabang->nama_warung }}</strong><br>
-                            <span class="text-secondary small">📍 {{ $cabang->alamat }}</span>
+                            <span class="text-secondary small"><i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ $cabang->alamat }}</span>
                           </div>
                           <a href="#" class="btn btn-sm btn-warning text-white btn-lihat-cabang"
                              data-cabang-target="#detail{{ $cabang->id_warung }}">
@@ -283,11 +304,11 @@
 
                   </div>
 
-                  <h5 class="mt-5 fw-bold">
+                  <h6 class="mt-4 fw-bold">
                     Kisaran Harga
-                  </h5>
+                  </h6>
 
-                  <h4 class="text-warning fw-bold">
+                  <h5 class="text-warning fw-bold">
 
                     Rp{{ number_format($item->harga_min,0,',','.') }}
 
@@ -295,7 +316,7 @@
 
                     Rp{{ number_format($item->harga_max,0,',','.') }}
 
-                  </h4>
+                  </h5>
 
                   <div class="mt-4">
 
@@ -436,7 +457,7 @@
                       <div class="d-flex justify-content-between align-items-center mb-2">
 
                         <strong>
-                          👤 {{ $review->user->nama }}
+                          <i class="bi bi-person-circle text-secondary me-1"></i>{{ $review->user->nama }}
                         </strong>
 
                         <small class="text-secondary">

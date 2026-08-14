@@ -194,9 +194,37 @@ class Warung extends Model
         return 'Menerima Pesanan Khusus';
     }
 
-    public function getLayananEmojiAttribute()
+    /**
+     * Ikon Bootstrap Icons yang sesuai dengan jenis layanan tambahan warung.
+     * Dipakai di badge card supaya tidak semua warung menampilkan ikon catering.
+     */
+    public function getLayananIconAttribute()
     {
-        return '';
+        $kategoriNama = strtolower($this->kategori->nama_kategori ?? '');
+
+        if ($this->is_kuliner) {
+            return 'bi bi-pot-fill';           // Catering
+        }
+        if (str_contains($kategoriNama, 'atk') || str_contains($kategoriNama, 'fotokopi')) {
+            return 'bi bi-printer-fill';       // Jasa Cetak
+        }
+        if (str_contains($kategoriNama, 'pulsa') || str_contains($kategoriNama, 'ppob')) {
+            return 'bi bi-phone-fill';         // Pulsa / Tagihan
+        }
+        if (str_contains($kategoriNama, 'sembako')) {
+            return 'bi bi-truck';              // Delivery
+        }
+        if (str_contains($kategoriNama, 'oleh-oleh') || str_contains($kategoriNama, 'bali')) {
+            return 'bi bi-gift-fill';          // Paket Oleh-oleh
+        }
+        if (str_contains($kategoriNama, 'buah') || str_contains($kategoriNama, 'sayur')) {
+            return 'bi bi-box-seam-fill';      // Parsel / Grosir
+        }
+        if (str_contains($kategoriNama, 'herbal')) {
+            return 'bi bi-capsule-pill';       // Konsultasi
+        }
+
+        return 'bi bi-bag-check-fill';         // Default
     }
 
     /**

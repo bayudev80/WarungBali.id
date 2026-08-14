@@ -5,7 +5,7 @@
 <div class="container py-5" style="margin-top:20px;">
 
     <h2 class="fw-bold mb-2">
-        ❤️ Favorit Saya
+        <i class="bi bi-heart-fill text-danger me-2"></i>Favorit Saya
     </h2>
 
     <p class="text-secondary mb-4">
@@ -16,7 +16,7 @@
 
         <div class="alert alert-warning text-center rounded-4 p-5">
 
-            <div class="fs-1 mb-3">🤍</div>
+            <div class="fs-1 mb-3 text-muted"><i class="bi bi-heart"></i></div>
 
             <h5 class="fw-bold">Belum ada warung favorit</h5>
 

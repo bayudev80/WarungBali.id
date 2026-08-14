@@ -94,12 +94,12 @@
 
     @php
         $urutanOptions = [
-            'populer'  => '🔥 Terpopuler',
-            'disukai'  => '❤️ Banyak Disukai',
-            'rating'   => '⭐ Rating Tertinggi',
-            'terbaru'  => '🆕 Terbaru',
-            'termurah' => '💸 Harga Termurah',
-            'termahal' => '💰 Harga Termahal',
+            'populer'  => 'Terpopuler',
+            'disukai'  => 'Banyak Disukai',
+            'rating'   => 'Rating Tertinggi',
+            'terbaru'  => 'Terbaru',
+            'termurah' => 'Harga Termurah',
+            'termahal' => 'Harga Termahal',
         ];
     @endphp
 
@@ -150,7 +150,7 @@
 
                 @if(request('search'))
                     <span class="hasil-chip">
-                        🔍 {{ request('search') }}
+                        <i class="bi bi-search me-1 text-muted"></i> {{ request('search') }}
                         <a href="{{ route('home', array_filter([
                             'kategori'  => request('kategori'),
                             'urutan'    => request('urutan'),
@@ -161,7 +161,7 @@
 
                 @if($kabupatenAktif)
                     <span class="hasil-chip">
-                        📍 {{ $kabupatenAktif->nama_kabupaten }}
+                        <i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ $kabupatenAktif->nama_kabupaten }}
                         <a href="{{ route('home', array_filter([
                             'search'   => request('search'),
                             'kategori' => request('kategori'),

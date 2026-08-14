@@ -1,6 +1,5 @@
 body {
     background: #f8f4ed;
-    font-family: "Segoe UI", sans-serif;
 }
 
 /* ===========================
@@ -9,7 +8,7 @@ body {
 
 .statistik {
     background: #fff4e6;
-    padding: 20px 0;
+    padding: 24px 0;
 }
 
 .statistik-wrapper {
@@ -23,16 +22,21 @@ body {
 }
 
 .stat-item h2 {
-    font-size: 36px;
-    font-weight: 700;
+    font-family: var(--font-display, 'Outfit', 'Plus Jakarta Sans', sans-serif);
+    font-size: 38px;
+    font-weight: 800;
     color: #d97706;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
 }
 
 .stat-item p {
     margin: 0;
-    color: #666;
-    font-size: 16px;
+    color: #6c5a52;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
 }
 
 @media (max-width: 768px) {

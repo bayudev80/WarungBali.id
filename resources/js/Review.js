@@ -143,7 +143,7 @@ function renderReview(warungId, review) {
         review.id_user +
         '">' +
         '<div class="d-flex justify-content-between align-items-center mb-2">' +
-        "<strong>👤 " +
+        '<strong><i class="bi bi-person-circle text-secondary me-1"></i>' +
         escapeHtml(review.nama) +
         "</strong>" +
         '<small class="text-secondary">' +
