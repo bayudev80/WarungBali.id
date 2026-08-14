@@ -35,11 +35,6 @@
 
     <div class="hero-content text-center">
 
-      <span class="hero-badge">
-        <i class="bi bi-geo-alt-fill text-warning me-1"></i> Temukan Berbagai Jenis Warung di Bali |
-          Warung Makan • Minuman • Sembako • Oleh-Oleh • Herbal • ATK • Pulsa
-      </span>
-
       <h1>
         Jelajahi Warung Lokal
       </h1>
@@ -48,9 +43,10 @@
         Pulau Dewata
       </h2>
 
-      <p> <br>
+      <p>
         Setiap warung memiliki cerita dan potensi untuk berkembang. WarungBali.id hadir sebagai jembatan yang menghubungkan masyarakat dengan berbagai warung lokal di Bali, membantu pelaku UMKM menjangkau lebih banyak pelanggan sekaligus memperkenalkan kekayaan usaha lokal kepada lebih banyak orang.
-      </p><br>
+      </p>
+
 
       <form class="hero-search" method="GET" action="{{ route('home') }}">
 

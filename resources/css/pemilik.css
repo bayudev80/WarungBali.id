@@ -1,0 +1,626 @@
+/* ============================================================
+   PEMILIK DASHBOARD — WarungBali.id
+   Modern Premium UI
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap');
+
+:root {
+    --pk-primary: #d97706;
+    --pk-primary-dk: #b45309;
+    --pk-primary-lt: #fef3c7;
+    --pk-accent: #f59e0b;
+    --pk-green: #059669;
+    --pk-green-lt: #d1fae5;
+    --pk-red: #dc2626;
+    --pk-red-lt: #fee2e2;
+    --pk-blue: #3b82f6;
+    --pk-blue-lt: #dbeafe;
+
+    --pk-sidebar-w: 260px;
+    --pk-topbar-h: 68px;
+
+    --pk-bg: #f6f7fb;
+    --pk-surface: #ffffff;
+    --pk-border: #e9ecef;
+    --pk-text: #1e293b;
+    --pk-muted: #64748b;
+    --pk-shadow-sm: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
+    --pk-shadow: 0 4px 20px rgba(0, 0, 0, .07);
+    --pk-shadow-lg: 0 12px 40px rgba(0, 0, 0, .10);
+    --pk-radius: 16px;
+    --pk-radius-sm: 10px;
+    --pk-radius-xs: 6px;
+    --pk-transition: 0.25s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--pk-bg);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--pk-text);
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+}
+
+/* ============================================================
+   SIDEBAR — mengikuti style admin.css (tidak di-override di sini)
+   ============================================================ */
+/* Sidebar pemilik sama persis dengan admin, dihandle admin.css */
+
+/* ============================================================
+   CONTENT SHELL
+   ============================================================ */
+
+.content {
+    margin-left: var(--pk-sidebar-w);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    height: var(--pk-topbar-h);
+    background: rgba(255, 255, 255, .92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--pk-border);
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    gap: 16px;
+}
+
+.topbar h4 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--pk-text);
+    margin: 0;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile span {
+    font-size: 13.5px;
+    color: var(--pk-muted);
+    white-space: nowrap;
+}
+
+.profile strong {
+    color: var(--pk-text);
+    font-weight: 700;
+}
+
+/* Website button */
+.btn-website {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: var(--pk-radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    text-decoration: none;
+    background: var(--pk-primary-lt);
+    color: var(--pk-primary-dk);
+    border: none;
+    transition: all var(--pk-transition);
+    white-space: nowrap;
+}
+
+.btn-website:hover {
+    background: var(--pk-primary);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(217, 119, 6, .3);
+}
+
+/* Logout button */
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: var(--pk-radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    background: #fff1f2;
+    color: #be123c;
+    border: none;
+    cursor: pointer;
+    transition: all var(--pk-transition);
+    white-space: nowrap;
+}
+
+.btn-logout:hover {
+    background: var(--pk-red);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, .25);
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+
+.main-content {
+    padding: 28px 32px;
+    flex: 1;
+}
+
+/* ============================================================
+   CONTENT BOX (legacy, used in all pages)
+   ============================================================ */
+
+.content-box {
+    background: var(--pk-surface);
+    border-radius: var(--pk-radius);
+    box-shadow: var(--pk-shadow-sm);
+    border: 1px solid var(--pk-border);
+    padding: 28px 30px;
+}
+
+/* ============================================================
+   BOOTSTRAP OVERRIDES — Alerts
+   ============================================================ */
+
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: var(--pk-radius-sm);
+    font-size: 13.5px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+}
+
+.alert i {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #14532d;
+}
+
+.alert-danger {
+    background: #fff1f2;
+    border-color: #fecdd3;
+    color: #9f1239;
+}
+
+.alert-warning {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.alert-info {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1e3a8a;
+}
+
+/* ============================================================
+   BOOTSTRAP OVERRIDES — Badges
+   ============================================================ */
+
+.badge {
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: .3px;
+}
+
+/* ============================================================
+   DASHBOARD STAT CARDS (3 col grid)
+   ============================================================ */
+
+.row.g-3 {
+    align-items: stretch !important;
+}
+
+.row.g-3>.col-md-4 {
+    display: flex !important;
+}
+
+.stat-card {
+    width: 100% !important;
+    min-height: 92px !important;
+    background: var(--pk-surface) !important;
+    border: 1px solid var(--pk-border) !important;
+    border-radius: var(--pk-radius) !important;
+    padding: 18px 16px !important;
+    box-shadow: var(--pk-shadow-sm) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 6px !important;
+    transition: transform var(--pk-transition), box-shadow var(--pk-transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--pk-shadow) !important;
+}
+
+.stat-value {
+    order: 2 !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    color: var(--pk-primary) !important;
+    line-height: 1.3 !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.stat-label {
+    order: 1 !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .6px !important;
+    color: var(--pk-muted) !important;
+}
+
+/* ============================================================
+   DASHBOARD PAGE HEADER
+   ============================================================ */
+
+/* The flex row with warung name + action buttons */
+.content-box>.d-flex.justify-content-between:first-child h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--pk-text);
+}
+
+/* ============================================================
+   INFO TABLE (borderless table)
+   ============================================================ */
+
+.table-borderless td {
+    padding: 11px 0;
+    vertical-align: top;
+    font-size: 13.5px;
+    border: none !important;
+    border-top: 1px solid #f1f5f9 !important;
+}
+
+.table-borderless td.text-muted {
+    width: 160px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--pk-muted) !important;
+    padding-right: 16px;
+}
+
+h5.fw-bold {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--pk-text);
+}
+
+/* ============================================================
+   BOOTSTRAP TABLE — Menu Index & Cabang Table
+   ============================================================ */
+
+.table {
+    font-size: 13.5px;
+    margin: 0;
+}
+
+.table thead {
+    background: #f8fafc;
+}
+
+.table thead th {
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    color: var(--pk-muted);
+    border-bottom: 1px solid var(--pk-border) !important;
+    padding: 12px 14px;
+    white-space: nowrap;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background var(--pk-transition);
+}
+
+.table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background: #fafbfc;
+}
+
+.table td {
+    padding: 12px 14px;
+    vertical-align: middle;
+    color: var(--pk-text);
+    border-color: #f1f5f9 !important;
+}
+
+.table-responsive {
+    border-radius: var(--pk-radius-sm);
+    border: 1px solid var(--pk-border);
+    overflow: hidden;
+}
+
+/* ============================================================
+   BUTTONS (Bootstrap overrides)
+   ============================================================ */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: var(--pk-radius-sm) !important;
+    font-size: 13.5px;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all var(--pk-transition);
+    padding: 8px 16px;
+    line-height: 1.4;
+}
+
+.btn-sm {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+}
+
+.btn-success {
+    background: var(--pk-green) !important;
+    border-color: var(--pk-green) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, .2);
+}
+
+.btn-success:hover {
+    background: #047857 !important;
+    border-color: #047857 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(5, 150, 105, .28) !important;
+}
+
+.btn-warning {
+    background: var(--pk-primary) !important;
+    border-color: var(--pk-primary) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(217, 119, 6, .2);
+}
+
+.btn-warning:hover {
+    background: var(--pk-primary-dk) !important;
+    border-color: var(--pk-primary-dk) !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(217, 119, 6, .3) !important;
+}
+
+.btn-danger {
+    background: #fff1f2 !important;
+    border-color: #fecdd3 !important;
+    color: var(--pk-red) !important;
+}
+
+.btn-danger:hover {
+    background: var(--pk-red) !important;
+    border-color: var(--pk-red) !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+.btn-info {
+    background: var(--pk-blue-lt) !important;
+    border-color: var(--pk-blue-lt) !important;
+    color: var(--pk-blue) !important;
+}
+
+.btn-info:hover {
+    background: var(--pk-blue) !important;
+    border-color: var(--pk-blue) !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, .2);
+}
+
+.btn-primary:hover {
+    background: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(37, 99, 235, .3) !important;
+}
+
+.btn-secondary {
+    background: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: var(--pk-muted) !important;
+}
+
+.btn-secondary:hover {
+    background: #e2e8f0 !important;
+    color: var(--pk-text) !important;
+}
+
+/* ============================================================
+   FORMS (Bootstrap overrides)
+   ============================================================ */
+
+.form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--pk-text);
+    margin-bottom: 6px;
+}
+
+.form-control,
+.form-select {
+    border-radius: var(--pk-radius-sm) !important;
+    border-color: var(--pk-border) !important;
+    font-size: 14px !important;
+    height: auto !important;
+    padding: 10px 14px !important;
+    transition: border-color var(--pk-transition), box-shadow var(--pk-transition) !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    color: var(--pk-text) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--pk-primary) !important;
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, .15) !important;
+    outline: none !important;
+}
+
+textarea.form-control {
+    height: auto !important;
+    resize: vertical;
+}
+
+.form-check-input:checked {
+    background-color: var(--pk-primary) !important;
+    border-color: var(--pk-primary) !important;
+}
+
+/* Photo thumbnail in form */
+.content-box img[style*="width:100px"] {
+    border-radius: 12px;
+    border: 2px solid var(--pk-border);
+}
+
+.content-box img[style*="width:60px"] {
+    border-radius: 10px;
+    border: 2px solid var(--pk-border);
+}
+
+/* ============================================================
+   SECTION SEPARATOR (cabang warung header)
+   ============================================================ */
+
+.border-top {
+    border-color: var(--pk-border) !important;
+}
+
+/* ============================================================
+   ROUNDED PILL BUTTON (tambah cabang)
+   ============================================================ */
+
+.btn.rounded-pill {
+    border-radius: 999px !important;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1024px) {
+    :root {
+        --pk-sidebar-w: 72px;
+    }
+
+    .sidebar-header {
+        justify-content: center;
+        padding: 20px 0;
+    }
+
+    .sidebar-header img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .sidebar-header h3,
+    .sidebar-header>span {
+        display: none;
+    }
+
+    .sidebar-menu a {
+        justify-content: center;
+        padding: 14px;
+    }
+
+    .sidebar-menu a span {
+        display: none;
+    }
+
+    .sidebar-menu a.active::before {
+        display: none;
+    }
+
+    .sidebar-menu a i {
+        width: auto;
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .topbar {
+        padding: 0 16px;
+        height: auto;
+        min-height: 60px;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .profile {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .profile>span {
+        display: none;
+    }
+
+    .main-content {
+        padding: 16px;
+    }
+
+    .content-box {
+        padding: 18px;
+    }
+}

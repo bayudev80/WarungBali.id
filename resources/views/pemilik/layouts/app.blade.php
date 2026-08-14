@@ -20,6 +20,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Pemilik Dashboard CSS (load last to override Bootstrap) -->
+    <link rel="stylesheet" href="{{ asset('css/pemilik.css') }}?v={{ file_exists(public_path('css/pemilik.css')) ? filemtime(public_path('css/pemilik.css')) : time() }}">
 </head>
 
 <body>
@@ -70,6 +73,7 @@
         </nav>
 
     </aside>
+
 
     <!-- Content -->
     <div class="content">

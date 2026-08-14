@@ -4,14 +4,14 @@
 
 .hero {
     position: relative;
-    min-height: 85vh;
+    min-height: 96vh;
     background-image: url("/images/hero.jpeg");
     background-size: cover;
-    background-position: center;
+    background-position: top center;
     background-repeat: no-repeat;
     display: flex;
     align-items: center;
-    padding: 80px 0 100px;
+    padding: 80px 0 60px;
 }
 
 .hero-overlay {
@@ -50,6 +50,7 @@
     font-size: 46px;
     font-weight: 800;
     letter-spacing: -0.03em;
+    margin-top: 0;
     margin-bottom: 0;
     line-height: 1.15;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -74,7 +75,7 @@
     line-height: 1.75;
     letter-spacing: -0.01em;
     max-width: 720px;
-    margin: auto;
+    margin: 0 auto 28px;
 }
 
 /* ===========================
@@ -199,8 +200,8 @@
 
 @media (max-width: 768px) {
     .hero {
-        min-height: 70vh;
-        padding: 60px 0 80px;
+        min-height: 85vh;
+        padding: 60px 0 50px;
     }
 
     .hero h1 {
