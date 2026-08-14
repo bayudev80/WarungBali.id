@@ -8,23 +8,23 @@
     <div class="hero-slider">
 
         <div class="hero-slide active"
-            style="background-image:url('{{ asset('images/hero1.jpeg') }}')">
+            style="background-image:url('{{ asset('images/hero1.png') }}')">
         </div>
 
         <div class="hero-slide"
-            style="background-image:url('{{ asset('images/hero2.jpeg') }}')">
+            style="background-image:url('{{ asset('images/hero2.png') }}')">
         </div>
 
         <div class="hero-slide"
-            style="background-image:url('{{ asset('images/hero3.jpeg') }}')">
+            style="background-image:url('{{ asset('images/hero3.png') }}')">
         </div>
 
         <div class="hero-slide"
-            style="background-image:url('{{ asset('images/hero4.jpeg') }}')">
+            style="background-image:url('{{ asset('images/hero4.png') }}')">
         </div>
 
         <div class="hero-slide"
-            style="background-image:url('{{ asset('images/hero.jpeg') }}')">
+            style="background-image:url('{{ asset('images/hero5.png') }}')">
         </div>
 
     </div>
@@ -395,15 +395,29 @@
     // di tiap link) supaya tetap jalan meski link-nya diganti baru
     // setiap kali #warung-hasil di-render ulang.
 
-    function updateActiveCategoryCards(urlStr) {
+    // State filter aktif — selalu disinkronkan dengan URL saat ini agar
+    // form pencarian bisa membaca kategori/kabupaten yang sedang aktif,
+    // termasuk saat kategori aktif via path (/kategori/slug), bukan query string.
+    const activeFilters = {
+        kategori: '',
+        kabupaten: '',
+        urutan: '',
+    };
+
+    function syncActiveFiltersFromUrl(urlStr) {
         if (!urlStr) return;
         try {
             const urlObj = new URL(urlStr, window.location.href);
-            let katId = urlObj.searchParams.get('kategori') || '';
-            const path = urlObj.pathname;
+            const qs = urlObj.searchParams;
 
-            if (!katId && path.includes('/kategori/')) {
-                const slug = path.split('/kategori/')[1]?.split('?')[0];
+            // Kabupaten dan urutan selalu di query string
+            activeFilters.kabupaten = qs.get('kabupaten') || '';
+            activeFilters.urutan    = qs.get('urutan')    || '';
+
+            // Kategori: cek query string dulu, lalu cek path /kategori/slug
+            let katId = qs.get('kategori') || '';
+            if (!katId && urlObj.pathname.includes('/kategori/')) {
+                const slug = urlObj.pathname.split('/kategori/')[1]?.split('?')[0];
                 if (slug) {
                     const matchedLink = document.querySelector(`.kategori-ajax-link[data-kategori-slug="${slug}"]`);
                     if (matchedLink) {
@@ -411,6 +425,17 @@
                     }
                 }
             }
+            activeFilters.kategori = katId;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function updateActiveCategoryCards(urlStr) {
+        if (!urlStr) return;
+        try {
+            syncActiveFiltersFromUrl(urlStr);
+            const katId = activeFilters.kategori;
 
             document.querySelectorAll('.kategori-item').forEach(item => {
                 const link = item.querySelector('.kategori-ajax-link');
@@ -476,6 +501,9 @@
             });
     }
 
+    // Inisialisasi state filter dari URL awal saat halaman pertama dibuka
+    syncActiveFiltersFromUrl(window.location.href);
+
     // Form pencarian hero
     const heroSearchForm = document.querySelector('.hero-search');
     if (heroSearchForm) {
@@ -483,9 +511,19 @@
             e.preventDefault();
             const input = heroSearchForm.querySelector('input[name="search"]');
             const params = new URLSearchParams();
+
+            // Pertahankan filter aktif (baca dari activeFilters yang selalu
+            // sinkron dengan URL — termasuk saat kategori aktif via path
+            // /kategori/slug, bukan hanya via ?kategori= query string).
+            if (activeFilters.kabupaten) params.set('kabupaten', activeFilters.kabupaten);
+            if (activeFilters.urutan)    params.set('urutan',    activeFilters.urutan);
+            if (activeFilters.kategori)  params.set('kategori',  activeFilters.kategori);
+
+            // Set/hapus kata kunci pencarian
             if (input && input.value.trim() !== '') {
                 params.set('search', input.value.trim());
             }
+
             const url = '{{ route("home") }}' + (params.toString() ? '?' + params.toString() : '');
             muatHasilWarung(url);
         });
