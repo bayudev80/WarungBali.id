@@ -284,151 +284,6 @@
 
                     </div>
 
-                    {{-- Modal detail untuk setiap cabang -- wajib ada di DOM
-                         agar tombol "Lihat Detail" bisa membukanya meski
-                         cabang tidak tampil sebagai card terpisah di halaman. --}}
-                    @foreach($item->cabang as $cabang)
-                      <div class="modal fade" id="detail{{ $cabang->id_warung }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                          <div class="modal-content border-0 rounded-4 overflow-hidden">
-
-                            <div class="position-relative">
-                              <img src="{{ asset('images/warung/'.$cabang->foto) }}" class="w-100" style="height:200px;object-fit:cover;">
-                              <button type="button" class="btn btn-light rounded-circle position-absolute top-0 end-0 m-2"
-                                data-bs-dismiss="modal" style="width:38px;height:38px;font-size:0.8rem;">✕</button>
-                              <div class="position-absolute bottom-0 start-0 p-3 text-white w-100"
-                                style="background:linear-gradient(transparent,rgba(0,0,0,.75));">
-                                <h5 class="fw-bold mb-2">{{ $cabang->nama_warung }}</h5>
-                                <div class="d-flex flex-wrap gap-4">
-                                  <div>
-                                    @if($cabang->review->count() > 0)
-                                      <i class="bi bi-star-fill text-warning me-1"></i>
-                                      <strong>{{ number_format($cabang->review->avg('rating'), 1) }}</strong>
-                                      <span class="text-light">({{ $cabang->review->count() }} Ulasan)</span>
-                                    @else
-                                      <i class="bi bi-star text-warning me-1"></i>
-                                      <strong>0.0</strong>
-                                      <span class="text-light">(Belum ada ulasan)</span>
-                                    @endif
-                                  </div>
-                                  <div>
-                                    <i class="bi bi-clock me-1 text-light"></i>
-                                    {{ substr($cabang->jam_buka,0,5) }} - {{ substr($cabang->jam_tutup,0,5) }}
-                                  </div>
-                                  <div>
-                                    @if($cabang->wa_link)
-                                      <a href="{{ $cabang->wa_link }}" target="_blank" rel="noopener" class="text-white text-decoration-none">
-                                        <i class="fa-brands fa-whatsapp"></i> {{ $cabang->telepon }}
-                                      </a>
-                                    @else
-                                      <i class="bi bi-telephone-fill me-1 text-light"></i> Belum tersedia
-                                    @endif
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="modal-body p-3">
-                              <ul class="nav nav-tabs mb-4">
-                                <li class="nav-item">
-                                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#info{{ $cabang->id_warung }}">Informasi</button>
-                                </li>
-                                <li class="nav-item">
-                                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#menu{{ $cabang->id_warung }}">Menu</button>
-                                </li>
-                                <li class="nav-item">
-                                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#review{{ $cabang->id_warung }}">Ulasan</button>
-                                </li>
-                              </ul>
-
-                              <div class="tab-content">
-
-                                <div class="tab-pane fade show active" id="info{{ $cabang->id_warung }}">
-                                  <p class="text-secondary" style="font-size:0.9rem;">{{ $cabang->deskripsi }}</p>
-                                  <div class="rounded-3 p-3 mt-3" style="background:#FFF8EC;">
-                                    <p class="mb-3">
-                                      <i class="bi bi-geo-alt-fill text-danger me-1"></i>
-                                      {{ $cabang->alamat }}<br>
-                                      <a href="{{ $cabang->maps_link }}" target="_blank" rel="noopener" class="text-warning fw-bold">
-                                        <i class="fa-solid fa-map-location-dot"></i> Buka di Google Maps
-                                      </a>
-                                    </p>
-                                    <p class="mb-3">
-                                      <i class="bi bi-clock me-1 text-muted"></i>
-                                      {{ substr($cabang->jam_buka,0,5) }} - {{ substr($cabang->jam_tutup,0,5) }}
-                                    </p>
-                                    <p class="mb-3">
-                                      @if($cabang->wa_link)
-                                        <a href="{{ $cabang->wa_link }}" target="_blank" rel="noopener" class="text-success fw-bold">
-                                          <i class="fa-brands fa-whatsapp"></i> {{ $cabang->telepon }}
-                                        </a>
-                                      @else
-                                        <i class="bi bi-telephone-fill me-1 text-muted"></i> Belum tersedia
-                                      @endif
-                                    </p>
-                                    <hr>
-                                    <p class="mb-0">
-                                      <i class="bi bi-shop me-1 text-warning"></i>
-                                      <strong>Cabang dari</strong><br>
-                                      Warung ini adalah cabang dari
-                                      <a href="#" class="fw-bold text-warning btn-lihat-cabang"
-                                         data-cabang-target="#detail{{ $item->id_warung }}">
-                                        {{ $item->nama_warung }}
-                                      </a>.
-                                    </p>
-                                  </div>
-                                </div>
-
-                                <div class="tab-pane fade" id="menu{{ $cabang->id_warung }}">
-                                  <div class="row g-4 mt-3">
-                                    @forelse($cabang->menu_tampil as $menu)
-                                    <div class="col-md-6">
-                                      <div class="card border-0 shadow-sm rounded-4 h-100">
-                                        <img src="{{ asset('images/menu/'.$menu->foto_menu) }}" class="card-img-top"
-                                          style="height:180px;object-fit:cover;" alt="{{ $menu->nama_menu }}">
-                                        <div class="card-body">
-                                          <h5 class="fw-bold">{{ $menu->nama_menu }}</h5>
-                                          <p class="text-secondary">{{ $menu->deskripsi }}</p>
-                                          <h5 class="text-warning fw-bold">Rp{{ number_format($menu->harga,0,',','.') }}</h5>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    @empty
-                                    <div class="col-12">
-                                      <div class="alert alert-warning text-center rounded-4">Belum ada menu.</div>
-                                    </div>
-                                    @endforelse
-                                  </div>
-                                </div>
-
-                                <div class="tab-pane fade" id="review{{ $cabang->id_warung }}">
-                                  <div class="mt-3">
-                                    @forelse($cabang->review as $rev)
-                                    <div class="border rounded-4 p-4 mb-3">
-                                      <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <strong><i class="bi bi-person-circle text-secondary me-1"></i>{{ $rev->user->nama }}</strong>
-                                        <small class="text-secondary">{{ date('d M Y', strtotime($rev->created_at)) }}</small>
-                                      </div>
-                                      <div class="mb-2">
-                                        @for($i=1;$i<=5;$i++)
-                                          <span class="{{ $i<=$rev->rating ? 'text-warning' : 'text-secondary' }} fs-5">{{ $i<=$rev->rating ? '★' : '☆' }}</span>
-                                        @endfor
-                                      </div>
-                                      <p class="mb-0">{{ $rev->komentar }}</p>
-                                    </div>
-                                    @empty
-                                    <div class="alert alert-warning rounded-4">Belum ada ulasan untuk cabang ini.</div>
-                                    @endforelse
-                                  </div>
-                                </div>
-
-                              </div>
-                            </div>
-
-                          </div>
-                        </div>
-                      </div>
-                    @endforeach
 
                   @endif
 
@@ -661,6 +516,154 @@
 
       </div>
       <!-- /modal fade -->
+
+      @if(!$item->is_cabang && $item->cabang->count() > 0)
+                    {{-- Modal detail untuk setiap cabang -- wajib ada di DOM
+                         agar tombol "Lihat Detail" bisa membukanya meski
+                         cabang tidak tampil sebagai card terpisah di halaman. --}}
+                    @foreach($item->cabang as $cabang)
+                      <div class="modal fade" id="detail{{ $cabang->id_warung }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                          <div class="modal-content border-0 rounded-4 overflow-hidden">
+
+                            <div class="position-relative">
+                              <img src="{{ asset('images/warung/'.$cabang->foto) }}" class="w-100" style="height:200px;object-fit:cover;">
+                              <button type="button" class="btn btn-light rounded-circle position-absolute top-0 end-0 m-2"
+                                data-bs-dismiss="modal" style="width:38px;height:38px;font-size:0.8rem;">✕</button>
+                              <div class="position-absolute bottom-0 start-0 p-3 text-white w-100"
+                                style="background:linear-gradient(transparent,rgba(0,0,0,.75));">
+                                <h5 class="fw-bold mb-2">{{ $cabang->nama_warung }}</h5>
+                                <div class="d-flex flex-wrap gap-4">
+                                  <div>
+                                    @if($cabang->review->count() > 0)
+                                      <i class="bi bi-star-fill text-warning me-1"></i>
+                                      <strong>{{ number_format($cabang->review->avg('rating'), 1) }}</strong>
+                                      <span class="text-light">({{ $cabang->review->count() }} Ulasan)</span>
+                                    @else
+                                      <i class="bi bi-star text-warning me-1"></i>
+                                      <strong>0.0</strong>
+                                      <span class="text-light">(Belum ada ulasan)</span>
+                                    @endif
+                                  </div>
+                                  <div>
+                                    <i class="bi bi-clock me-1 text-light"></i>
+                                    {{ substr($cabang->jam_buka,0,5) }} - {{ substr($cabang->jam_tutup,0,5) }}
+                                  </div>
+                                  <div>
+                                    @if($cabang->wa_link)
+                                      <a href="{{ $cabang->wa_link }}" target="_blank" rel="noopener" class="text-white text-decoration-none">
+                                        <i class="fa-brands fa-whatsapp"></i> {{ $cabang->telepon }}
+                                      </a>
+                                    @else
+                                      <i class="bi bi-telephone-fill me-1 text-light"></i> Belum tersedia
+                                    @endif
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="modal-body p-3">
+                              <ul class="nav nav-tabs mb-4">
+                                <li class="nav-item">
+                                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#info{{ $cabang->id_warung }}">Informasi</button>
+                                </li>
+                                <li class="nav-item">
+                                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#menu{{ $cabang->id_warung }}">Menu</button>
+                                </li>
+                                <li class="nav-item">
+                                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#review{{ $cabang->id_warung }}">Ulasan</button>
+                                </li>
+                              </ul>
+
+                              <div class="tab-content">
+
+                                <div class="tab-pane fade show active" id="info{{ $cabang->id_warung }}">
+                                  <p class="text-secondary" style="font-size:0.9rem;">{{ $cabang->deskripsi }}</p>
+                                  <div class="rounded-3 p-3 mt-3" style="background:#FFF8EC;">
+                                    <p class="mb-3">
+                                      <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                                      {{ $cabang->alamat }}<br>
+                                      <a href="{{ $cabang->maps_link }}" target="_blank" rel="noopener" class="text-warning fw-bold">
+                                        <i class="fa-solid fa-map-location-dot"></i> Buka di Google Maps
+                                      </a>
+                                    </p>
+                                    <p class="mb-3">
+                                      <i class="bi bi-clock me-1 text-muted"></i>
+                                      {{ substr($cabang->jam_buka,0,5) }} - {{ substr($cabang->jam_tutup,0,5) }}
+                                    </p>
+                                    <p class="mb-3">
+                                      @if($cabang->wa_link)
+                                        <a href="{{ $cabang->wa_link }}" target="_blank" rel="noopener" class="text-success fw-bold">
+                                          <i class="fa-brands fa-whatsapp"></i> {{ $cabang->telepon }}
+                                        </a>
+                                      @else
+                                        <i class="bi bi-telephone-fill me-1 text-muted"></i> Belum tersedia
+                                      @endif
+                                    </p>
+                                    <hr>
+                                    <p class="mb-0">
+                                      <i class="bi bi-shop me-1 text-warning"></i>
+                                      <strong>Cabang dari</strong><br>
+                                      Warung ini adalah cabang dari
+                                      <a href="#" class="fw-bold text-warning btn-lihat-cabang"
+                                         data-cabang-target="#detail{{ $item->id_warung }}">
+                                        {{ $item->nama_warung }}
+                                      </a>.
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="menu{{ $cabang->id_warung }}">
+                                  <div class="row g-4 mt-3">
+                                    @forelse($cabang->menu_tampil as $menu)
+                                    <div class="col-md-6">
+                                      <div class="card border-0 shadow-sm rounded-4 h-100">
+                                        <img src="{{ asset('images/menu/'.$menu->foto_menu) }}" class="card-img-top"
+                                          style="height:180px;object-fit:cover;" alt="{{ $menu->nama_menu }}">
+                                        <div class="card-body">
+                                          <h5 class="fw-bold">{{ $menu->nama_menu }}</h5>
+                                          <p class="text-secondary">{{ $menu->deskripsi }}</p>
+                                          <h5 class="text-warning fw-bold">Rp{{ number_format($menu->harga,0,',','.') }}</h5>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    @empty
+                                    <div class="col-12">
+                                      <div class="alert alert-warning text-center rounded-4">Belum ada menu.</div>
+                                    </div>
+                                    @endforelse
+                                  </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="review{{ $cabang->id_warung }}">
+                                  <div class="mt-3">
+                                    @forelse($cabang->review as $rev)
+                                    <div class="border rounded-4 p-4 mb-3">
+                                      <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <strong><i class="bi bi-person-circle text-secondary me-1"></i>{{ $rev->user->nama }}</strong>
+                                        <small class="text-secondary">{{ date('d M Y', strtotime($rev->created_at)) }}</small>
+                                      </div>
+                                      <div class="mb-2">
+                                        @for($i=1;$i<=5;$i++)
+                                          <span class="{{ $i<=$rev->rating ? 'text-warning' : 'text-secondary' }} fs-5">{{ $i<=$rev->rating ? '★' : '☆' }}</span>
+                                        @endfor
+                                      </div>
+                                      <p class="mb-0">{{ $rev->komentar }}</p>
+                                    </div>
+                                    @empty
+                                    <div class="alert alert-warning rounded-4">Belum ada ulasan untuk cabang ini.</div>
+                                    @endforelse
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    @endforeach
+      @endif
 
       @once
         <script>

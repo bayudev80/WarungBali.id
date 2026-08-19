@@ -67,6 +67,12 @@
                 <span>Pengguna</span>
             </a>
 
+            <a href="{{ route('admin.pemilik-akun.index') }}"
+                class="{{ request()->routeIs('admin.pemilik-akun.*') ? 'active' : '' }}">
+                <i class="bi bi-patch-check"></i>
+                <span>Kelola Akun Pemilik</span>
+            </a>
+
             <a href="{{ route('admin.review.index') }}"
                 class="{{ request()->routeIs('admin.review.*') ? 'active' : '' }}">
                 <i class="bi bi-star"></i>

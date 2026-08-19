@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -41,6 +42,22 @@ class LoginRequest extends FormRequest
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
+
+        // Akun pemilik warung yang baru daftar berstatus 'pending' sampai
+        // diverifikasi admin -- passwordnya diisi acak & tidak diberitahu
+        // ke siapa pun, jadi Auth::attempt() otomatis akan gagal juga.
+        // Tapi kita cek lebih dulu supaya pesannya jelas ("tunggu
+        // verifikasi"), bukan pesan generik "email/password salah" yang
+        // bikin bingung.
+        $user = User::where('email', $this->string('email'))->first();
+
+        if ($user && $user->status_akun === 'pending') {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda masih menunggu verifikasi admin. Anda akan menerima email berisi password login setelah akun diverifikasi.',
+            ]);
+        }
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());

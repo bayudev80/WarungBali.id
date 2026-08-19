@@ -77,6 +77,15 @@
                     </a>
                 </div>
 
+                <div class="text-center mt-2">
+                    <small class="text-muted">
+                        Punya warung dan mau didaftarkan?
+                        <a href="{{ route('pemilik.register') }}" class="text-decoration-none fw-semibold" style="color:#C85C2E;">
+                            Daftar sebagai Pemilik Warung
+                        </a>
+                    </small>
+                </div>
+
             </div>
 
         </div>

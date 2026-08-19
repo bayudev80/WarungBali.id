@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\FavoritController as AdminFavoritController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\PemilikAkunController;
 use App\Http\Controllers\Pemilik\DashboardController as PemilikDashboardController;
 use App\Http\Controllers\Pemilik\WarungController as PemilikWarungController;
 use App\Http\Controllers\Pemilik\MenuController as PemilikMenuController;
@@ -71,6 +72,14 @@ Route::middleware(['auth', 'role:admin'])
         });
 
         Route::resource('user', UserController::class);
+
+        // Verifikasi akun pemilik warung yang daftar lewat "Daftar sebagai
+        // Pemilik Warung". Sengaja terpisah dari approve/reject warung di
+        // atas -- lihat catatan di PemilikAkunController.
+        Route::get('pemilik-akun', [PemilikAkunController::class, 'index'])
+            ->name('pemilik-akun.index');
+        Route::patch('pemilik-akun/{id}/verifikasi', [PemilikAkunController::class, 'verifikasi'])
+            ->name('pemilik-akun.verifikasi');
 
         Route::get('review', [ReviewController::class, 'index'])
             ->name('review.index');
