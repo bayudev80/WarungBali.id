@@ -51,13 +51,13 @@
                 <a href="{{ route('pemilik.warung.edit') }}"
                     class="{{ request()->routeIs('pemilik.warung.*') ? 'active' : '' }}">
                     <i class="bi bi-shop"></i>
-                    <span>Warung Saya</span>
+                    <span>Kelola Warung</span>
                 </a>
 
                 <a href="{{ route('pemilik.menu.index') }}"
                     class="{{ request()->routeIs('pemilik.menu.*') ? 'active' : '' }}">
                     <i class="bi bi-menu-button-wide"></i>
-                    <span>Menu Saya</span>
+                    <span>Kelola Menu</span>
                 </a>
 
             @else

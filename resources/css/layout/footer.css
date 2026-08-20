@@ -1,3 +1,20 @@
 footer {
     margin-top: 80px;
 }
+
+.footer-link {
+    color: #9ca3af !important;
+    transition: all 0.25s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+}
+
+.footer-link:hover {
+    color: #ffc107 !important;
+    transform: translateX(4px);
+}
+
+.footer-link:hover i {
+    opacity: 1 !important;
+    color: #ffc107 !important;
+}

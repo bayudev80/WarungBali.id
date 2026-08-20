@@ -44,11 +44,20 @@
     --color-text-body: #4b3d36;
     --color-text-muted: #78655d;
     --color-bg-warm: #fff7ef;
+    --color-bg-page: #faf5ee;
 }
 
 body {
     font-family: var(--font-sans);
     color: var(--color-dark);
+    background-color: #FAF5EE;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(200, 92, 46, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(217, 119, 6, 0.05) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(254, 243, 230, 0.5) 0px, transparent 70%),
+        radial-gradient(at 100% 100%, rgba(200, 92, 46, 0.04) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(217, 119, 6, 0.04) 0px, transparent 50%);
+    background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -74,5 +83,3 @@ h1, h2, h3, h4, h5, h6,
 .font-sans {
     font-family: var(--font-sans) !important;
 }
-
-

@@ -49,14 +49,34 @@
 
 
       <form class="hero-search" method="GET" action="{{ route('home') }}">
+        <div class="hero-search-wrapper">
+            <div class="hero-search-input-group">
+                <i class="bi bi-search hero-search-icon"></i>
+                <input type="text" name="search" value="{{ request('search') }}"
+                  placeholder="Cari warung, kuliner, menu..."
+                  autocomplete="off">
+            </div>
 
-        <input type="text" name="search" value="{{ request('search') }}"
-          placeholder="Cari warung, kategori, atau lokasi...">
+            <div class="hero-search-divider"></div>
 
-        <button>
-          Cari
-        </button>
+            <div class="hero-search-select-group">
+                <i class="bi bi-geo-alt-fill hero-search-geo-icon"></i>
+                <select name="kabupaten" class="hero-search-select" aria-label="Pilih Kabupaten atau Kota">
+                    <option value="">Semua Wilayah</option>
+                    @if(isset($kabupatenList))
+                        @foreach($kabupatenList as $kab)
+                            <option value="{{ $kab->id_kabupaten }}" {{ (string)request('kabupaten') === (string)$kab->id_kabupaten ? 'selected' : '' }}>
+                                {{ $kab->nama_kabupaten }}
+                            </option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
 
+            <button type="submit" class="hero-search-btn">
+                <i class="bi bi-search me-1"></i> Cari
+            </button>
+        </div>
       </form>
 
 
@@ -93,7 +113,7 @@
     </div>
 </section>
 <!-- KATEGORI -->
-<section class="py-5 bg-light">
+<section class="py-5 bg-light" id="kategori-section">
 
   <div class="container">
 
@@ -354,7 +374,7 @@
     }
     .cta-warung-box {
         background: linear-gradient(rgba(30,20,15,.6), rgba(30,20,15,.6)),
-                    url('{{ asset('images/hero3.jpeg') }}') center/cover no-repeat;
+                    url('{{ asset('images/hero10.png') }}') center/cover no-repeat;
         border-radius: 24px;
         padding: 60px 50px;
         color: #fff;
@@ -484,6 +504,9 @@
                 if (heroSearchForm) {
                     const input = heroSearchForm.querySelector('input[name="search"]');
                     if (input) input.value = urlAjax.searchParams.get('search') || '';
+
+                    const select = heroSearchForm.querySelector('select[name="kabupaten"]');
+                    if (select) select.value = urlAjax.searchParams.get('kabupaten') || '';
                 }
 
                 initWarungSliders();
@@ -505,24 +528,35 @@
     if (heroSearchForm) {
         heroSearchForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            const input = heroSearchForm.querySelector('input[name="search"]');
+            const searchInput = heroSearchForm.querySelector('input[name="search"]');
+            const kabupatenSelect = heroSearchForm.querySelector('select[name="kabupaten"]');
             const params = new URLSearchParams();
 
-            // Pertahankan filter aktif (baca dari activeFilters yang selalu
-            // sinkron dengan URL — termasuk saat kategori aktif via path
-            // /kategori/slug, bukan hanya via ?kategori= query string).
-            if (activeFilters.kabupaten) params.set('kabupaten', activeFilters.kabupaten);
+            // Ambil kabupaten dari select form hero atau activeFilters
+            const selectedKab = kabupatenSelect ? kabupatenSelect.value : activeFilters.kabupaten;
+            if (selectedKab) {
+                params.set('kabupaten', selectedKab);
+                activeFilters.kabupaten = selectedKab;
+            }
+
             if (activeFilters.urutan)    params.set('urutan',    activeFilters.urutan);
             if (activeFilters.kategori)  params.set('kategori',  activeFilters.kategori);
 
-            // Set/hapus kata kunci pencarian
-            if (input && input.value.trim() !== '') {
-                params.set('search', input.value.trim());
+            // Set kata kunci pencarian
+            if (searchInput && searchInput.value.trim() !== '') {
+                params.set('search', searchInput.value.trim());
             }
 
             const url = '{{ route("home") }}' + (params.toString() ? '?' + params.toString() : '');
             muatHasilWarung(url);
         });
+
+        const kabupatenSelect = heroSearchForm.querySelector('select[name="kabupaten"]');
+        if (kabupatenSelect) {
+            kabupatenSelect.addEventListener('change', function() {
+                activeFilters.kabupaten = this.value;
+            });
+        }
     }
 
     // dalam #warung-hasil yang menunjuk balik ke route('home'), serta kategori links

@@ -92,6 +92,12 @@ class HomeController extends Controller
                        })
                        ->orWhereHas('kabupaten', function ($kabq) use ($word) {
                             $kabq->where('nama_kabupaten', 'like', "%{$word}%");
+                       })
+                       ->orWhereHas('menu', function ($mq) use ($word) {
+                            $mq->where('nama_menu', 'like', "%{$word}%");
+                       })
+                       ->orWhereHas('indukWarung.menu', function ($imq) use ($word) {
+                            $imq->where('nama_menu', 'like', "%{$word}%");
                        });
                 });
             }

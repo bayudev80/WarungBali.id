@@ -1,12 +1,419 @@
+/* ======================================
+   WARUNGBALI.ID — MODERN DETAIL MODAL
+====================================== */
+
 .modal-content {
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    background: #FAF6F0;
 }
 
-.modal-header {
+/* ---------- Header Image & Overlay ---------- */
+.detail-modal-hero {
+    position: relative;
+    height: 240px;
+    overflow: hidden;
+    background: #2D201C;
+}
+
+.detail-modal-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.detail-modal-hero:hover img {
+    transform: scale(1.04);
+}
+
+.detail-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(20, 10, 5, 0.2) 0%, rgba(20, 10, 5, 0.6) 50%, rgba(20, 10, 5, 0.95) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 22px 24px;
+    color: #ffffff;
+}
+
+.btn-close-modal {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-close-modal:hover {
+    background: rgba(255, 255, 255, 0.9);
+    color: #2D201C;
+    transform: scale(1.08);
+}
+
+.detail-cat-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255, 193, 7, 0.95);
+    color: #2D201C;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 50px;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+}
+
+.detail-modal-title {
+    font-family: var(--font-display, 'Outfit', 'Plus Jakarta Sans', sans-serif);
+    font-size: 26px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.detail-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    font-size: 13.5px;
+}
+
+.detail-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+/* ---------- Segmented Pill Tabs ---------- */
+.detail-nav-pills {
+    display: flex;
+    background: #EFE6DA;
+    padding: 6px;
+    border-radius: 50px;
+    gap: 6px;
     border: none;
 }
 
-.modal-body {
-    padding: 2rem;
+.detail-nav-pills .nav-link {
+    flex: 1;
+    border: none;
+    border-radius: 50px;
+    color: #6c5a52;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 9px 16px;
+    text-align: center;
+    transition: all 0.25s ease;
+    background: transparent;
+}
+
+.detail-nav-pills .nav-link:hover {
+    color: #C85C2E;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.detail-nav-pills .nav-link.active {
+    background: linear-gradient(135deg, #C85C2E, #D97706) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(200, 92, 46, 0.35);
+}
+
+/* ---------- Tab 1: Informasi Content Cards ---------- */
+.detail-desc-box {
+    background: #ffffff;
+    border: 1px solid rgba(200, 92, 46, 0.12);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.detail-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.detail-info-tile {
+    background: #ffffff;
+    border: 1px solid rgba(200, 92, 46, 0.1);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.detail-info-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(200, 92, 46, 0.08);
+}
+
+.detail-tile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.detail-tile-icon.icon-geo {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+.detail-tile-icon.icon-clock {
+    background: #FEF3C7;
+    color: #D97706;
+}
+
+.detail-tile-icon.icon-phone {
+    background: #DCFCE7;
+    color: #16A34A;
+}
+
+.detail-tile-icon.icon-price {
+    background: #FFEDD5;
+    color: #C85C2E;
+}
+
+.detail-tile-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.detail-tile-body h6 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #8c786e;
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+
+.detail-tile-body p {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2D201C;
+    margin-bottom: 0;
+}
+
+/* Badge Tags */
+.detail-tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 12.5px;
+    font-weight: 600;
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
+.detail-tag-pill.tag-catering {
+    background: #ECFDF5;
+    color: #059669;
+    border: 1px solid #A7F3D0;
+}
+
+.detail-tag-pill.tag-highlight {
+    background: #FFFBEB;
+    color: #B45309;
+    border: 1px solid #FDE68A;
+}
+
+/* Cabang Container */
+.detail-cabang-box {
+    background: #FFF7ED;
+    border: 1px solid rgba(200, 92, 46, 0.18);
+    border-radius: 18px;
+    padding: 18px 20px;
+}
+
+.detail-cabang-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed rgba(200, 92, 46, 0.18);
+}
+
+.detail-cabang-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* ---------- Tab 2: Menu Cards ---------- */
+.detail-menu-card {
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(200, 92, 46, 0.1);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-menu-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.detail-menu-img-wrap {
+    position: relative;
+    height: 160px;
+    overflow: hidden;
+    background: #F5ECE1;
+}
+
+.detail-menu-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.detail-menu-card:hover .detail-menu-img-wrap img {
+    transform: scale(1.08);
+}
+
+.detail-menu-price-tag {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #C85C2E, #D97706);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.detail-menu-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-menu-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2D201C;
+    margin-bottom: 6px;
+}
+
+.detail-menu-desc {
+    font-size: 13px;
+    color: #78655d;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+/* ---------- Tab 3: Ulasan & Ratings ---------- */
+.detail-review-form-card {
+    background: #ffffff;
+    border: 1px solid rgba(200, 92, 46, 0.15);
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 4px 16px rgba(200, 92, 46, 0.06);
+}
+
+.detail-review-bubble {
+    background: #ffffff;
+    border: 1px solid rgba(200, 92, 46, 0.1);
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s ease;
+}
+
+.detail-review-bubble:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+.detail-avatar-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #C85C2E, #D97706);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+.btn-submit-review {
+    background: linear-gradient(135deg, #C85C2E, #D97706);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 24px;
+    box-shadow: 0 4px 12px rgba(200, 92, 46, 0.3);
+    transition: all 0.25s ease;
+}
+
+.btn-submit-review:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(200, 92, 46, 0.45);
+    color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .detail-modal-hero {
+        height: 200px;
+    }
+
+    .detail-modal-title {
+        font-size: 20px;
+    }
+
+    .detail-meta-row {
+        gap: 10px;
+        font-size: 12px;
+    }
+
+    .detail-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-nav-pills .nav-link {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
 }

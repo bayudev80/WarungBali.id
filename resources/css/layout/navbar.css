@@ -1,7 +1,274 @@
-.navbar {
-    transition: 0.35s;
+/* ======================================
+   MAIN NAVBAR — Transparent & Sticky Scrolled
+====================================== */
+
+.main-navbar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 1040 !important;
+    transition: background-color 0.3s ease, background 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, padding 0.3s ease;
 }
 
-.navbar:hover {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+/* Jarak atas otomatis hanya untuk halaman tanpa banner hero */
+body:not(.has-hero) {
+    padding-top: 72px;
+}
+
+/* =======================================================
+   1. STATE TRANSPARAN (Menyatu langsung dengan gambar Hero)
+======================================================= */
+.main-navbar.navbar-transparent {
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: none !important;
+}
+
+.main-navbar.navbar-transparent .navbar-brand-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: #ffffff !important;
+    letter-spacing: -0.5px;
+    transition: color 0.3s ease;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.main-navbar.navbar-transparent .navbar-brand-dot {
+    color: #f59e0b !important;
+    transition: color 0.3s ease;
+}
+
+.main-navbar.navbar-transparent .nav-custom-link {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.main-navbar.navbar-transparent .nav-custom-link:hover {
+    color: #ffc107 !important;
+    background: rgba(255, 255, 255, 0.18) !important;
+}
+
+.main-navbar.navbar-transparent .nav-custom-link.active {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.main-navbar.navbar-transparent .auth-divider {
+    border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.main-navbar.navbar-transparent .auth-link-text {
+    color: #ffffff !important;
+    font-size: 14px;
+    font-weight: 700;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.main-navbar.navbar-transparent .auth-link-text:hover {
+    color: #ffc107 !important;
+    transform: translateY(-1px);
+}
+
+.main-navbar.navbar-transparent .auth-btn-register {
+    color: #ffffff !important;
+    font-size: 13.5px;
+    font-weight: 600;
+    border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: all 0.3s ease;
+}
+
+.main-navbar.navbar-transparent .auth-btn-register:hover {
+    background: #ffffff !important;
+    color: #c85c2e !important;
+    border-color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.main-navbar.navbar-transparent .user-avatar-btn {
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 999px;
+    padding: 4px 12px 4px 4px;
+    transition: all 0.25s ease;
+}
+
+.main-navbar.navbar-transparent .user-avatar-btn:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
+.main-navbar.navbar-transparent .user-avatar-name {
+    color: #ffffff !important;
+    font-size: 14px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.main-navbar.navbar-transparent .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.main-navbar.navbar-transparent .navbar-toggler-icon {
+    filter: invert(1) brightness(2);
+}
+
+@media (max-width: 991.98px) {
+    .main-navbar.navbar-transparent .navbar-collapse {
+        background: rgba(25, 16, 12, 0.96) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 18px;
+        padding: 18px;
+        margin-top: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+    }
+}
+
+/* =======================================================
+   2. STATE SCROLLED (Saat scroll ke bawah, navbar tetap menempel di atas)
+======================================================= */
+.main-navbar.navbar-scrolled {
+    background: #FFF7EF !important;
+    background-color: #FFF7EF !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border-bottom: 1px solid rgba(200, 92, 46, 0.12) !important;
+    box-shadow: 0 4px 20px rgba(45, 32, 28, 0.08) !important;
+}
+
+.main-navbar.navbar-scrolled .navbar-brand-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: #2D201C !important;
+    letter-spacing: -0.5px;
+    transition: color 0.3s ease;
+    text-shadow: none !important;
+}
+
+.main-navbar.navbar-scrolled .navbar-brand-dot {
+    color: #C85C2E !important;
+    transition: color 0.3s ease;
+}
+
+.main-navbar.navbar-scrolled .nav-custom-link {
+    color: #4b3d36 !important;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-shadow: none !important;
+}
+
+.main-navbar.navbar-scrolled .nav-custom-link:hover {
+    color: #C85C2E !important;
+    background: rgba(200, 92, 46, 0.08) !important;
+}
+
+.main-navbar.navbar-scrolled .nav-custom-link.active {
+    background: #FCE8CC !important;
+    color: #C85C2E !important;
+    font-weight: 600;
+    border: 1px solid transparent;
+    text-shadow: none !important;
+}
+
+.main-navbar.navbar-scrolled .auth-divider {
+    border-color: rgba(45, 32, 28, 0.15) !important;
+}
+
+.main-navbar.navbar-scrolled .auth-link-text {
+    color: #2D201C !important;
+    font-size: 14px;
+    font-weight: 700;
+    transition: color 0.2s ease, transform 0.2s ease;
+    text-shadow: none !important;
+}
+
+.main-navbar.navbar-scrolled .auth-link-text:hover {
+    color: #C85C2E !important;
+    transform: translateY(-1px);
+}
+
+.main-navbar.navbar-scrolled .auth-btn-register {
+    color: #C85C2E !important;
+    font-size: 13.5px;
+    font-weight: 600;
+    border: 1.5px solid #C85C2E !important;
+    background: transparent !important;
+    transition: all 0.3s ease;
+}
+
+.main-navbar.navbar-scrolled .auth-btn-register:hover {
+    background: #C85C2E !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(200, 92, 46, 0.2);
+}
+
+.main-navbar.navbar-scrolled .user-avatar-btn {
+    gap: 8px;
+    background: #F3ECE4 !important;
+    border: 1px solid #E3D5C4 !important;
+    border-radius: 999px;
+    padding: 4px 12px 4px 4px;
+    transition: all 0.25s ease;
+}
+
+.main-navbar.navbar-scrolled .user-avatar-btn:hover {
+    background: #EBE1D6 !important;
+}
+
+.main-navbar.navbar-scrolled .user-avatar-name {
+    color: #2D201C !important;
+    font-size: 14px;
+    text-shadow: none !important;
+}
+
+.main-navbar.navbar-scrolled .navbar-toggler {
+    border-color: rgba(45, 32, 28, 0.2) !important;
+    background: transparent !important;
+}
+
+.main-navbar.navbar-scrolled .navbar-toggler-icon {
+    filter: none;
+}
+
+@media (max-width: 991.98px) {
+    .main-navbar.navbar-scrolled .navbar-collapse {
+        background: #FFF7EF !important;
+        border-radius: 18px;
+        padding: 18px;
+        margin-top: 10px;
+        border: 1px solid rgba(200, 92, 46, 0.12);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+}
+
+/* Tombol CTA Daftarkan Warung */
+.cta-warung-btn {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cta-warung-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(200, 92, 46, 0.35) !important;
 }
