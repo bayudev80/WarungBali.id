@@ -18,6 +18,7 @@ class User extends Authenticatable
     protected $fillable = [
         'nama',
         'email',
+        'google_id',
         'password',
         'role',
         'status_akun',
@@ -26,6 +27,7 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password',
+        'remember_token',
     ];
 
     public function review()

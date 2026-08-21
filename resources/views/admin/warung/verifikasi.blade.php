@@ -1,27 +1,57 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Verifikasi Warung')
+@section('title', 'Verifikasi Warung - Kelola Verifikasi')
 
 @section('content')
 
+{{-- Tab Switcher Verifikasi --}}
+<div class="verification-tabs-nav mb-4">
+    <a href="{{ route('admin.pemilik-akun.index') }}" class="verification-tab-item">
+        <i class="bi bi-person-badge tab-icon"></i>
+        <span>Verifikasi Akun Pemilik</span>
+        @if(isset($pendingAkunCount) && $pendingAkunCount > 0)
+            <span class="tab-badge">{{ $pendingAkunCount }}</span>
+        @endif
+    </a>
+
+    <div class="verification-tab-divider d-none d-sm-block"></div>
+
+    <a href="{{ route('admin.warung.verifikasi') }}" class="verification-tab-item active">
+        <i class="bi bi-shop-window tab-icon"></i>
+        <span>Verifikasi Warung</span>
+        @if(isset($pendingWarungCount) && $pendingWarungCount > 0)
+            <span class="tab-badge">{{ $pendingWarungCount }}</span>
+        @endif
+    </a>
+</div>
+
 <div class="content-box">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
 
         <div>
-            <h3 class="fw-bold mb-1">Verifikasi Warung</h3>
-            <p class="text-muted mb-0">Daftar pemilik warung yang mengajukan pendaftaran dan menunggu persetujuan.</p>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 rounded-2">
+                    <i class="bi bi-shop me-1"></i> Data Warung
+                </span>
+                <h3 class="fw-bold mb-0">Daftar Pengajuan Warung Menunggu Persetujuan</h3>
+            </div>
+            <p class="text-muted mb-0 small">
+                Pengajuan warung baru yang didaftarkan. Menyetujui pengajuan akan langsung menampilkan warung di website publik.
+            </p>
         </div>
 
-        <a href="{{ route('admin.warung.index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-shop"></i>
-            Semua Data Warung
+        <a href="{{ route('admin.warung.index') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Semua Data Warung
         </a>
 
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="alert alert-success d-flex align-items-center gap-2">
+            <i class="bi bi-check-circle-fill"></i>
+            <div>{{ session('success') }}</div>
+        </div>
     @endif
 
     <div class="table-responsive">

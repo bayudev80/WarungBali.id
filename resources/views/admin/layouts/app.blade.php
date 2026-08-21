@@ -26,6 +26,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Admin Dashboard CSS (load last to override Bootstrap & ensure sticky header) -->
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v={{ file_exists(public_path('css/admin.css')) ? filemtime(public_path('css/admin.css')) : time() }}">
 </head>
 
 <body>
@@ -56,7 +59,7 @@
             </a>
 
             <a href="{{ route('admin.warung.index') }}"
-                class="{{ request()->routeIs('admin.warung.*') ? 'active' : '' }}">
+                class="{{ (request()->routeIs('admin.warung.*') && !request()->routeIs('admin.warung.verifikasi')) ? 'active' : '' }}">
                 <i class="bi bi-shop"></i>
                 <span>Kelola Warung</span>
             </a>
@@ -67,11 +70,50 @@
                 <span>Kelola Pengguna</span>
             </a>
 
-            <a href="{{ route('admin.pemilik-akun.index') }}"
-                class="{{ request()->routeIs('admin.pemilik-akun.*') ? 'active' : '' }}">
-                <i class="bi bi-patch-check"></i>
-                <span>Kelola Akun Pemilik</span>
-            </a>
+            @php
+                $isVerifikasiActive = request()->routeIs('admin.pemilik-akun.*') || request()->routeIs('admin.warung.verifikasi');
+            @endphp
+            <div class="sidebar-dropdown {{ $isVerifikasiActive ? 'show' : '' }}">
+                <button type="button" class="sidebar-dropdown-toggle {{ $isVerifikasiActive ? 'active' : '' }}" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#menuVerifikasi" 
+                    aria-expanded="{{ $isVerifikasiActive ? 'true' : 'false' }}"
+                    aria-controls="menuVerifikasi">
+                    <div class="menu-left">
+                        <i class="bi bi-shield-check menu-icon"></i>
+                        <span>Kelola Verifikasi</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        @if(isset($totalPendingVerifikasi) && $totalPendingVerifikasi > 0)
+                            <span class="sidebar-badge">{{ $totalPendingVerifikasi }}</span>
+                        @endif
+                        <i class="bi bi-chevron-down chevron-icon"></i>
+                    </div>
+                </button>
+                <div class="collapse {{ $isVerifikasiActive ? 'show' : '' }}" id="menuVerifikasi">
+                    <div class="sidebar-submenu">
+                        <a href="{{ route('admin.pemilik-akun.index') }}"
+                            class="{{ request()->routeIs('admin.pemilik-akun.*') ? 'active' : '' }}">
+                            <i class="bi bi-person-badge"></i>
+                            <span class="flex-grow-1">Verifikasi Akun Pemilik</span>
+                            @if(isset($pendingAkunCount) && $pendingAkunCount > 0)
+                                <span class="sidebar-badge badge-sub">{{ $pendingAkunCount }}</span>
+                            @endif
+                        </a>
+
+                        <div class="sidebar-submenu-divider"></div>
+
+                        <a href="{{ route('admin.warung.verifikasi') }}"
+                            class="{{ request()->routeIs('admin.warung.verifikasi') ? 'active' : '' }}">
+                            <i class="bi bi-shop-window"></i>
+                            <span class="flex-grow-1">Verifikasi Warung</span>
+                            @if(isset($pendingWarungCount) && $pendingWarungCount > 0)
+                                <span class="sidebar-badge badge-sub">{{ $pendingWarungCount }}</span>
+                            @endif
+                        </a>
+                    </div>
+                </div>
+            </div>
 
             <a href="{{ route('admin.review.index') }}"
                 class="{{ request()->routeIs('admin.review.*') ? 'active' : '' }}">

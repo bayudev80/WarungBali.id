@@ -54,7 +54,7 @@ class ReviewController extends Controller
                 'nama'      => $user->nama,
                 'rating'    => $review->rating,
                 'komentar'  => $review->komentar,
-                'tanggal'   => $review->created_at->format('d M Y'),
+                'tanggal'   => $review->created_at ? \Carbon\Carbon::parse($review->created_at)->format('d M Y') : now()->format('d M Y'),
             ],
             'average_rating' => round($warung->review()->avg('rating'), 1),
             'total_review'   => $warung->review()->count(),

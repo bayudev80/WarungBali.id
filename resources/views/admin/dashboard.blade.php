@@ -15,24 +15,44 @@
 </div>
 
 {{-- ================= ALERT VERIFIKASI ================= --}}
-@if($jumlahWarungPending > 0)
+@php
+    $totalPendingVerifikasiAlert = ($jumlahWarungPending ?? 0) + ($pendingAkunCount ?? 0);
+@endphp
+@if($totalPendingVerifikasiAlert > 0)
 
-    <a href="{{ route('admin.warung.verifikasi') }}" class="dash-alert mb-4">
+    <div class="dash-alert mb-4">
 
         <div class="dash-alert-icon">
             <i class="bi bi-exclamation-triangle-fill"></i>
         </div>
 
         <div class="dash-alert-text">
-            <strong>{{ $jumlahWarungPending }} warung</strong> sedang menunggu verifikasi.
-            <span>Tinjau pendaftaran warung sebelum tampil ke publik.</span>
+            <strong>{{ $totalPendingVerifikasiAlert }} pengajuan</strong> sedang menunggu verifikasi admin.
+            <span>
+                @if(($jumlahWarungPending ?? 0) > 0 && ($pendingAkunCount ?? 0) > 0)
+                    {{ $pendingAkunCount }} akun pemilik & {{ $jumlahWarungPending }} warung baru butuh ditinjau.
+                @elseif(($pendingAkunCount ?? 0) > 0)
+                    {{ $pendingAkunCount }} akun pemilik baru butuh ditinjau dan diverifikasi.
+                @else
+                    {{ $jumlahWarungPending }} warung baru butuh persetujuan sebelum tampil ke publik.
+                @endif
+            </span>
         </div>
 
-        <div class="dash-alert-cta">
-            Tinjau Sekarang <i class="bi bi-arrow-right"></i>
+        <div class="dash-alert-cta ms-auto d-flex flex-wrap gap-2">
+            @if(($pendingAkunCount ?? 0) > 0)
+                <a href="{{ route('admin.pemilik-akun.index') }}" class="btn btn-sm btn-warning text-dark fw-bold px-3 py-1 rounded-3">
+                    <i class="bi bi-person-badge me-1"></i> Akun Pemilik ({{ $pendingAkunCount }})
+                </a>
+            @endif
+            @if(($jumlahWarungPending ?? 0) > 0)
+                <a href="{{ route('admin.warung.verifikasi') }}" class="btn btn-sm btn-dark text-white fw-bold px-3 py-1 rounded-3">
+                    <i class="bi bi-shop-window me-1"></i> Warung ({{ $jumlahWarungPending }})
+                </a>
+            @endif
         </div>
 
-    </a>
+    </div>
 
 @endif
 
@@ -292,28 +312,51 @@
     <h5>Aksi Cepat</h5>
 </div>
 
-<div class="quick-actions mb-2">
+<div class="quick-actions-wrapper mb-3">
+    <div class="quick-actions">
 
-    <a href="{{ route('admin.warung.verifikasi') }}" class="quick-action" style="--accent:#f4b400;">
-        <i class="bi bi-patch-check-fill"></i>
-        <span>Verifikasi Warung</span>
-    </a>
+        <a href="{{ route('admin.pemilik-akun.index') }}" class="quick-action" style="--accent:#ea580c;">
+            @if(isset($pendingAkunCount) && $pendingAkunCount > 0)
+                <span class="quick-action-badge">{{ $pendingAkunCount }}</span>
+            @endif
+            <i class="bi bi-person-check-fill"></i>
+            <span>Verifikasi Akun</span>
+        </a>
 
-    <a href="{{ route('admin.kategori.index') }}" class="quick-action" style="--accent:#7c3aed;">
-        <i class="bi bi-grid-fill"></i>
-        <span>Kelola Kategori</span>
-    </a>
+        <a href="{{ route('admin.warung.verifikasi') }}" class="quick-action" style="--accent:#f4b400;">
+            @if(isset($pendingWarungCount) && $pendingWarungCount > 0)
+                <span class="quick-action-badge">{{ $pendingWarungCount }}</span>
+            @endif
+            <i class="bi bi-shop-window"></i>
+            <span>Verifikasi Warung</span>
+        </a>
 
-    <a href="{{ route('admin.user.index') }}" class="quick-action" style="--accent:#2563eb;">
-        <i class="bi bi-people-fill"></i>
-        <span>Kelola Pengguna</span>
-    </a>
+        <a href="{{ route('admin.kategori.index') }}" class="quick-action" style="--accent:#7c3aed;">
+            <i class="bi bi-grid-fill"></i>
+            <span>Kelola Kategori</span>
+        </a>
 
-    <a href="{{ route('admin.review.index') }}" class="quick-action" style="--accent:#2e7d32;">
-        <i class="bi bi-star-fill"></i>
-        <span>Kelola Review</span>
-    </a>
+        <a href="{{ route('admin.warung.index') }}" class="quick-action" style="--accent:#059669;">
+            <i class="bi bi-shop"></i>
+            <span>Kelola Warung</span>
+        </a>
 
+        <a href="{{ route('admin.user.index') }}" class="quick-action" style="--accent:#2563eb;">
+            <i class="bi bi-people-fill"></i>
+            <span>Kelola Pengguna</span>
+        </a>
+
+        <a href="{{ route('admin.review.index') }}" class="quick-action" style="--accent:#2e7d32;">
+            <i class="bi bi-star-fill"></i>
+            <span>Kelola Review</span>
+        </a>
+
+        <a href="{{ route('admin.favorit.index') }}" class="quick-action" style="--accent:#e11d48;">
+            <i class="bi bi-heart-fill"></i>
+            <span>Kelola Favorit</span>
+        </a>
+
+    </div>
 </div>
 
 @endsection

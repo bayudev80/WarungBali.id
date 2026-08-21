@@ -7,29 +7,38 @@
 
     <div class="hero-slider">
 
-        <div class="hero-slide active"
-            style="background-image:url('{{ asset('images/hero1.png') }}')">
+        <div class="hero-slide active">
+            <img src="{{ asset('images/hero1.webp') }}" alt="Warung Bali 1" class="hero-slide-img" loading="eager" onerror="this.src='{{ asset('images/hero1.png') }}'">
         </div>
 
-        <div class="hero-slide"
-            style="background-image:url('{{ asset('images/hero2.png') }}')">
+        <div class="hero-slide">
+            <img src="{{ asset('images/hero2.webp') }}" alt="Warung Bali 2" class="hero-slide-img" loading="lazy" onerror="this.src='{{ asset('images/hero2.png') }}'">
         </div>
 
-        <div class="hero-slide"
-            style="background-image:url('{{ asset('images/hero3.png') }}')">
+        <div class="hero-slide">
+            <img src="{{ asset('images/hero3.webp') }}" alt="Warung Bali 3" class="hero-slide-img" loading="lazy" onerror="this.src='{{ asset('images/hero3.png') }}'">
         </div>
 
-        <div class="hero-slide"
-            style="background-image:url('{{ asset('images/hero4.png') }}')">
+        <div class="hero-slide">
+            <img src="{{ asset('images/hero4.webp') }}" alt="Warung Bali 4" class="hero-slide-img" loading="lazy" onerror="this.src='{{ asset('images/hero4.png') }}'">
         </div>
 
-        <div class="hero-slide"
-            style="background-image:url('{{ asset('images/hero5.png') }}')">
+        <div class="hero-slide">
+            <img src="{{ asset('images/hero5.webp') }}" alt="Warung Bali 5" class="hero-slide-img" loading="lazy" onerror="this.src='{{ asset('images/hero5.png') }}'">
         </div>
 
     </div>
 
     <div class="hero-overlay"></div>
+
+    <!-- Hero Slider Dots Indicators -->
+    <div class="hero-slider-dots">
+        <button type="button" class="hero-dot active" aria-label="Slide 1" data-index="0"></button>
+        <button type="button" class="hero-dot" aria-label="Slide 2" data-index="1"></button>
+        <button type="button" class="hero-dot" aria-label="Slide 3" data-index="2"></button>
+        <button type="button" class="hero-dot" aria-label="Slide 4" data-index="3"></button>
+        <button type="button" class="hero-dot" aria-label="Slide 5" data-index="4"></button>
+    </div>
 
     <div class="container position-relative">
 
@@ -696,26 +705,62 @@ window.addEventListener('resize', function () {
             document.querySelectorAll('.warung-dropdown-menu.is-open').forEach(m => m.classList.remove('is-open'));
         }
     });
-    // ===== Hero Slider =====
-document.addEventListener("DOMContentLoaded", function () {
+    // ===== Hero Slider (Zero-Stutter Dual-Layer Crossfade) =====
+    document.addEventListener("DOMContentLoaded", function () {
+        const slides = document.querySelectorAll(".hero-slide");
+        const dots = document.querySelectorAll(".hero-dot");
 
-    const slides = document.querySelectorAll(".hero-slide");
+        if (!slides.length) return;
 
-    if (!slides.length) return;
+        let currentIndex = 0;
+        let slideInterval;
+        const duration = 4500; // 4.5s per slide (lively & engaging)
 
-    let index = 0;
+        function goToSlide(nextIndex) {
+            if (nextIndex === currentIndex) return;
 
-    setInterval(() => {
+            const prevIndex = currentIndex;
+            currentIndex = (nextIndex + slides.length) % slides.length;
 
-        slides[index].classList.remove("active");
+            // Retain previous slide at z-index: 1 while new slide blooms at z-index: 2
+            slides.forEach(s => s.classList.remove("prev"));
+            slides[prevIndex].classList.add("prev");
+            slides[prevIndex].classList.remove("active");
 
-        index = (index + 1) % slides.length;
+            // Activate new slide
+            slides[currentIndex].classList.add("active");
 
-        slides[index].classList.add("active");
+            // Update dot indicators
+            dots.forEach((dot, i) => {
+                dot.classList.toggle("active", i === currentIndex);
+            });
 
-    }, 5000);
+            // Clean up previous slide layer after crossfade finishes (1.4s)
+            setTimeout(() => {
+                if (slides[prevIndex] && !slides[prevIndex].classList.contains("active")) {
+                    slides[prevIndex].classList.remove("prev");
+                }
+            }, 1400);
+        }
 
-});
+        function startSlideShow() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(() => {
+                goToSlide(currentIndex + 1);
+            }, duration);
+        }
+
+        // Add click events to dots
+        dots.forEach((dot, i) => {
+            dot.addEventListener("click", function () {
+                goToSlide(i);
+                startSlideShow();
+            });
+        });
+
+        // Initialize slider
+        startSlideShow();
+    });
 </script>
 
 @endsection

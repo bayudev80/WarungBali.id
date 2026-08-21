@@ -1,27 +1,53 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Kelola Akun Pemilik')
+@section('title', 'Verifikasi Akun Pemilik - Kelola Verifikasi')
 
 @section('content')
 
+{{-- Tab Switcher Verifikasi --}}
+<div class="verification-tabs-nav mb-4">
+    <a href="{{ route('admin.pemilik-akun.index') }}" class="verification-tab-item active">
+        <i class="bi bi-person-badge tab-icon"></i>
+        <span>Verifikasi Akun Pemilik</span>
+        @if(isset($pendingAkunCount) && $pendingAkunCount > 0)
+            <span class="tab-badge">{{ $pendingAkunCount }}</span>
+        @endif
+    </a>
+
+    <div class="verification-tab-divider d-none d-sm-block"></div>
+
+    <a href="{{ route('admin.warung.verifikasi') }}" class="verification-tab-item">
+        <i class="bi bi-shop-window tab-icon"></i>
+        <span>Verifikasi Warung</span>
+        @if(isset($pendingWarungCount) && $pendingWarungCount > 0)
+            <span class="tab-badge">{{ $pendingWarungCount }}</span>
+        @endif
+    </a>
+</div>
+
 <div class="content-box">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
 
         <div>
-            <h3 class="fw-bold mb-1">Kelola Akun Pemilik</h3>
-            <p class="text-muted mb-0">Akun yang daftar lewat "Daftar sebagai Pemilik Warung" dan menunggu verifikasi. Verifikasi di sini terpisah dari approve/reject warungnya di menu Data Warung.</p>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1 rounded-2">
+                    <i class="bi bi-person-check-fill me-1"></i> Akun Pemilik
+                </span>
+                <h3 class="fw-bold mb-0">Daftar Akun Pemilik Menunggu Verifikasi</h3>
+            </div>
+            <p class="text-muted mb-0 small">
+                Akun yang mendaftar lewat formulir pendaftaran pemilik. Verifikasi di sini akan mengaktifkan akun dan mengirimkan password login ke email pemilik.
+            </p>
         </div>
-
-        <a href="{{ route('admin.warung.verifikasi') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-shop"></i>
-            Verifikasi Warung
-        </a>
 
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="alert alert-success d-flex align-items-center gap-2">
+            <i class="bi bi-check-circle-fill"></i>
+            <div>{{ session('success') }}</div>
+        </div>
     @endif
 
     <div class="table-responsive">

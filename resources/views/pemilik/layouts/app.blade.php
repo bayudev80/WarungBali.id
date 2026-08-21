@@ -17,6 +17,12 @@
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    <!-- Google Fonts: Plus Jakarta Sans, Outfit, Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
+        rel="stylesheet">
+
     <!-- Font Awesome -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -87,26 +93,35 @@
                 </h4>
             </div>
 
-            <div class="profile">
+            <div class="profile dropdown">
 
-                <span>
-                    Halo,
-                    <strong>{{ Auth::user()->nama }}</strong>
-                </span>
+                <div class="d-flex align-items-center gap-3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="text-end d-none d-md-block">
+                        <span class="d-block fw-bold text-dark mb-0 lh-1" style="font-size: 14px;">{{ Auth::user()->nama }}</span>
+                        <span class="text-muted small" style="font-size: 12px;">Pemilik Warung</span>
+                    </div>
+                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm text-white" style="width: 42px; height: 42px; font-size: 16px; background-color: #C85C2E;">
+                        {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
+                    </div>
+                    <i class="bi bi-chevron-down text-muted small"></i>
+                </div>
 
-                <a href="{{ route('home') }}" class="btn-website">
-                    <i class="fa-solid fa-globe"></i>
-                    Website
-                </a>
-
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <button type="submit" class="btn-logout">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        Logout
-                    </button>
-                </form>
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2" style="min-width: 200px;">
+                    <li>
+                        <a class="dropdown-item py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('home') }}" target="_blank">
+                            <i class="bi bi-globe2"></i> Ke Website Utama
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider opacity-25"></li>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}" class="m-0">
+                            @csrf
+                            <button type="submit" class="dropdown-item py-2 d-flex align-items-center gap-2 text-danger fw-medium">
+                                <i class="bi bi-box-arrow-right"></i> Keluar
+                            </button>
+                        </form>
+                    </li>
+                </ul>
 
             </div>
 

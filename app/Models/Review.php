@@ -20,6 +20,13 @@ class Review extends Model
         'created_at'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime',
+        ];
+    }
+
     public function warung()
     {
         return $this->belongsTo(Warung::class, 'id_warung', 'id_warung');

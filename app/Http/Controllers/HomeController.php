@@ -128,12 +128,9 @@ class HomeController extends Controller
                 $query->orderByDesc('id_warung');
                 break;
 
+            case 'terjangkau':
             case 'termurah':
                 $query->orderBy('harga_min');
-                break;
-
-            case 'termahal':
-                $query->orderByDesc('harga_max');
                 break;
 
             case 'populer':
@@ -173,12 +170,11 @@ class HomeController extends Controller
     private function urutanOptions(): array
     {
         return [
-            'populer'  => ['label' => 'Terpopuler',       'icon' => 'bi-fire'],
-            'disukai'  => ['label' => 'Banyak Disukai',   'icon' => 'bi-heart-fill'],
-            'rating'   => ['label' => 'Rating Tertinggi', 'icon' => 'bi-star-fill'],
-            'terbaru'  => ['label' => 'Terbaru',          'icon' => 'bi-lightning-charge-fill'],
-            'termurah' => ['label' => 'Harga Termurah',   'icon' => 'bi-cash-coin'],
-            'termahal' => ['label' => 'Harga Termahal',   'icon' => 'bi-gem'],
+            'populer'    => ['label' => 'Terpopuler',        'icon' => 'bi-fire'],
+            'disukai'    => ['label' => 'Banyak Disukai',    'icon' => 'bi-heart-fill'],
+            'rating'     => ['label' => 'Rating Tertinggi',  'icon' => 'bi-star-fill'],
+            'terbaru'    => ['label' => 'Terbaru',           'icon' => 'bi-lightning-charge-fill'],
+            'terjangkau' => ['label' => 'Harga Terjangkau',  'icon' => 'bi-cash-coin'],
         ];
     }
 
@@ -298,4 +294,25 @@ class HomeController extends Controller
         return view('tentang', compact('tim'));
     }
 
+    public function randomWarung()
+    {
+        $warung = Warung::where('status', 'approved')->inRandomOrder()->first();
+
+        if (!$warung) {
+            return redirect()->route('home');
+        }
+
+        return redirect()->route('home', ['search' => $warung->nama_warung]);
+    }
+
+    public function kategoriRandom()
+    {
+        $kategori = Kategori::inRandomOrder()->first();
+
+        if (!$kategori) {
+            return redirect()->route('home');
+        }
+
+        return redirect()->route('kategori.show', $kategori->slug);
+    }
 }

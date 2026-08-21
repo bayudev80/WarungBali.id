@@ -94,12 +94,11 @@
 
     @php
         $urutanOptions = [
-            'populer'  => 'Terpopuler',
-            'disukai'  => 'Banyak Disukai',
-            'rating'   => 'Rating Tertinggi',
-            'terbaru'  => 'Terbaru',
-            'termurah' => 'Harga Termurah',
-            'termahal' => 'Harga Termahal',
+            'populer'    => 'Terpopuler',
+            'disukai'    => 'Banyak Disukai',
+            'rating'     => 'Rating Tertinggi',
+            'terbaru'    => 'Terbaru',
+            'terjangkau' => 'Harga Terjangkau',
         ];
     @endphp
 

@@ -6,39 +6,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800&display=swap');
 
 :root {
-    --pk-primary:     #d97706;
-    --pk-primary-dk:  #b45309;
-    --pk-primary-lt:  #fef3c7;
-    --pk-accent:      #f59e0b;
-    --pk-green:       #059669;
-    --pk-green-lt:    #d1fae5;
-    --pk-red:         #dc2626;
-    --pk-red-lt:      #fee2e2;
-    --pk-blue:        #3b82f6;
-    --pk-blue-lt:     #dbeafe;
+    --pk-primary: #d97706;
+    --pk-primary-dk: #b45309;
+    --pk-primary-lt: #fef3c7;
+    --pk-accent: #f59e0b;
+    --pk-green: #059669;
+    --pk-green-lt: #d1fae5;
+    --pk-red: #dc2626;
+    --pk-red-lt: #fee2e2;
+    --pk-blue: #3b82f6;
+    --pk-blue-lt: #dbeafe;
 
-    --pk-sidebar-w:   260px;
-    --pk-topbar-h:    68px;
+    --pk-sidebar-w: 260px;
+    --pk-topbar-h: 68px;
 
-    --pk-bg:          #f6f7fb;
-    --pk-surface:     #ffffff;
-    --pk-border:      #e9ecef;
-    --pk-text:        #1e293b;
-    --pk-muted:       #64748b;
-    --pk-shadow-sm:   0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-    --pk-shadow:      0 4px 20px rgba(0,0,0,.07);
-    --pk-shadow-lg:   0 12px 40px rgba(0,0,0,.10);
-    --pk-radius:      16px;
-    --pk-radius-sm:   10px;
-    --pk-radius-xs:   6px;
-    --pk-transition:  0.25s cubic-bezier(.4,0,.2,1);
+    --pk-bg: #f6f7fb;
+    --pk-surface: #ffffff;
+    --pk-border: #e9ecef;
+    --pk-text: #1e293b;
+    --pk-muted: #64748b;
+    --pk-shadow-sm: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
+    --pk-shadow: 0 4px 20px rgba(0, 0, 0, .07);
+    --pk-shadow-lg: 0 12px 40px rgba(0, 0, 0, .10);
+    --pk-radius: 16px;
+    --pk-radius-sm: 10px;
+    --pk-radius-xs: 6px;
+    --pk-transition: 0.25s cubic-bezier(.4, 0, .2, 1);
 }
 
 /* ============================================================
    BASE
    ============================================================ */
 
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
 
 body {
     background: var(--pk-bg);
@@ -73,7 +77,7 @@ body {
     top: 0;
     z-index: 900;
     height: var(--pk-topbar-h);
-    background: rgba(255,255,255,.92);
+    background: rgba(255, 255, 255, .92);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--pk-border);
@@ -104,7 +108,10 @@ body {
     white-space: nowrap;
 }
 
-.profile strong { color: var(--pk-text); font-weight: 700; }
+.profile strong {
+    color: var(--pk-text);
+    font-weight: 700;
+}
 
 /* Website button */
 .btn-website {
@@ -128,7 +135,7 @@ body {
     background: var(--pk-primary);
     color: #fff;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(217,119,6,.3);
+    box-shadow: 0 4px 12px rgba(217, 119, 6, .3);
 }
 
 /* Logout button */
@@ -153,7 +160,7 @@ body {
     background: var(--pk-red);
     color: #fff;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(220,38,38,.25);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, .25);
 }
 
 /* ============================================================
@@ -192,7 +199,10 @@ body {
     border: 1px solid transparent;
 }
 
-.alert i { flex-shrink: 0; margin-top: 1px; }
+.alert i {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
 
 .alert-success {
     background: #f0fdf4;
@@ -234,37 +244,55 @@ body {
    DASHBOARD STAT CARDS (3 col grid)
    ============================================================ */
 
-/* Override the plain "border rounded-3" used in dashboard.blade */
-.row.g-3 > .col-md-4 > .border {
-    background: var(--pk-surface);
+.row.g-3 {
+    align-items: stretch !important;
+}
+
+.row.g-3>.col-md-4 {
+    display: flex !important;
+}
+
+.stat-card {
+    width: 100% !important;
+    min-height: 92px !important;
+    background: var(--pk-surface) !important;
     border: 1px solid var(--pk-border) !important;
     border-radius: var(--pk-radius) !important;
-    padding: 20px 22px !important;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    box-shadow: var(--pk-shadow-sm);
+    padding: 18px 16px !important;
+    box-shadow: var(--pk-shadow-sm) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 6px !important;
     transition: transform var(--pk-transition), box-shadow var(--pk-transition);
 }
 
-.row.g-3 > .col-md-4 > .border:hover {
+.stat-card:hover {
     transform: translateY(-3px);
-    box-shadow: var(--pk-shadow);
+    box-shadow: var(--pk-shadow) !important;
 }
 
-.row.g-3 > .col-md-4 > .border .fs-4 {
-    font-size: 1.5rem !important;
-    font-weight: 800;
-    color: var(--pk-primary);
-    line-height: 1.1;
+.stat-value {
+    order: 2 !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    color: var(--pk-primary) !important;
+    line-height: 1.3 !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
-.row.g-3 > .col-md-4 > .border .text-muted {
-    font-size: 12.5px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    margin-top: 3px;
+.stat-label {
+    order: 1 !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .6px !important;
+    color: var(--pk-muted) !important;
 }
 
 /* ============================================================
@@ -272,7 +300,7 @@ body {
    ============================================================ */
 
 /* The flex row with warung name + action buttons */
-.content-box > .d-flex.justify-content-between:first-child h3 {
+.content-box>.d-flex.justify-content-between:first-child h3 {
     font-size: 1.4rem;
     font-weight: 800;
     color: var(--pk-text);
@@ -300,7 +328,11 @@ body {
     padding-right: 16px;
 }
 
-h5.fw-bold { font-size: 1rem; font-weight: 700; color: var(--pk-text); }
+h5.fw-bold {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--pk-text);
+}
 
 /* ============================================================
    BOOTSTRAP TABLE — Menu Index & Cabang Table
@@ -331,8 +363,13 @@ h5.fw-bold { font-size: 1rem; font-weight: 700; color: var(--pk-text); }
     transition: background var(--pk-transition);
 }
 
-.table tbody tr:last-child { border-bottom: none; }
-.table tbody tr:hover { background: #fafbfc; }
+.table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background: #fafbfc;
+}
 
 .table td {
     padding: 12px 14px;
@@ -373,27 +410,29 @@ h5.fw-bold { font-size: 1rem; font-weight: 700; color: var(--pk-text); }
     background: var(--pk-green) !important;
     border-color: var(--pk-green) !important;
     color: #fff !important;
-    box-shadow: 0 2px 8px rgba(5,150,105,.2);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, .2);
 }
+
 .btn-success:hover {
     background: #047857 !important;
     border-color: #047857 !important;
     transform: translateY(-1px);
-    box-shadow: 0 5px 14px rgba(5,150,105,.28) !important;
+    box-shadow: 0 5px 14px rgba(5, 150, 105, .28) !important;
 }
 
 .btn-warning {
     background: var(--pk-primary) !important;
     border-color: var(--pk-primary) !important;
     color: #fff !important;
-    box-shadow: 0 2px 8px rgba(217,119,6,.2);
+    box-shadow: 0 2px 8px rgba(217, 119, 6, .2);
 }
+
 .btn-warning:hover {
     background: var(--pk-primary-dk) !important;
     border-color: var(--pk-primary-dk) !important;
     color: #fff !important;
     transform: translateY(-1px);
-    box-shadow: 0 5px 14px rgba(217,119,6,.3) !important;
+    box-shadow: 0 5px 14px rgba(217, 119, 6, .3) !important;
 }
 
 .btn-danger {
@@ -401,6 +440,7 @@ h5.fw-bold { font-size: 1rem; font-weight: 700; color: var(--pk-text); }
     border-color: #fecdd3 !important;
     color: var(--pk-red) !important;
 }
+
 .btn-danger:hover {
     background: var(--pk-red) !important;
     border-color: var(--pk-red) !important;
@@ -413,6 +453,7 @@ h5.fw-bold { font-size: 1rem; font-weight: 700; color: var(--pk-text); }
     border-color: var(--pk-blue-lt) !important;
     color: var(--pk-blue) !important;
 }
+
 .btn-info:hover {
     background: var(--pk-blue) !important;
     border-color: var(--pk-blue) !important;
@@ -424,13 +465,14 @@ h5.fw-bold { font-size: 1rem; font-weight: 700; color: var(--pk-text); }
     background: #2563eb !important;
     border-color: #2563eb !important;
     color: #fff !important;
-    box-shadow: 0 2px 8px rgba(37,99,235,.2);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, .2);
 }
+
 .btn-primary:hover {
     background: #1d4ed8 !important;
     border-color: #1d4ed8 !important;
     transform: translateY(-1px);
-    box-shadow: 0 5px 14px rgba(37,99,235,.3) !important;
+    box-shadow: 0 5px 14px rgba(37, 99, 235, .3) !important;
 }
 
 .btn-secondary {
@@ -438,6 +480,7 @@ h5.fw-bold { font-size: 1rem; font-weight: 700; color: var(--pk-text); }
     border-color: #e2e8f0 !important;
     color: var(--pk-muted) !important;
 }
+
 .btn-secondary:hover {
     background: #e2e8f0 !important;
     color: var(--pk-text) !important;
@@ -454,7 +497,8 @@ h5.fw-bold { font-size: 1rem; font-weight: 700; color: var(--pk-text); }
     margin-bottom: 6px;
 }
 
-.form-control, .form-select {
+.form-control,
+.form-select {
     border-radius: var(--pk-radius-sm) !important;
     border-color: var(--pk-border) !important;
     font-size: 14px !important;
@@ -465,13 +509,17 @@ h5.fw-bold { font-size: 1rem; font-weight: 700; color: var(--pk-text); }
     color: var(--pk-text) !important;
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
     border-color: var(--pk-primary) !important;
-    box-shadow: 0 0 0 3px rgba(217,119,6,.15) !important;
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, .15) !important;
     outline: none !important;
 }
 
-textarea.form-control { height: auto !important; resize: vertical; }
+textarea.form-control {
+    height: auto !important;
+    resize: vertical;
+}
 
 .form-check-input:checked {
     background-color: var(--pk-primary) !important;
@@ -493,7 +541,9 @@ textarea.form-control { height: auto !important; resize: vertical; }
    SECTION SEPARATOR (cabang warung header)
    ============================================================ */
 
-.border-top { border-color: var(--pk-border) !important; }
+.border-top {
+    border-color: var(--pk-border) !important;
+}
 
 /* ============================================================
    ROUNDED PILL BUTTON (tambah cabang)
@@ -508,26 +558,42 @@ textarea.form-control { height: auto !important; resize: vertical; }
    ============================================================ */
 
 @media (max-width: 1024px) {
-    :root { --pk-sidebar-w: 72px; }
+    :root {
+        --pk-sidebar-w: 72px;
+    }
 
     .sidebar-header {
         justify-content: center;
         padding: 20px 0;
     }
 
-    .sidebar-header img { width: 36px; height: 36px; }
+    .sidebar-header img {
+        width: 36px;
+        height: 36px;
+    }
 
     .sidebar-header h3,
-    .sidebar-header > span { display: none; }
+    .sidebar-header>span {
+        display: none;
+    }
 
     .sidebar-menu a {
         justify-content: center;
         padding: 14px;
     }
 
-    .sidebar-menu a span { display: none; }
-    .sidebar-menu a.active::before { display: none; }
-    .sidebar-menu a i { width: auto; font-size: 1.25rem; }
+    .sidebar-menu a span {
+        display: none;
+    }
+
+    .sidebar-menu a.active::before {
+        display: none;
+    }
+
+    .sidebar-menu a i {
+        width: auto;
+        font-size: 1.25rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -541,10 +607,20 @@ textarea.form-control { height: auto !important; resize: vertical; }
         padding-bottom: 10px;
     }
 
-    .profile { flex-wrap: wrap; justify-content: flex-end; }
-    .profile > span { display: none; }
+    .profile {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
 
-    .main-content { padding: 16px; }
+    .profile>span {
+        display: none;
+    }
 
-    .content-box { padding: 18px; }
+    .main-content {
+        padding: 16px;
+    }
+
+    .content-box {
+        padding: 18px;
+    }
 }
