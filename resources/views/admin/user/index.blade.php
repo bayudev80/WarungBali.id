@@ -84,11 +84,12 @@
         <div class="table-responsive">
             <table class="table table-borderless user-table mb-0">
                 <colgroup>
-                    <col style="width: 70px;">
-                    <col style="width: 30%;">
-                    <col style="width: 35%;">
+                    <col style="width: 60px;">
+                    <col style="width: 25%;">
+                    <col style="width: 25%;">
                     <col style="width: 15%;">
-                    <col style="width: 100px;">
+                    <col style="width: 18%;">
+                    <col style="width: 110px;">
                 </colgroup>
                 <thead>
                     <tr>
@@ -96,6 +97,7 @@
                         <th>Nama Pengguna</th>
                         <th>Email</th>
                         <th>Peran (Role)</th>
+                        <th>Status Akun</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -104,11 +106,16 @@
                     <tr>
                         <td class="text-center text-muted fw-semibold">{{ $loop->iteration }}</td>
                         <td class="fw-medium text-dark">
-                            <div class="d-flex align-items-center gap-3">
+                            <div class="d-flex align-items-center gap-2">
                                 <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 35px; height: 35px;">
                                     {{ strtoupper(substr($item->nama, 0, 1)) }}
                                 </div>
-                                {{ $item->nama }}
+                                <div>
+                                    <div class="fw-semibold">{{ $item->nama }}</div>
+                                    @if(!empty($item->google_id))
+                                        <small class="text-muted"><i class="bi bi-google text-danger"></i> Google</small>
+                                    @endif
+                                </div>
                             </div>
                         </td>
                         <td class="text-secondary">{{ $item->email }}</td>
@@ -119,6 +126,17 @@
                                 <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1 rounded-pill">Pemilik</span>
                             @else
                                 <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2 py-1 rounded-pill">User</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($item->status_akun === 'pending')
+                                <span class="badge bg-warning bg-opacity-10 text-warning-emphasis border border-warning border-opacity-50 px-2 py-1 rounded-pill">
+                                    <i class="bi bi-hourglass-split me-1"></i> Menunggu Verifikasi
+                                </span>
+                            @else
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill">
+                                    <i class="bi bi-check-circle me-1"></i> Terverifikasi
+                                </span>
                             @endif
                         </td>
                         <td>
@@ -138,7 +156,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center py-5">
+                        <td colspan="6" class="text-center py-5">
                             <i class="bi bi-people fs-1 text-muted opacity-50 d-block mb-3"></i>
                             <h6 class="text-secondary fw-semibold">Belum ada data pengguna.</h6>
                         </td>

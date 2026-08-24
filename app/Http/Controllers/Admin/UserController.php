@@ -24,17 +24,19 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama'     => 'required|max:100',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'role'     => 'required|in:admin,user,pemilik',
+            'nama'        => 'required|max:100',
+            'email'       => 'required|email|unique:users,email',
+            'password'    => 'required|min:6',
+            'role'        => 'required|in:admin,user,pemilik',
+            'status_akun' => 'nullable|in:pending,verified',
         ]);
 
         User::create([
-            'nama'     => $request->nama,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'role'     => $request->role,
+            'nama'        => $request->nama,
+            'email'       => $request->email,
+            'password'    => Hash::make($request->password),
+            'role'        => $request->role,
+            'status_akun' => $request->status_akun ?? 'verified',
         ]);
 
         return redirect()->route('admin.user.index')
@@ -53,16 +55,18 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'nama'     => 'required|max:100',
-            'email'    => 'required|email|unique:users,email,' . $user->id_user . ',id_user',
-            'password' => 'nullable|min:6',
-            'role'     => 'required|in:admin,user,pemilik',
+            'nama'        => 'required|max:100',
+            'email'       => 'required|email|unique:users,email,' . $user->id_user . ',id_user',
+            'password'    => 'nullable|min:6',
+            'role'        => 'required|in:admin,user,pemilik',
+            'status_akun' => 'nullable|in:pending,verified',
         ]);
 
         $data = [
-            'nama'  => $request->nama,
-            'email' => $request->email,
-            'role'  => $request->role,
+            'nama'        => $request->nama,
+            'email'       => $request->email,
+            'role'        => $request->role,
+            'status_akun' => $request->status_akun ?? $user->status_akun ?? 'verified',
         ];
 
         if ($request->filled('password')) {

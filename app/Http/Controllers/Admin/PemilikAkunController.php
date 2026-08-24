@@ -37,9 +37,13 @@ class PemilikAkunController extends Controller
      */
     public function verifikasi($id): RedirectResponse
     {
-        $user = User::where('role', 'pemilik')
-            ->where('status_akun', 'pending')
-            ->findOrFail($id);
+        $user = User::where('role', 'pemilik')->findOrFail($id);
+
+        // Jika akun sudah diverifikasi sebelumnya
+        if ($user->status_akun === 'verified') {
+            return redirect()->route('admin.pemilik-akun.index')
+                ->with('success', 'Akun "'.$user->nama.'" sudah berstatus terverifikasi.');
+        }
 
         $passwordBaru = Str::password(10, symbols: false);
 
@@ -48,7 +52,13 @@ class PemilikAkunController extends Controller
             'status_akun' => 'verified',
         ]);
 
-        Mail::to($user->email)->send(new AkunPemilikDiverifikasi($user, $passwordBaru));
+        try {
+            Mail::to($user->email)->send(new AkunPemilikDiverifikasi($user, $passwordBaru));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal mengirim email verifikasi pemilik: ' . $e->getMessage());
+            return redirect()->route('admin.pemilik-akun.index')
+                ->with('success', 'Akun "'.$user->nama.'" berhasil diverifikasi. Password baru: ' . $passwordBaru . ' (Gagal kirim email: periksa konfigurasi mail di .env).');
+        }
 
         return redirect()->route('admin.pemilik-akun.index')
             ->with('success', 'Akun "'.$user->nama.'" berhasil diverifikasi. Password login sudah dikirim ke '.$user->email.'.');

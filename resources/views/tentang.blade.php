@@ -112,7 +112,7 @@
         <p>Gratis selamanya untuk warung lokal Bali. Bergabunglah sekarang!</p>
 
         @guest
-            <a href="{{ route('register') }}" class="btn">
+            <a href="{{ route('register', ['role' => 'pemilik']) }}" class="btn">
                 Daftarkan Warung Saya
             </a>
         @endguest

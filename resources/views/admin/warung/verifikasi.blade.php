@@ -106,19 +106,19 @@
 
                     <td class="text-nowrap">
 
-                        <form action="{{ route('admin.warung.approve', $item->id_warung) }}" method="POST" class="d-inline">
+                        <form action="{{ route('admin.warung.approve', $item->id_warung) }}" method="POST" class="d-inline form-approve-warung" data-nama="{{ $item->nama_warung }}">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="btn btn-success btn-sm" title="Setujui" onclick="return confirm('Setujui warung ini supaya tayang di website?')">
+                            <button type="button" class="btn btn-success btn-sm btn-action-approve" title="Setujui">
                                 <i class="bi bi-check-lg"></i>
                                 Terima
                             </button>
                         </form>
 
-                        <form action="{{ route('admin.warung.reject', $item->id_warung) }}" method="POST" class="d-inline">
+                        <form action="{{ route('admin.warung.reject', $item->id_warung) }}" method="POST" class="d-inline form-reject-warung" data-nama="{{ $item->nama_warung }}">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Tolak" onclick="return confirm('Tolak pengajuan warung ini?')">
+                            <button type="button" class="btn btn-outline-danger btn-sm btn-action-reject" title="Tolak">
                                 <i class="bi bi-x-lg"></i>
                                 Tolak
                             </button>
@@ -136,7 +136,8 @@
 
                 <tr>
 
-                    <td colspan="8" class="text-center">
+                    <td colspan="8" class="text-center py-4 text-muted">
+                        <i class="bi bi-shop fs-3 d-block mb-2 text-secondary opacity-50"></i>
                         Tidak ada pengajuan warung yang menunggu verifikasi saat ini.
                     </td>
 
@@ -153,5 +154,51 @@
     {{ $warung->links() }}
 
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Approve Action
+    document.querySelectorAll('.btn-action-approve').forEach(function (button) {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            const nama = form.getAttribute('data-nama') || 'Warung';
+
+            window.showWarungBaliModal({
+                title: 'Setujui Pengajuan Warung',
+                message: `Warung <b>${nama}</b> akan disetujui dan langsung ditayangkan di website publik WarungBali.id.`,
+                icon: 'bi bi-shop',
+                variant: 'success',
+                confirmText: '<i class="bi bi-check-lg me-1"></i> Ya, Setujui',
+                onConfirm: function () {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    // Reject Action
+    document.querySelectorAll('.btn-action-reject').forEach(function (button) {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            const nama = form.getAttribute('data-nama') || 'Warung';
+
+            window.showWarungBaliModal({
+                title: 'Tolak Pengajuan Warung',
+                message: `Apakah Anda yakin ingin menolak pengajuan warung <b>${nama}</b>?`,
+                icon: 'bi bi-x-circle-fill',
+                variant: 'danger',
+                confirmText: '<i class="bi bi-x-lg me-1"></i> Ya, Tolak',
+                onConfirm: function () {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+@endpush
 
 @endsection

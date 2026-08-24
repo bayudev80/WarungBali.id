@@ -136,7 +136,106 @@
 
     </div>
 
+    <!-- Modal Konfirmasi Ringan WarungBali.id (Di Tengah Layar) -->
+    <div class="modal fade" id="warungBaliConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+            <div class="modal-content border-0 shadow" style="border-radius: 20px; overflow: hidden; background: #ffffff;">
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3 d-inline-flex align-items-center justify-content-center rounded-circle" id="wbModalIconBg" style="width: 56px; height: 56px; background: #FFF7ED; color: #C85C2E; font-size: 24px;">
+                        <i class="bi bi-shield-check" id="wbModalIcon"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2 text-dark" id="wbModalTitle">Konfirmasi</h5>
+                    <p class="text-muted small mb-4 px-2" id="wbModalMessage">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-light px-3 py-2 text-secondary fw-semibold border" data-bs-dismiss="modal" style="border-radius: 10px; font-size: 14px; flex: 1;">
+                            Batal
+                        </button>
+                        <button type="button" class="btn text-white px-3 py-2 fw-semibold shadow-sm" id="wbModalConfirmBtn" style="border-radius: 10px; font-size: 14px; background: #C85C2E; flex: 1.2;">
+                            Ya, Lanjutkan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        window.showWarungBaliModal = function(options) {
+            const modalEl = document.getElementById('warungBaliConfirmModal');
+            if (!modalEl) return;
+            
+            document.getElementById('wbModalTitle').textContent = options.title || 'Konfirmasi';
+            document.getElementById('wbModalMessage').innerHTML = options.message || 'Apakah Anda yakin?';
+            
+            const iconEl = document.getElementById('wbModalIcon');
+            iconEl.className = options.icon || 'bi bi-shield-check';
+            
+            const iconBg = document.getElementById('wbModalIconBg');
+            const confirmBtn = document.getElementById('wbModalConfirmBtn');
+
+            if (options.variant === 'danger') {
+                iconBg.style.background = '#FEF2F2';
+                iconBg.style.color = '#DC2626';
+                confirmBtn.style.background = '#DC2626';
+            } else if (options.variant === 'success') {
+                iconBg.style.background = '#ECFDF5';
+                iconBg.style.color = '#059669';
+                confirmBtn.style.background = '#059669';
+            } else {
+                iconBg.style.background = '#FFF7ED';
+                iconBg.style.color = '#C85C2E';
+                confirmBtn.style.background = '#C85C2E';
+            }
+
+            confirmBtn.innerHTML = options.confirmText || 'Ya, Lanjutkan';
+
+            const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+            confirmBtn.onclick = function() {
+                bsModal.hide();
+                if (typeof options.onConfirm === 'function') {
+                    options.onConfirm();
+                }
+            };
+
+            bsModal.show();
+        };
+
+        // Event delegation ringan
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('button[onclick*="confirm("], a[onclick*="confirm("]');
+            if (!btn) return;
+
+            const inlineConfirm = btn.getAttribute('onclick');
+            if (inlineConfirm && inlineConfirm.includes('confirm(')) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                const match = inlineConfirm.match(/confirm\(['"]?([^'"]+)['"]?\)/);
+                const confirmMsg = match ? match[1] : 'Lanjutkan tindakan ini?';
+                const form = btn.closest('form');
+
+                const isDanger = btn.classList.contains('btn-danger') || btn.classList.contains('btn-outline-danger') || confirmMsg.toLowerCase().includes('hapus');
+                
+                window.showWarungBaliModal({
+                    title: isDanger ? 'Konfirmasi Hapus' : 'Konfirmasi Tindakan',
+                    message: confirmMsg,
+                    icon: isDanger ? 'bi bi-exclamation-triangle-fill' : 'bi bi-question-circle-fill',
+                    variant: isDanger ? 'danger' : 'primary',
+                    confirmText: isDanger ? '<i class="bi bi-trash me-1"></i> Ya, Hapus' : '<i class="bi bi-check-lg me-1"></i> Ya, Lanjutkan',
+                    onConfirm: function () {
+                        if (form) {
+                            form.submit();
+                        } else if (btn.tagName === 'A' && btn.href) {
+                            window.location.href = btn.href;
+                        }
+                    }
+                });
+            }
+        }, true);
+    </script>
 
     @stack('scripts')
 

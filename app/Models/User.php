@@ -27,8 +27,25 @@ class User extends Authenticatable
 
     protected $hidden = [
         'password',
-        'remember_token',
     ];
+
+    /**
+     * Nonaktifkan remember_token karena kolom tidak ada pada tabel users.
+     */
+    public function getRememberTokenName(): string
+    {
+        return '';
+    }
+
+    public function getRememberToken(): ?string
+    {
+        return null;
+    }
+
+    public function setRememberToken($value): void
+    {
+        // No-op
+    }
 
     public function review()
     {
@@ -53,4 +70,4 @@ class User extends Authenticatable
         return $this->hasOne(Warung::class, 'id_user', 'id_user')
             ->whereNull('id_warung_induk');
     }
-    }
+}

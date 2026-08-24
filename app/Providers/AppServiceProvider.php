@@ -20,6 +20,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Fix path cacert.pem pada Laragon jika mengarah ke drive D: yang tidak ada
+        $cacertLaragon = 'C:/laragon/etc/ssl/cacert.pem';
+        if (file_exists($cacertLaragon)) {
+            $curCainfo = ini_get('curl.cainfo');
+            if (empty($curCainfo) || !file_exists($curCainfo)) {
+                ini_set('curl.cainfo', $cacertLaragon);
+            }
+            $curOpenssl = ini_get('openssl.cafile');
+            if (empty($curOpenssl) || !file_exists($curOpenssl)) {
+                ini_set('openssl.cafile', $cacertLaragon);
+            }
+        }
+
         Paginator::useBootstrapFive();
 
         \Illuminate\Support\Facades\View::composer('partials.navbar', function ($view) {

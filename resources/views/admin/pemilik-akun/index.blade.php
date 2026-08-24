@@ -82,20 +82,21 @@
 
                     <td>
                         @if($item->warung)
-                            {{ $item->warung->nama_warung }}
+                            <div class="fw-semibold">{{ $item->warung->nama_warung }}</div>
                             <div class="text-muted small">{{ $item->warung->alamat }}</div>
                         @else
-                            <span class="text-muted">-</span>
+                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1 rounded-pill">
+                                <i class="bi bi-pencil-square me-1"></i> Diisi setelah login
+                            </span>
                         @endif
                     </td>
 
                     <td class="text-nowrap">
 
-                        <form action="{{ route('admin.pemilik-akun.verifikasi', $item->id_user) }}" method="POST" class="d-inline">
+                        <form action="{{ route('admin.pemilik-akun.verifikasi', $item->id_user) }}" method="POST" class="d-inline form-verifikasi-pemilik" data-nama="{{ $item->nama }}" data-email="{{ $item->email }}">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="btn btn-success btn-sm" title="Verifikasi"
-                                onclick="return confirm('Verifikasi akun ini? Password baru akan dibuat dan dikirim ke email &quot;' + '{{ $item->email }}' + '&quot;.')">
+                            <button type="button" class="btn btn-success btn-sm btn-submit-verifikasi" title="Verifikasi">
                                 <i class="bi bi-patch-check"></i>
                                 Verifikasi
                             </button>
@@ -109,7 +110,8 @@
 
                 <tr>
 
-                    <td colspan="5" class="text-center">
+                    <td colspan="5" class="text-center py-4 text-muted">
+                        <i class="bi bi-check-circle fs-3 d-block mb-2 text-success opacity-50"></i>
                         Tidak ada akun pemilik yang menunggu verifikasi saat ini.
                     </td>
 
@@ -126,5 +128,31 @@
     {{ $akun->links() }}
 
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.btn-submit-verifikasi').forEach(function (button) {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            const nama = form.getAttribute('data-nama') || 'Pemilik';
+            const email = form.getAttribute('data-email') || '';
+
+            window.showWarungBaliModal({
+                title: 'Verifikasi Akun Pemilik',
+                message: `Konfirmasi verifikasi untuk akun <b>${nama}</b>.<br><span class="text-muted small">Password login resmi akan dibuat otomatis dan dikirimkan ke email <b>${email}</b>.</span>`,
+                icon: 'bi bi-patch-check-fill',
+                variant: 'success',
+                confirmText: '<i class="bi bi-patch-check me-1"></i> Ya, Verifikasi',
+                onConfirm: function () {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
+@endpush
 
 @endsection

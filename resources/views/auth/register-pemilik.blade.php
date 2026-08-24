@@ -46,13 +46,13 @@
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nama Pemilik</label>
                         <input type="text" name="nama" class="form-control @error('nama') is-invalid @enderror"
-                            value="{{ old('nama') }}" placeholder="Nama lengkap Anda" required autofocus>
+                            value="{{ old('nama', request('nama')) }}" placeholder="Nama lengkap Anda" required autofocus>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Email</label>
                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                            value="{{ old('email') }}" placeholder="Masukkan email aktif" required>
+                            value="{{ old('email', request('email')) }}" placeholder="Masukkan email aktif" required>
                         <small class="text-muted">Password login akan dikirim ke email ini setelah akun diverifikasi admin.</small>
                     </div>
 

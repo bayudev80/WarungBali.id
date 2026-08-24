@@ -6,8 +6,20 @@
 
 <div class="content-box">
 
-    <h3 class="fw-bold mb-1">Lengkapi Data Warung</h3>
-    <p class="text-muted mb-4">Langkah 2 dari 2 &mdash; isi data warung Anda. Warung akan tayang setelah disetujui admin.</p>
+    <div class="alert alert-success d-flex align-items-center gap-3 rounded-4 p-3 mb-4 shadow-sm border-0" style="background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); border-left: 4px solid #10B981 !important;">
+        <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; font-size: 20px;">
+            <i class="bi bi-patch-check-fill"></i>
+        </div>
+        <div>
+            <h6 class="fw-bold mb-1 text-success-emphasis">Selamat Datang, {{ auth()->user()->nama }}!</h6>
+            <p class="mb-0 small text-success-emphasis">
+                Akun pemilik warung Anda telah diverifikasi oleh admin. Silakan lengkapi formulir pendaftaran data warung Anda di bawah ini agar dapat segera ditinjau dan ditayangkan di website WarungBali.id.
+            </p>
+        </div>
+    </div>
+
+    <h3 class="fw-bold mb-1">Daftarkan Warung Anda</h3>
+    <p class="text-muted mb-4">Isi data warung Anda di bawah ini dengan lengkap dan benar.</p>
 
     @if($errors->any())
         <div class="alert alert-danger">

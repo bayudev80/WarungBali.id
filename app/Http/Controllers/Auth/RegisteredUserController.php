@@ -37,16 +37,18 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user',
+            'nama'        => $request->nama,
+            'email'       => $request->email,
+            'password'    => Hash::make($request->password),
+            'role'        => 'user',
+            'status_akun' => 'verified',
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('home')
+            ->with('success', 'Selamat datang di WarungBali.id, ' . $user->nama . '!');
     }
 }

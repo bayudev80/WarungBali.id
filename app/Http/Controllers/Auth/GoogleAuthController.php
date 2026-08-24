@@ -17,11 +17,25 @@ class GoogleAuthController extends Controller
      */
     public function redirect(): RedirectResponse
     {
-        try {
-            return Socialite::driver('google')->redirect();
-        } catch (\Throwable $e) {
+        $clientId = config('services.google.client_id');
+        $clientSecret = config('services.google.client_secret');
+
+        if (empty($clientId) || empty($clientSecret)) {
             return redirect()->route('login')
-                ->withErrors(['email' => 'Layanan login Google belum dikonfigurasi dengan Client ID & Secret di file .env.']);
+                ->withErrors(['email' => 'Google Client ID atau Client Secret belum diisi di file .env. Silakan isi GOOGLE_CLIENT_ID dan GOOGLE_CLIENT_SECRET terlebih dahulu.']);
+        }
+
+        try {
+            $redirectUrl = config('services.google.redirect') ?: url('/auth/google/callback');
+
+            return Socialite::driver('google')
+                ->redirectUrl($redirectUrl)
+                ->with(['prompt' => 'select_account'])
+                ->redirect();
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Google Auth Redirect Error: ' . $e->getMessage());
+            return redirect()->route('login')
+                ->withErrors(['email' => 'Gagal menghubungkan ke layanan Google: ' . $e->getMessage()]);
         }
     }
 
@@ -30,9 +44,27 @@ class GoogleAuthController extends Controller
      */
     public function callback(): RedirectResponse
     {
+        $redirectUrl = config('services.google.redirect') ?: url('/auth/google/callback');
+
         try {
-            $googleUser = Socialite::driver('google')->user();
+            // Coba ambil user dengan verifikasi state session
+            $googleUser = Socialite::driver('google')
+                ->redirectUrl($redirectUrl)
+                ->user();
+        } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
+            // Fallback stateless jika state session terputus/mismatch antar domain
+            try {
+                $googleUser = Socialite::driver('google')
+                    ->redirectUrl($redirectUrl)
+                    ->stateless()
+                    ->user();
+            } catch (\Throwable $subException) {
+                \Illuminate\Support\Facades\Log::error('Google Auth Stateless Fallback Error: ' . $subException->getMessage());
+                return redirect()->route('login')
+                    ->withErrors(['email' => 'Gagal melakukan login dengan Google: ' . $subException->getMessage()]);
+            }
         } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Google Auth Callback Error: ' . $e->getMessage());
             return redirect()->route('login')
                 ->withErrors(['email' => 'Gagal melakukan login dengan Google: ' . $e->getMessage()]);
         }
@@ -49,35 +81,38 @@ class GoogleAuthController extends Controller
 
         if ($user) {
             // Jika akun pemilik masih berstatus pending, tahan login
-            if ($user->status_akun === 'pending') {
+            if ($user->status_akun === 'pending' && $user->role === 'pemilik') {
                 return redirect()->route('login')
-                    ->withErrors(['email' => 'Akun Anda masih menunggu verifikasi admin. Anda akan menerima email setelah akun diverifikasi.']);
+                    ->withErrors(['email' => 'Akun pemilik warung Anda masih menunggu verifikasi admin. Anda akan menerima email berisi password login setelah akun diverifikasi.']);
             }
 
-            // Tautkan google_id jika sebelumnya belum tersimpan
+            // Tautkan google_id dan verifikasi email jika sebelumnya belum tersimpan
             $updateData = [];
             if (empty($user->google_id)) {
                 $updateData['google_id'] = $googleUser->getId();
             }
-
+            if (empty($user->email_verified_at)) {
+                $updateData['email_verified_at'] = now();
+            }
             if (!empty($updateData)) {
                 $user->update($updateData);
             }
 
-            Auth::login($user, remember: true);
+            Auth::login($user);
         } else {
-            // Buat pengguna baru jika belum terdaftar
+            // Pengguna baru dari Google langsung aktif (verified) & langsung login
             $user = User::create([
-                'nama'        => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Pengguna Google',
-                'email'       => $googleUser->getEmail(),
-                'google_id'   => $googleUser->getId(),
-                'password'    => Hash::make(Str::random(32)),
-                'role'        => 'user',
-                'status_akun' => 'verified',
-                'foto'        => $googleUser->getAvatar(),
+                'nama'              => $googleUser->getName() ?? $googleUser->getNickname() ?? 'Pengguna Google',
+                'email'             => $googleUser->getEmail(),
+                'google_id'         => $googleUser->getId(),
+                'password'          => Hash::make(Str::random(32)),
+                'role'              => 'user',
+                'status_akun'       => 'verified',
+                'email_verified_at' => now(),
+                'foto'              => $googleUser->getAvatar() ? substr($googleUser->getAvatar(), 0, 255) : null,
             ]);
 
-            Auth::login($user, remember: true);
+            Auth::login($user);
         }
 
         request()->session()->regenerate();

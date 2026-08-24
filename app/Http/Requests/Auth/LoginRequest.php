@@ -51,11 +51,11 @@ class LoginRequest extends FormRequest
         // bikin bingung.
         $user = User::where('email', $this->string('email'))->first();
 
-        if ($user && $user->status_akun === 'pending') {
+        if ($user && $user->role === 'pemilik' && $user->status_akun === 'pending') {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => 'Akun Anda masih menunggu verifikasi admin. Anda akan menerima email berisi password login setelah akun diverifikasi.',
+                'email' => 'Akun pemilik warung Anda masih menunggu verifikasi admin. Password login resmi akan dikirimkan ke email Anda setelah akun diverifikasi.',
             ]);
         }
 

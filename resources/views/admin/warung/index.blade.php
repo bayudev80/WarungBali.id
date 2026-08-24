@@ -125,18 +125,21 @@
     @endif
 
     {{-- Form pencarian & filter --}}
-    <form action="{{ route('admin.warung.index') }}" method="GET" class="card modern-card p-2 px-3 mb-3">
+    <form action="{{ route('admin.warung.index') }}" method="GET" class="card modern-card p-3 mb-3 bg-white border">
         <div class="row g-2 align-items-center">
+            {{-- Input Pencarian Mandiri --}}
             <div class="col-12 col-md-4">
                 <div class="position-relative">
-                    <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted ms-3"></i>
-                    <input type="text" name="search" value="{{ $search }}" class="form-control modern-input ps-5"
-                        placeholder="Cari nama warung, alamat, atau telepon...">
+                    <i class="bi bi-search position-absolute top-50 translate-middle-y text-muted ms-3" style="font-size: 0.85rem;"></i>
+                    <input type="text" name="search" value="{{ $search }}" class="form-control bg-light"
+                        style="border-radius: 8px; font-size: 0.85rem; height: 38px; padding-left: 2.3rem;"
+                        placeholder="Cari nama warung, alamat, telepon...">
                 </div>
             </div>
 
+            {{-- Filter Kabupaten --}}
             <div class="col-12 col-sm-6 col-md-3">
-                <select name="kabupaten" class="form-select modern-input text-secondary" onchange="this.form.submit()">
+                <select name="kabupaten" class="form-select bg-light text-secondary" style="border-radius: 8px; font-size: 0.85rem; height: 38px;" onchange="this.form.submit()">
                     <option value="">Semua Kabupaten</option>
                     @foreach($semuaKabupaten as $kab)
                         <option value="{{ $kab->id_kabupaten }}" @selected((string) $kabupatenTerpilih === (string) $kab->id_kabupaten)>
@@ -146,8 +149,9 @@
                 </select>
             </div>
 
+            {{-- Filter Kategori --}}
             <div class="col-12 col-sm-6 col-md-3">
-                <select name="kategori" class="form-select modern-input text-secondary" onchange="this.form.submit()">
+                <select name="kategori" class="form-select bg-light text-secondary" style="border-radius: 8px; font-size: 0.85rem; height: 38px;" onchange="this.form.submit()">
                     <option value="">Semua Kategori</option>
                     @foreach($kategori as $k)
                         <option value="{{ $k->id_kategori }}" @selected((string) $kategoriTerpilih === (string) $k->id_kategori)>
@@ -157,15 +161,22 @@
                 </select>
             </div>
 
-            <div class="col-12 col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-primary text-white w-100 border-0 shadow-sm" style="border-radius: 10px; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-                    <i class="bi bi-search me-1"></i> Cari
-                </button>
-                @if($search !== '' || $kategoriTerpilih || $kabupatenTerpilih)
-                    <a href="{{ route('admin.warung.index') }}" class="btn btn-light text-secondary border w-100 d-flex align-items-center justify-content-center" style="border-radius: 10px; font-size: 0.85rem; transition: all 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'" title="Reset Filter">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
-                    </a>
-                @endif
+            {{-- Tombol Cari & Reset Terpisah --}}
+            <div class="col-12 col-md-2">
+                <div class="d-flex gap-2 w-100">
+                    <button type="submit" class="btn btn-primary text-white flex-grow-1 d-flex align-items-center justify-content-center gap-1 shadow-sm"
+                        style="border-radius: 8px; font-size: 0.85rem; height: 38px; font-weight: 500;">
+                        <i class="bi bi-search"></i>
+                        <span>Cari</span>
+                    </button>
+
+                    @if($search !== '' || $kategoriTerpilih || $kabupatenTerpilih)
+                        <a href="{{ route('admin.warung.index') }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center px-2"
+                            style="border-radius: 8px; font-size: 0.85rem; height: 38px; min-width: 38px;" title="Reset Filter">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </a>
+                    @endif
+                </div>
             </div>
         </div>
     </form>

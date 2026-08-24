@@ -28,7 +28,7 @@ class AkunPemilikDiverifikasi extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.akun-pemilik-diverifikasi',
+            markdown: 'emails.akun-pemilik-diverifikasi',
         );
     }
 }

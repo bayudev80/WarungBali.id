@@ -130,6 +130,7 @@
         Jelajahi Berdasarkan Kategori
     </h2>
 
+    <div class="kategori-scroll-wrapper">
     <div class="kategori-grid" id="kategori-grid">
 
     @php
@@ -335,8 +336,9 @@
     .warung-slider-btn.is-hidden { display: none; }
 
     @media (max-width: 768px) {
-        .warung-slider-track { padding-left: 40px; padding-right: 40px; }
-        .warung-slider-track > .warung-card-item { width: 240px; }
+        .warung-slider-track { padding-left: 16px; padding-right: 16px; gap: 12px; }
+        .warung-slider-track > .warung-card-item { width: calc(100vw - 90px); max-width: 260px; min-width: 220px; }
+        .warung-slider-btn { display: none; }
     }
 
     /* ===== Dropdown Urutkan (mandiri, tidak bergantung Bootstrap JS) ===== */

@@ -31,65 +31,27 @@ class RegisteredPemilikController extends Controller
     }
 
     /**
-     * Simpan akun + warung sekaligus, keduanya berstatus pending. Tidak ada
-     * Auth::login() di sini -- akun baru bisa dipakai login setelah admin
-     * memverifikasinya lewat menu "Kelola Akun Pemilik" (lihat
-     * Admin\PemilikAkunController), yang saat itu baru men-generate dan
-     * mengirim password lewat email.
+     * Simpan pendaftaran akun pemilik warung berstatus pending.
+     * Setelah akun diverifikasi oleh admin, password login akan dikirimkan ke email.
+     * Setelah pemilik login dengan password tersebut, barulah pemilik diarahkan
+     * untuk mengisi formulir pendaftaran data warungnya.
      */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            // Data akun
             'nama'  => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class.',email'],
-
-            // Data warung
-            'nama_warung'  => 'required|max:150',
-            'id_kategori'  => 'required|exists:kategori,id_kategori',
-            'id_kabupaten' => 'required|exists:kabupaten,id_kabupaten',
-            'alamat'       => 'required',
-            'deskripsi'    => 'nullable|string',
-            'telepon'      => 'nullable|max:20',
-            'jam_buka'     => 'nullable',
-            'jam_tutup'    => 'nullable',
-            'harga_min'    => 'nullable|integer|min:0',
-            'harga_max'    => 'nullable|integer|min:0',
-            'foto'         => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
-            'menerima_catering' => 'nullable|boolean',
         ]);
 
-        DB::transaction(function () use ($request) {
-            // Password diisi acak & TIDAK diberitahukan ke siapa pun -- akun
-            // ini memang belum bisa dipakai login sampai diverifikasi admin
-            // dan diberi password asli lewat email.
-            $user = User::create([
-                'nama'        => $request->nama,
-                'email'       => $request->email,
-                'password'    => Hash::make(Str::random(40)),
-                'role'        => 'pemilik',
-                'status_akun' => 'pending',
-            ]);
-
-            $data = $request->only([
-                'nama_warung', 'id_kategori', 'id_kabupaten', 'alamat',
-                'deskripsi', 'telepon', 'jam_buka', 'jam_tutup',
-                'harga_min', 'harga_max',
-            ]);
-            $data['id_user'] = $user->id_user;
-            $data['status']  = 'pending';
-            $data['menerima_catering'] = $request->boolean('menerima_catering');
-
-            if ($request->hasFile('foto')) {
-                $filename = time().'_'.Str::random(12).'.'.$request->file('foto')->getClientOriginalExtension();
-                $request->file('foto')->move(public_path('images/warung'), $filename);
-                $data['foto'] = $filename;
-            }
-
-            Warung::create($data);
-        });
+        User::create([
+            'nama'        => $request->nama,
+            'email'       => $request->email,
+            'password'    => Hash::make(Str::random(40)),
+            'role'        => 'pemilik',
+            'status_akun' => 'pending',
+        ]);
 
         return redirect()->route('login')
-            ->with('status', 'Pendaftaran berhasil dikirim! Akun dan warung Anda akan ditinjau oleh admin. Anda akan menerima email berisi password login setelah akun diverifikasi.');
+            ->with('status', 'Pendaftaran akun pemilik warung berhasil dikirim! Akun Anda sedang ditinjau oleh admin. Password login resmi akan dikirimkan ke email Anda (' . $request->email . ') setelah akun diverifikasi.');
     }
 }

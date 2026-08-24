@@ -39,6 +39,11 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL', 'http://localhost') . '/auth/google/callback'),
+        'guzzle' => [
+            'verify' => (PHP_OS_FAMILY === 'Windows' && file_exists('C:/laragon/etc/ssl/cacert.pem'))
+                ? 'C:/laragon/etc/ssl/cacert.pem'
+                : true,
+        ],
     ],
 
 ];
