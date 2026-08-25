@@ -84,12 +84,12 @@
         <div class="table-responsive">
             <table class="table table-borderless user-table mb-0">
                 <colgroup>
-                    <col style="width: 60px;">
-                    <col style="width: 25%;">
-                    <col style="width: 25%;">
-                    <col style="width: 15%;">
+                    <col style="width: 50px;">
+                    <col style="width: 24%;">
+                    <col style="width: 24%;">
+                    <col style="width: 14%;">
                     <col style="width: 18%;">
-                    <col style="width: 110px;">
+                    <col style="width: 140px;">
                 </colgroup>
                 <thead>
                     <tr>
@@ -141,6 +141,12 @@
                         </td>
                         <td>
                             <div class="action-buttons justify-content-center">
+                                <form action="{{ route('admin.user.send-password', $item->id_user) }}" method="POST" class="m-0" onsubmit="return confirm('Apakah Anda yakin ingin membuat password baru dan mengirimkannya ke email {{ $item->email }}?');">
+                                    @csrf
+                                    <button type="submit" class="btn btn-info text-white" title="Reset & Kirim Password via Email">
+                                        <i class="bi bi-key"></i>
+                                    </button>
+                                </form>
                                 <a href="{{ route('admin.user.edit', $item->id_user) }}" class="btn btn-warning text-white" title="Edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>

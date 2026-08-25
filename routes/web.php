@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\PemilikAkunController;
 use App\Http\Controllers\Pemilik\DashboardController as PemilikDashboardController;
 use App\Http\Controllers\Pemilik\WarungController as PemilikWarungController;
 use App\Http\Controllers\Pemilik\MenuController as PemilikMenuController;
+use App\Http\Controllers\User\DashboardController as UserDashboardController;
 
 // =========================
 // HOME
@@ -26,9 +27,16 @@ Route::get('/kategori/{slug}', [HomeController::class, 'kategori'])->name('kateg
 Route::get('/tentang', [HomeController::class, 'tentang'])->name('tentang');
 Route::get('/warung/random', [HomeController::class, 'randomWarung'])->name('warung.random');
 
-// Dashboard (redirect ke home)
+// Dynamic Dashboard: Arahkan sesuai peran pengguna
 Route::middleware('auth')->get('/dashboard', function () {
-    return redirect()->route('home');
+    $role = auth()->user()->role ?? 'user';
+    if ($role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
+    if ($role === 'pemilik') {
+        return redirect()->route('pemilik.dashboard');
+    }
+    return redirect()->route('user.dashboard');
 })->name('dashboard');
 
 // =========================
@@ -72,6 +80,8 @@ Route::middleware(['auth', 'role:admin'])
         });
 
         Route::resource('user', UserController::class);
+        Route::post('user/{id}/send-password', [UserController::class, 'sendPassword'])
+            ->name('user.send-password');
 
         // Verifikasi akun pemilik warung yang daftar lewat "Daftar sebagai
         // Pemilik Warung". Sengaja terpisah dari approve/reject warung di
@@ -148,7 +158,34 @@ Route::middleware(['auth'])
     });
 
 // =========================
-// PROFILE
+// DASHBOARD PENGGUNA & AKUN
+// =========================
+Route::middleware('auth')
+    ->prefix('user')
+    ->name('user.')
+    ->group(function () {
+
+        Route::get('/dashboard', [UserDashboardController::class, 'index'])
+            ->name('dashboard');
+
+        Route::post('/profile', [UserDashboardController::class, 'updateProfile'])
+            ->name('profile.update');
+
+        Route::delete('/profile/foto', [UserDashboardController::class, 'removeFoto'])
+            ->name('profile.remove-foto');
+
+        Route::post('/password', [UserDashboardController::class, 'updatePassword'])
+            ->name('password.update');
+
+        Route::post('/password/request-email', [UserDashboardController::class, 'requestPasswordEmail'])
+            ->name('password.request-email');
+
+        Route::delete('/review/{id}', [UserDashboardController::class, 'deleteReview'])
+            ->name('review.delete');
+    });
+
+// =========================
+// PROFILE & PUBLIC ACTIONS
 // =========================
 Route::middleware('auth')->group(function () {
 

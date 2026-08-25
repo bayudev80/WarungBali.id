@@ -127,10 +127,34 @@
                             data-bs-toggle="dropdown"
                             aria-expanded="false">
 
-                            <span class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold shadow-sm"
-                                style="width:32px;height:32px;background:#C85C2E;font-size:14px;">
-                                {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
-                            </span>
+                            @php
+                                $authUser = Auth::user();
+                                $hasNavFoto = false;
+                                $navFotoUrl = '';
+                                if (!empty($authUser->foto)) {
+                                    if (filter_var($authUser->foto, FILTER_VALIDATE_URL)) {
+                                        $hasNavFoto = true;
+                                        $navFotoUrl = $authUser->foto;
+                                    } elseif (file_exists(public_path('images/avatars/' . $authUser->foto))) {
+                                        $hasNavFoto = true;
+                                        $navFotoUrl = asset('images/avatars/' . $authUser->foto);
+                                    }
+                                }
+                                $navInitial = strtoupper(substr(trim($authUser->nama ?: 'U'), 0, 1));
+                            @endphp
+
+                            @if($hasNavFoto)
+                                <img src="{{ $navFotoUrl }}" alt="{{ $authUser->nama }}" class="rounded-circle shadow-sm me-2" style="width:34px;height:34px;object-fit:cover;border:1.5px solid rgba(200,92,46,0.2);" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <span class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold shadow-sm me-2"
+                                    style="width:34px;height:34px;background:linear-gradient(135deg, #C85C2E, #d97706);font-size:14px;display:none;">
+                                    {{ $navInitial }}
+                                </span>
+                            @else
+                                <span class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold shadow-sm me-2"
+                                    style="width:34px;height:34px;background:linear-gradient(135deg, #C85C2E, #d97706);font-size:14px;">
+                                    {{ $navInitial }}
+                                </span>
+                            @endif
 
                             <span class="fw-bold d-none d-lg-inline user-avatar-name">
                                 {{ Auth::user()->nama }}
@@ -138,14 +162,14 @@
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2"
-                            style="min-width:220px;border-radius:14px;padding:8px;">
+                            style="min-width:230px;border-radius:16px;padding:8px;">
 
                             <li class="px-3 py-2">
-                                <div class="fw-semibold" style="font-size:14px;color:#2D201C;">
+                                <div class="fw-semibold text-truncate" style="font-size:14px;color:#2D201C;">
                                     {{ Auth::user()->nama }}
                                 </div>
-                                <div class="text-muted" style="font-size:12px;">
-                                    {{ ucfirst(Auth::user()->role) }}
+                                <div class="text-muted small" style="font-size:12px;">
+                                    {{ ucfirst(Auth::user()->role) }} • {{ Auth::user()->email }}
                                 </div>
                             </li>
 
@@ -153,17 +177,29 @@
 
                             @if(Auth::user()->role === 'admin')
                                 <li>
-                                    <a class="dropdown-item rounded-3 py-2" href="{{ route('admin.dashboard') }}" style="font-size:14px;">
-                                        Dashboard Admin
+                                    <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="{{ route('admin.dashboard') }}" style="font-size:13.5px;">
+                                        <i class="bi bi-speedometer2 text-danger"></i> Dashboard Admin
                                     </a>
                                 </li>
                             @elseif(Auth::user()->role === 'pemilik')
                                 <li>
-                                    <a class="dropdown-item rounded-3 py-2" href="{{ route('pemilik.dashboard') }}" style="font-size:14px;">
-                                        Dashboard Pemilik
+                                    <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="{{ route('pemilik.dashboard') }}" style="font-size:13.5px;">
+                                        <i class="bi bi-shop text-warning"></i> Dashboard Pemilik
                                     </a>
                                 </li>
                             @endif
+
+                            <li>
+                                <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="{{ route('user.dashboard') }}" style="font-size:13.5px;">
+                                    <i class="bi bi-person-circle text-primary"></i> Dashboard Pengguna
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="{{ route('user.dashboard', ['tab' => 'keamanan']) }}" style="font-size:13.5px;">
+                                    <i class="bi bi-shield-lock text-success"></i> Keamanan & Password
+                                </a>
+                            </li>
 
                             <li><hr class="dropdown-divider my-1"></li>
 
@@ -171,9 +207,9 @@
                                 <form action="{{ route('logout') }}" method="POST" class="m-0">
                                     @csrf
                                     <button type="submit"
-                                        class="dropdown-item rounded-3 py-2 text-danger"
-                                        style="font-size:14px;">
-                                        Logout
+                                        class="dropdown-item rounded-3 py-2 text-danger d-flex align-items-center gap-2"
+                                        style="font-size:13.5px;">
+                                        <i class="bi bi-box-arrow-right"></i> Logout
                                     </button>
                                 </form>
                             </li>

@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\UserPasswordBaru;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -93,4 +97,31 @@ class UserController extends Controller
         return redirect()->route('admin.user.index')
             ->with('success', 'Pengguna berhasil dihapus.');
     }
+
+    /**
+     * Reset password pengguna dan kirimkan password baru melalui email.
+     */
+    public function sendPassword($id)
+    {
+        $user = User::findOrFail($id);
+
+        $passwordBaru = Str::password(10, symbols: false);
+
+        $user->update([
+            'password' => Hash::make($passwordBaru),
+        ]);
+
+        try {
+            Mail::to($user->email)->send(new UserPasswordBaru($user, $passwordBaru, 'admin_reset'));
+        } catch (\Throwable $e) {
+            Log::error('Gagal mengirim email reset password oleh admin: ' . $e->getMessage());
+
+            return redirect()->route('admin.user.index')
+                ->with('success', 'Password pengguna "' . $user->nama . '" berhasil direset: "' . $passwordBaru . '" (Gagal kirim email: periksa konfigurasi mail di .env).');
+        }
+
+        return redirect()->route('admin.user.index')
+            ->with('success', 'Password baru berhasil dibuat dan dikirimkan ke email ' . $user->email . '.');
+    }
 }
+

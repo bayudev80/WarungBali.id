@@ -34,6 +34,48 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script>
+        // Auto-dismiss Flash Alerts (Otomatis menghilang setelah 4 detik secara halus)
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert:not(.alert-permanent):not(.no-auto-dismiss)');
+            alerts.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.5s ease, margin 0.5s ease, padding 0.5s ease';
+                alert.style.overflow = 'hidden';
+                
+                let timeoutId = setTimeout(function() {
+                    dismissAlert(alert);
+                }, 4000);
+
+                // Jeda timer jika kursor berada di atas notifikasi
+                alert.addEventListener('mouseenter', function() {
+                    clearTimeout(timeoutId);
+                });
+
+                alert.addEventListener('mouseleave', function() {
+                    timeoutId = setTimeout(function() {
+                        dismissAlert(alert);
+                    }, 2000);
+                });
+            });
+
+            function dismissAlert(alert) {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-8px)';
+                setTimeout(function() {
+                    alert.style.maxHeight = '0px';
+                    alert.style.paddingTop = '0px';
+                    alert.style.paddingBottom = '0px';
+                    alert.style.marginTop = '0px';
+                    alert.style.marginBottom = '0px';
+                    alert.style.border = 'none';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 500);
+                }, 300);
+            }
+        });
+    </script>
+
 </body>
 
 </html>

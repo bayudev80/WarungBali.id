@@ -254,6 +254,36 @@
             bsModal.show();
         };
 
+        // Event listener pintar untuk mencegat konfirmasi form bawaan browser (localhost says)
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            const inlineConfirm = form.getAttribute('onsubmit');
+            if (inlineConfirm && inlineConfirm.includes('confirm(')) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                const match = inlineConfirm.match(/confirm\(['"]?([^'"]+)['"]?\)/);
+                const confirmMsg = match ? match[1] : 'Lanjutkan tindakan ini?';
+
+                const submitBtn = form.querySelector('button[type="submit"]') || e.submitter;
+                const isDanger = (submitBtn && (submitBtn.classList.contains('btn-danger') || submitBtn.classList.contains('btn-outline-danger'))) || confirmMsg.toLowerCase().includes('hapus') || confirmMsg.toLowerCase().includes('tolak');
+                const isWarning = (submitBtn && (submitBtn.classList.contains('btn-warning') || submitBtn.classList.contains('btn-outline-warning') || submitBtn.classList.contains('btn-info'))) || confirmMsg.toLowerCase().includes('password') || confirmMsg.toLowerCase().includes('email');
+                const isSuccess = (submitBtn && submitBtn.classList.contains('btn-success')) || confirmMsg.toLowerCase().includes('verifikasi') || confirmMsg.toLowerCase().includes('setujui') || confirmMsg.toLowerCase().includes('terima');
+
+                window.showWarungBaliModal({
+                    title: isDanger ? 'Konfirmasi Hapus / Tolak' : (isWarning ? 'Konfirmasi Permintaan' : (isSuccess ? 'Konfirmasi Verifikasi' : 'Konfirmasi Tindakan')),
+                    message: confirmMsg,
+                    icon: isDanger ? 'bi bi-trash-fill' : (isWarning ? 'bi bi-key-fill' : (isSuccess ? 'bi bi-patch-check-fill' : 'bi bi-question-circle-fill')),
+                    variant: isDanger ? 'danger' : (isWarning ? 'warning' : (isSuccess ? 'success' : 'primary')),
+                    confirmText: isDanger ? '<i class="bi bi-trash me-1"></i> Ya, Lanjutkan' : (isWarning ? '<i class="bi bi-send-check me-1"></i> Ya, Kirim' : '<i class="bi bi-check-lg me-1"></i> Ya, Lanjutkan'),
+                    onConfirm: function () {
+                        form.removeAttribute('onsubmit');
+                        form.submit();
+                    }
+                });
+            }
+        }, true);
+
         // Event delegation ringan (0 overhead)
         document.addEventListener('click', function (e) {
             const btn = e.target.closest('button[onclick*="confirm("], a[onclick*="confirm("]');
@@ -287,6 +317,46 @@
                 });
             }
         }, true);
+
+        // Auto-dismiss Flash Alerts (Otomatis menghilang setelah 4 detik secara halus)
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert:not(.alert-permanent):not(.no-auto-dismiss)');
+            alerts.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.5s ease, margin 0.5s ease, padding 0.5s ease';
+                alert.style.overflow = 'hidden';
+                
+                let timeoutId = setTimeout(function() {
+                    dismissAlert(alert);
+                }, 4000);
+
+                // Jeda timer jika kursor berada di atas notifikasi
+                alert.addEventListener('mouseenter', function() {
+                    clearTimeout(timeoutId);
+                });
+
+                alert.addEventListener('mouseleave', function() {
+                    timeoutId = setTimeout(function() {
+                        dismissAlert(alert);
+                    }, 2000);
+                });
+            });
+
+            function dismissAlert(alert) {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-8px)';
+                setTimeout(function() {
+                    alert.style.maxHeight = '0px';
+                    alert.style.paddingTop = '0px';
+                    alert.style.paddingBottom = '0px';
+                    alert.style.marginTop = '0px';
+                    alert.style.marginBottom = '0px';
+                    alert.style.border = 'none';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 500);
+                }, 300);
+            }
+        });
     </script>
 
     @stack('scripts')
