@@ -93,13 +93,19 @@
     </aside>
 
 
+    <!-- Sidebar Backdrop for Mobile -->
+    <div class="sidebar-backdrop d-lg-none" id="pemilikSidebarBackdrop"></div>
+
     <!-- Content -->
     <div class="content">
 
         <!-- Topbar -->
         <header class="topbar">
 
-            <div>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-sm btn-light border d-lg-none rounded-3 shadow-none p-1 px-2 me-1" id="pemilikSidebarToggle" aria-label="Menu Pemilik">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
                 <h4 class="fw-bold mb-0">
                     @yield('title')
                 </h4>
@@ -331,6 +337,24 @@
         } else {
             initAutoDismissAlerts();
         }
+
+        // Toggle Sidebar Mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const toggleBtn = document.getElementById('pemilikSidebarToggle');
+            const backdrop = document.getElementById('pemilikSidebarBackdrop');
+
+            function toggleSidebar() {
+                if (sidebar && backdrop) {
+                    sidebar.classList.toggle('show');
+                    backdrop.classList.toggle('show');
+                    document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
+                }
+            }
+
+            if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
+            if (backdrop) backdrop.addEventListener('click', toggleSidebar);
+        });
     </script>
 
     @stack('scripts')

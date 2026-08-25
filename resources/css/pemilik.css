@@ -554,73 +554,77 @@ textarea.form-control {
 }
 
 /* ============================================================
-   RESPONSIVE
+   RESPONSIVE MOBILE PEMILIK DASHBOARD
    ============================================================ */
 
-@media (max-width: 1024px) {
-    :root {
-        --pk-sidebar-w: 72px;
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed !important;
+        left: -290px !important;
+        top: 0 !important;
+        width: 270px !important;
+        height: 100vh !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        z-index: 1060 !important;
+        box-shadow: 0 0 35px rgba(0, 0, 0, 0.25) !important;
+        background: #ffffff !important;
+        display: block !important;
     }
 
-    .sidebar-header {
-        justify-content: center;
-        padding: 20px 0;
-    }
-
-    .sidebar-header img {
-        width: 36px;
-        height: 36px;
+    .sidebar.show {
+        left: 0 !important;
     }
 
     .sidebar-header h3,
-    .sidebar-header>span {
-        display: none;
+    .sidebar-header > span,
+    .sidebar-menu a span {
+        display: inline-block !important;
+    }
+
+    .sidebar-header {
+        display: block !important;
+        padding: 25px 20px !important;
     }
 
     .sidebar-menu a {
-        justify-content: center;
-        padding: 14px;
+        justify-content: flex-start !important;
+        padding: 12px 18px !important;
     }
 
-    .sidebar-menu a span {
+    .sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 1055;
         display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
 
-    .sidebar-menu a.active::before {
-        display: none;
+    .sidebar-backdrop.show {
+        display: block;
+        opacity: 1;
     }
 
-    .sidebar-menu a i {
-        width: auto;
-        font-size: 1.25rem;
+    .content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        min-width: 100% !important;
     }
-}
 
-@media (max-width: 768px) {
     .topbar {
-        padding: 0 16px;
-        height: auto;
-        min-height: 60px;
-        flex-wrap: wrap;
-        gap: 8px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-
-    .profile {
-        flex-wrap: wrap;
-        justify-content: flex-end;
-    }
-
-    .profile>span {
-        display: none;
+        padding: 0 16px !important;
+        height: 64px !important;
     }
 
     .main-content {
-        padding: 16px;
+        padding: 16px 12px !important;
     }
 
     .content-box {
-        padding: 18px;
+        padding: 16px 12px !important;
+        border-radius: 16px !important;
     }
 }

@@ -202,6 +202,99 @@
         border-radius: 18px;
         padding: 1.5rem;
     }
+
+    /* ============================================================
+       RESPONSIVE MOBILE DASHBOARD PENGGUNA
+       ============================================================ */
+    @media (max-width: 991.98px) {
+        .user-dash-container {
+            padding-top: 1.25rem;
+            padding-bottom: 3rem;
+        }
+
+        .user-hero-card {
+            padding: 1.5rem 1.25rem;
+            border-radius: 20px;
+        }
+
+        .user-hero-card .avatar-img-main,
+        .user-hero-card .avatar-initial-main {
+            width: 72px;
+            height: 72px;
+            font-size: 1.7rem;
+            border-width: 3px;
+        }
+
+        .user-hero-card h2 {
+            font-size: 1.4rem !important;
+        }
+
+        /* Horizontal Scrollable Tabs on Mobile */
+        .nav-dash-pills {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            padding: 6px !important;
+            gap: 6px !important;
+            border-radius: 16px !important;
+            margin-bottom: 1.25rem !important;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .nav-dash-pills::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .nav-dash-pills .nav-link {
+            white-space: nowrap !important;
+            flex-shrink: 0 !important;
+            padding: 9px 14px !important;
+            font-size: 13px !important;
+            border-radius: 12px !important;
+        }
+
+        .dash-main-card {
+            padding: 1.25rem 1rem !important;
+            border-radius: 18px !important;
+        }
+
+        .stat-card-dash {
+            padding: 0.9rem 0.85rem !important;
+            border-radius: 14px !important;
+            gap: 8px !important;
+        }
+
+        .stat-icon {
+            width: 38px !important;
+            height: 38px !important;
+            font-size: 1.15rem !important;
+            border-radius: 10px !important;
+        }
+
+        .stat-card-dash .fs-4 {
+            font-size: 1.15rem !important;
+        }
+
+        .stat-card-dash .small {
+            font-size: 11px !important;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .user-hero-card {
+            padding: 1.25rem 1rem;
+        }
+
+        .user-hero-card .avatar-wrapper {
+            margin-bottom: 0.25rem;
+        }
+
+        .section-title {
+            font-size: 1.15rem;
+        }
+    }
 </style>
 
 <div class="user-dash-container">
