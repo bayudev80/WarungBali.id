@@ -27,6 +27,7 @@ class Warung extends Model
         'harga_max',
         'foto',
         'status',
+        'alasan_penolakan',
         'menerima_catering'
     ];
 

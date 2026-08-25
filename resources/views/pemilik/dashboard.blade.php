@@ -116,14 +116,29 @@
     @endif
 
     @if($warung->status === 'pending')
-        <div class="alert alert-warning">
-            <i class="bi bi-hourglass-split"></i>
-            <span>Warung Anda sedang ditinjau oleh admin. Belum tampil di halaman utama sampai disetujui.</span>
+        <div class="alert alert-warning no-auto-dismiss d-flex align-items-center gap-2 rounded-4 p-3 mb-4 shadow-sm border-0" style="background:#FFFBEB; border-left: 4px solid #F59E0B !important;">
+            <i class="bi bi-hourglass-split text-warning fs-5 flex-shrink-0"></i>
+            <span class="text-dark small">Warung Anda sedang ditinjau oleh admin. Warung akan otomatis tayang di halaman utama setelah disetujui.</span>
         </div>
     @elseif($warung->status === 'rejected')
-        <div class="alert alert-danger">
-            <i class="bi bi-x-circle-fill"></i>
-            <span>Pengajuan ditolak admin. Periksa kembali data warung, lalu simpan ulang untuk diajukan kembali.</span>
+        <div class="alert alert-danger no-auto-dismiss rounded-4 p-4 mb-4 shadow-sm border-0" style="background:#FEF2F2; border-left: 4px solid #EF4444 !important;">
+            <div class="d-flex align-items-start gap-3">
+                <i class="bi bi-exclamation-octagon-fill text-danger fs-3 flex-shrink-0 mt-1"></i>
+                <div class="flex-grow-1">
+                    <h5 class="fw-bold text-danger mb-1">Pengajuan Warung Belum Disetujui</h5>
+                    <p class="text-dark small mb-2">
+                        Mohon maaf, pengajuan pendaftaran warung Anda belum disetujui dengan catatan/alasan dari admin berikut:
+                    </p>
+                    <div class="p-3 bg-white rounded-3 border border-danger-subtle text-danger fw-semibold small mb-3">
+                        <i class="bi bi-chat-left-quote-fill me-2"></i> "{{ $warung->alasan_penolakan ?: 'Data atau foto warung belum memenuhi syarat kelengkapan.' }}"
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <a href="{{ route('pemilik.warung.edit') }}" class="btn btn-danger btn-sm rounded-pill px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm">
+                            <i class="bi bi-pencil-square"></i> Perbaiki & Ajukan Ulang Data Warung
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     @endif
 

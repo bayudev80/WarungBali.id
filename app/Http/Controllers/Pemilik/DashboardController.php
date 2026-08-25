@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
+use Illuminate\Support\Facades\File;
+
 class DashboardController extends Controller
 {
     public function index()
@@ -33,7 +35,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * Halaman manajemen Keamanan & Password Akun Pemilik Warung.
+     * Halaman manajemen Profil, Foto Profil & Keamanan Akun Pemilik Warung.
      */
     public function password()
     {
@@ -44,6 +46,99 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         return view('pemilik.password', compact('user'));
+    }
+
+    /**
+     * Memperbarui profil dan foto profil (PP) akun pemilik warung.
+     */
+    public function updateProfile(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $request->validate([
+            'nama'  => 'required|string|max:100',
+            'email' => 'required|email|max:150|unique:users,email,' . $user->id_user . ',id_user',
+            'foto'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+        ], [
+            'nama.required'  => 'Nama lengkap wajib diisi.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.unique'   => 'Email ini sudah digunakan oleh akun lain.',
+            'foto.image'     => 'Berkas foto harus berupa gambar.',
+            'foto.mimes'     => 'Format foto harus JPEG, PNG, JPG, atau WebP.',
+            'foto.max'       => 'Ukuran foto maksimal adalah 3 MB.',
+        ]);
+
+        $data = [
+            'nama'  => $request->nama,
+            'email' => $request->email,
+        ];
+
+        if ($user->email !== $request->email) {
+            $data['email_verified_at'] = null;
+        }
+
+        // Upload foto profil baru jika ada
+        if ($request->hasFile('foto')) {
+            $this->hapusFotoLama($user->foto);
+
+            $file = $request->file('foto');
+            $filename = 'avatar_pemilik_' . $user->id_user . '_' . time() . '.' . $file->getClientOriginalExtension();
+            
+            $targetDir = public_path('images/avatars');
+            if (!File::exists($targetDir)) {
+                File::makeDirectory($targetDir, 0755, true);
+            }
+
+            $file->move($targetDir, $filename);
+            $data['foto'] = $filename;
+        }
+
+        $user->update($data);
+
+        return redirect()->route('pemilik.password.edit')
+            ->with('success', 'Profil dan foto akun pemilik warung berhasil diperbarui.');
+    }
+
+    /**
+     * Hapus foto profil pemilik dan kembali ke inisial.
+     */
+    public function removeFoto(): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if ($user->foto) {
+            $this->hapusFotoLama($user->foto);
+            $user->update(['foto' => null]);
+        }
+
+        return redirect()->route('pemilik.password.edit')
+            ->with('success', 'Foto profil berhasil dihapus.');
+    }
+
+    /**
+     * Hapus berkas foto lama jika ada di server.
+     */
+    private function hapusFotoLama(?string $filename): void
+    {
+        if (empty($filename)) {
+            return;
+        }
+
+        // Jangan hapus jika URL eksternal (misal Google avatar)
+        if (filter_var($filename, FILTER_VALIDATE_URL)) {
+            return;
+        }
+
+        $oldPath = public_path('images/avatars/' . $filename);
+        if (File::exists($oldPath)) {
+            try {
+                File::delete($oldPath);
+            } catch (\Throwable $e) {
+                Log::warning('Gagal menghapus foto lama pemilik: ' . $e->getMessage());
+            }
+        }
     }
 
     /**

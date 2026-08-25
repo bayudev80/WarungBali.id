@@ -5,11 +5,21 @@
         $item->favorit->where('id_user', auth()->user()->id_user)->count() > 0;
     // Ambil 2 menu unggulan (nama saja)
     $menuUnggulan = $item->menu_tampil->take(2)->pluck('nama_menu');
+    $isMyWarung  = auth()->check() && (auth()->user()->id_user === $item->id_user);
 @endphp
 
 <div class="warung-card-item mb-4 d-flex flex-column">
 
-    <div class="card warung-card border-0 shadow flex-fill w-100">
+    <div class="card warung-card border-0 shadow flex-fill w-100 position-relative" @if($isMyWarung) style="border: 2px solid #f59e0b !important;" @endif>
+
+        {{-- Badge Penanda Warung Milik Sendiri --}}
+        @if($isMyWarung)
+            <div class="position-absolute top-0 start-0 m-2 z-3">
+                <span class="badge rounded-pill px-2 py-1 shadow text-dark fw-bold d-inline-flex align-items-center gap-1" style="background: #fef08a; border: 1.5px solid #facc15; font-size: 11px;">
+                    <i class="bi bi-shop text-dark"></i> Warung Milik Anda
+                </span>
+            </div>
+        @endif
 
         {{-- GAMBAR --}}
         <div class="warung-card__img-wrap position-relative">
@@ -127,10 +137,18 @@
               </button>
 
               <div class="detail-modal-overlay">
-                <div>
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
                   <span class="detail-cat-badge">
                     <i class="bi bi-shop"></i> {{ $item->kategori->nama_kategori ?? 'Kuliner Bali' }}
                   </span>
+                  @if($isMyWarung)
+                    <span class="badge rounded-pill bg-warning text-dark fw-bold px-2 py-1 shadow-sm d-inline-flex align-items-center gap-1" style="font-size: 11px;">
+                      <i class="bi bi-check-circle-fill"></i> Warung Milik Anda
+                    </span>
+                    <a href="{{ route('pemilik.dashboard') }}" class="btn btn-sm btn-light rounded-pill px-2 py-1 fw-bold text-dark d-inline-flex align-items-center gap-1" style="font-size: 11px;">
+                      <i class="bi bi-speedometer2"></i> Dashboard Pemilik
+                    </a>
+                  @endif
                 </div>
 
                 <h3 class="detail-modal-title" id="modalLabel{{ $item->id_warung }}">

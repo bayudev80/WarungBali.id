@@ -113,21 +113,44 @@
 
             <div class="profile dropdown">
 
+                @php
+                    $pemilikUser = Auth::user();
+                    $hasPemilikFoto = false;
+                    $pemilikFotoUrl = '';
+                    if (!empty($pemilikUser->foto)) {
+                        if (filter_var($pemilikUser->foto, FILTER_VALIDATE_URL)) {
+                            $hasPemilikFoto = true;
+                            $pemilikFotoUrl = $pemilikUser->foto;
+                        } elseif (file_exists(public_path('images/avatars/' . $pemilikUser->foto))) {
+                            $hasPemilikFoto = true;
+                            $pemilikFotoUrl = asset('images/avatars/' . $pemilikUser->foto);
+                        }
+                    }
+                    $pemilikInitial = strtoupper(substr(trim($pemilikUser->nama ?: 'P'), 0, 1));
+                @endphp
+
                 <div class="d-flex align-items-center gap-3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="text-end d-none d-md-block">
-                        <span class="d-block fw-bold text-dark mb-0 lh-1" style="font-size: 14px;">{{ Auth::user()->nama }}</span>
+                        <span class="d-block fw-bold text-dark mb-0 lh-1" style="font-size: 14px;">{{ $pemilikUser->nama }}</span>
                         <span class="text-muted small" style="font-size: 12px;">Pemilik Warung</span>
                     </div>
-                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm text-white" style="width: 42px; height: 42px; font-size: 16px; background-color: #C85C2E;">
-                        {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
-                    </div>
+                    @if($hasPemilikFoto)
+                        <img src="{{ $pemilikFotoUrl }}" alt="{{ $pemilikUser->nama }}" class="rounded-circle shadow-sm" style="width: 42px; height: 42px; object-fit: cover; border: 2px solid #C85C2E;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="rounded-circle align-items-center justify-content-center fw-bold shadow-sm text-white" style="width: 42px; height: 42px; font-size: 16px; background-color: #C85C2E; display:none;">
+                            {{ $pemilikInitial }}
+                        </div>
+                    @else
+                        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm text-white" style="width: 42px; height: 42px; font-size: 16px; background-color: #C85C2E;">
+                            {{ $pemilikInitial }}
+                        </div>
+                    @endif
                     <i class="bi bi-chevron-down text-muted small"></i>
                 </div>
 
                 <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2" style="min-width: 220px;">
                     <li>
                         <a class="dropdown-item py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('pemilik.password.edit') }}">
-                            <i class="bi bi-shield-lock"></i> Keamanan & Password
+                            <i class="bi bi-person-gear"></i> Profil & Keamanan Akun
                         </a>
                     </li>
                     <li>

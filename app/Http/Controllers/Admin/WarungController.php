@@ -171,19 +171,32 @@ class WarungController extends Controller
     public function approve($id)
     {
         $warung = Warung::findOrFail($id);
-        $warung->update(['status' => 'approved']);
+        $warung->update([
+            'status'           => 'approved',
+            'alasan_penolakan' => null,
+        ]);
 
         return redirect()->back()
             ->with('success', 'Warung "' . $warung->nama_warung . '" disetujui dan sekarang tayang di website.');
     }
 
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
         $warung = Warung::findOrFail($id);
-        $warung->update(['status' => 'rejected']);
+
+        $request->validate([
+            'alasan_penolakan' => 'nullable|string|max:500',
+        ]);
+
+        $alasan = $request->input('alasan_penolakan') ?: 'Data atau foto warung belum memenuhi syarat kelengkapan.';
+
+        $warung->update([
+            'status'           => 'rejected',
+            'alasan_penolakan' => $alasan,
+        ]);
 
         return redirect()->back()
-            ->with('success', 'Warung "' . $warung->nama_warung . '" ditolak.');
+            ->with('success', 'Warung "' . $warung->nama_warung . '" ditolak dengan catatan: "' . $alasan . '".');
     }
 
     /**

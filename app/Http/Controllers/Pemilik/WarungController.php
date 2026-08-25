@@ -159,9 +159,11 @@ class WarungController extends Controller
         ]);
         $data['menerima_catering'] = $request->boolean('menerima_catering');
 
-        // Perubahan data warung setelah disetujui perlu ditinjau ulang oleh admin.
-        if ($warung->status === 'approved') {
-            $data['status'] = 'pending';
+        // Jika warung sebelumnya berstatus approved atau rejected, ubah menjadi pending
+        // dan reset catatan penolakan agar ditinjau ulang oleh admin.
+        if ($warung->status === 'approved' || $warung->status === 'rejected') {
+            $data['status']           = 'pending';
+            $data['alasan_penolakan'] = null;
         }
 
         if ($request->hasFile('foto')) {
@@ -172,9 +174,9 @@ class WarungController extends Controller
         $warung->update($data);
 
         return redirect()->route('pemilik.dashboard')
-            ->with('success', $warung->status === 'pending'
-                ? 'Perubahan disimpan. Warung Anda perlu ditinjau ulang oleh admin sebelum tayang.'
-                : 'Data warung berhasil diubah.');
+            ->with('success', $data['status'] === 'pending'
+                ? 'Perubahan data warung berhasil disimpan dan diajukan ke admin untuk verifikasi.'
+                : 'Data warung berhasil diperbarui.');
     }
 
     /**

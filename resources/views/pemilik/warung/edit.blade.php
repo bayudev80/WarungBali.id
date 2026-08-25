@@ -18,10 +18,18 @@
         </div>
     @endif
 
-    @if($warung->status === 'approved')
-        <div class="alert alert-info small">
-            <i class="bi bi-info-circle"></i>
-            Warung Anda sudah tayang. Kalau data diubah, warung akan ditinjau ulang oleh admin sebelum tayang lagi.
+    @if($warung->status === 'rejected')
+        <div class="alert alert-danger no-auto-dismiss rounded-4 p-3 mb-4 border-0 shadow-sm" style="background:#FEF2F2; border-left: 4px solid #EF4444 !important;">
+            <div class="fw-bold mb-1 text-danger"><i class="bi bi-exclamation-circle-fill me-1"></i> Catatan Penolakan dari Admin:</div>
+            <div class="p-2.5 px-3 bg-white rounded-3 border border-danger-subtle text-danger fw-semibold small mb-2">
+                <i class="bi bi-chat-left-quote-fill me-1"></i> "{{ $warung->alasan_penolakan ?: 'Data atau foto warung belum memenuhi syarat kelengkapan.' }}"
+            </div>
+            <small class="text-muted d-block">Silakan perbaiki data warung sesuai catatan di atas. Setelah Anda menyimpan perubahan, warung akan otomatis diajukan kembali ke admin untuk verifikasi ulang.</small>
+        </div>
+    @elseif($warung->status === 'approved')
+        <div class="alert alert-info small no-auto-dismiss rounded-3 p-3 mb-4">
+            <i class="bi bi-info-circle me-1"></i>
+            Warung Anda saat ini sudah disetujui & tayang. Jika Anda mengubah informasi warung, data akan ditinjau ulang oleh admin sebelum diperbarui di website.
         </div>
     @endif
 

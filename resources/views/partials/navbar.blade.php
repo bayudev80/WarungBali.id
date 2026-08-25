@@ -112,7 +112,13 @@
                 @endguest
 
                 @auth
-                    @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'pemilik')
+                    @if(Auth::user()->role === 'pemilik')
+                        <a href="{{ route('pemilik.dashboard') }}"
+                            class="btn btn-sm rounded-pill text-white px-3 py-2 me-2 d-flex align-items-center gap-2 shadow-sm cta-warung-btn"
+                            style="background: linear-gradient(135deg, #d97706, #b45309); font-size:13.5px; font-weight:600; border:none;">
+                            <i class="bi bi-speedometer2"></i> Kelola Warung
+                        </a>
+                    @elseif(Auth::user()->role !== 'admin')
                         <a href="{{ route('pemilik.warung.panduan') }}"
                             class="btn btn-sm rounded-pill text-white px-3 py-2 me-2 d-flex align-items-center gap-2 shadow-sm cta-warung-btn"
                             style="background: linear-gradient(135deg, #C85C2E, #d97706); font-size:13.5px; font-weight:600; border:none;">
@@ -162,7 +168,7 @@
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2"
-                            style="min-width:230px;border-radius:16px;padding:8px;">
+                            style="min-width:240px;border-radius:16px;padding:8px;">
 
                             <li class="px-3 py-2">
                                 <div class="fw-semibold text-truncate" style="font-size:14px;color:#2D201C;">
@@ -171,6 +177,13 @@
                                 <div class="text-muted small" style="font-size:12px;">
                                     {{ ucfirst(Auth::user()->role) }} • {{ Auth::user()->email }}
                                 </div>
+                                @if(Auth::user()->role === 'pemilik' && !empty(Auth::user()->warung?->nama_warung))
+                                    <div class="mt-1">
+                                        <span class="badge rounded-pill bg-warning text-dark px-2 py-0.5 small fw-semibold" style="font-size: 10.5px;">
+                                            <i class="bi bi-shop me-1"></i> {{ Auth::user()->warung->nama_warung }}
+                                        </span>
+                                    </div>
+                                @endif
                             </li>
 
                             <li><hr class="dropdown-divider my-1"></li>

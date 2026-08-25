@@ -115,14 +115,10 @@
                             </button>
                         </form>
 
-                        <form action="{{ route('admin.warung.reject', $item->id_warung) }}" method="POST" class="d-inline form-reject-warung" data-nama="{{ $item->nama_warung }}">
-                            @csrf
-                            @method('PATCH')
-                            <button type="button" class="btn btn-outline-danger btn-sm btn-action-reject" title="Tolak">
-                                <i class="bi bi-x-lg"></i>
-                                Tolak
-                            </button>
-                        </form>
+                        <button type="button" class="btn btn-outline-danger btn-sm btn-action-reject" data-id="{{ $item->id_warung }}" data-nama="{{ $item->nama_warung }}" data-action="{{ route('admin.warung.reject', $item->id_warung) }}" title="Tolak">
+                            <i class="bi bi-x-lg"></i>
+                            Tolak
+                        </button>
 
                         <a href="{{ route('admin.warung.edit', $item->id_warung) }}" class="btn btn-outline-secondary btn-sm" title="Lihat / Edit Detail">
                             <i class="bi bi-eye"></i>
@@ -155,8 +151,62 @@
 
 </div>
 
+<!-- Modal Tolak Pengajuan Warung -->
+<div class="modal fade" id="modalTolakWarung" tabindex="-1" aria-labelledby="modalTolakWarungLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-danger d-flex align-items-center gap-2" id="modalTolakWarungLabel">
+                    <i class="bi bi-x-circle-fill fs-4"></i> Tolak Pengajuan Warung
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formModalTolakWarung" action="" method="POST">
+                @csrf
+                @method('PATCH')
+                <div class="modal-body py-3">
+                    <p class="text-dark small mb-3">
+                        Anda akan menolak pengajuan warung: <strong id="modalNamaWarung" class="text-danger"></strong>. 
+                        Sertakan catatan/alasan penolakan di bawah agar pemilik warung dapat memperbaiki datanya:
+                    </p>
+
+                    <!-- Quick Preset Reasons -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-muted mb-1">Pilih Alasan Cepat (Opsional):</label>
+                        <div class="d-flex flex-wrap gap-1">
+                            <button type="button" class="btn btn-sm btn-light border rounded-pill px-2 py-1 small btn-preset-reason" style="font-size: 11px;" onclick="setAlasanTolak(this.innerText)">Foto warung buram / tidak sesuai</button>
+                            <button type="button" class="btn btn-sm btn-light border rounded-pill px-2 py-1 small btn-preset-reason" style="font-size: 11px;" onclick="setAlasanTolak(this.innerText)">Alamat atau lokasi kurang jelas</button>
+                            <button type="button" class="btn btn-sm btn-light border rounded-pill px-2 py-1 small btn-preset-reason" style="font-size: 11px;" onclick="setAlasanTolak(this.innerText)">Nomor telepon tidak dapat dihubungi</button>
+                            <button type="button" class="btn btn-sm btn-light border rounded-pill px-2 py-1 small btn-preset-reason" style="font-size: 11px;" onclick="setAlasanTolak(this.innerText)">Bukan kategori kuliner Bali</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold text-dark">Alasan / Catatan Penolakan <span class="text-danger">*</span></label>
+                        <textarea name="alasan_penolakan" id="modalAlasanPenolakan" class="form-control rounded-3" rows="3" placeholder="Tuliskan catatan alasan penolakan untuk pemilik warung..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4 fw-semibold">
+                        <i class="bi bi-x-lg me-1"></i> Tolak Pengajuan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
 <script>
+function setAlasanTolak(text) {
+    const textarea = document.getElementById('modalAlasanPenolakan');
+    if (textarea) {
+        textarea.value = text;
+        textarea.focus();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     // Approve Action
     document.querySelectorAll('.btn-action-approve').forEach(function (button) {
@@ -178,23 +228,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Reject Action
+    // Reject Action via Modal
+    const modalEl = document.getElementById('modalTolakWarung');
+    const modalInstance = modalEl ? new bootstrap.Modal(modalEl) : null;
+    const formReject = document.getElementById('formModalTolakWarung');
+    const namaLabel = document.getElementById('modalNamaWarung');
+    const textareaAlasan = document.getElementById('modalAlasanPenolakan');
+
     document.querySelectorAll('.btn-action-reject').forEach(function (button) {
         button.addEventListener('click', function (e) {
             e.preventDefault();
-            const form = this.closest('form');
-            const nama = form.getAttribute('data-nama') || 'Warung';
+            const nama = this.getAttribute('data-nama') || 'Warung';
+            const action = this.getAttribute('data-action') || '';
 
-            window.showWarungBaliModal({
-                title: 'Tolak Pengajuan Warung',
-                message: `Apakah Anda yakin ingin menolak pengajuan warung <b>${nama}</b>?`,
-                icon: 'bi bi-x-circle-fill',
-                variant: 'danger',
-                confirmText: '<i class="bi bi-x-lg me-1"></i> Ya, Tolak',
-                onConfirm: function () {
-                    form.submit();
-                }
-            });
+            if (formReject) formReject.action = action;
+            if (namaLabel) namaLabel.textContent = nama;
+            if (textareaAlasan) textareaAlasan.value = '';
+
+            if (modalInstance) {
+                modalInstance.show();
+            }
         });
     });
 });

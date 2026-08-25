@@ -273,13 +273,9 @@
                                                 <i class="bi bi-check-lg"></i>
                                             </button>
                                         </form>
-                                        <form action="{{ route('admin.warung.reject', $item->id_warung) }}" method="POST" class="m-0">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger bg-white rounded-3 shadow-sm" style="padding: 0.35rem 0.6rem;" title="Tolak" onclick="return confirm('Tolak warung ini?')">
-                                                <i class="bi bi-x-lg"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn btn-sm btn-outline-danger bg-white rounded-3 shadow-sm btn-action-reject-index" style="padding: 0.35rem 0.6rem;" title="Tolak" data-nama="{{ $item->nama_warung }}" data-action="{{ route('admin.warung.reject', $item->id_warung) }}">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
                                     @endif
 
                                     <a href="{{ route('admin.warung.edit', $item->id_warung) }}" class="btn btn-sm btn-warning text-white rounded-3 shadow-sm" style="padding: 0.35rem 0.6rem;" title="Edit">
@@ -331,5 +327,87 @@
     @endif
 
 </div>
+
+<!-- Modal Tolak Pengajuan Warung (Index) -->
+<div class="modal fade" id="modalTolakWarungIndex" tabindex="-1" aria-labelledby="modalTolakWarungIndexLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-danger d-flex align-items-center gap-2" id="modalTolakWarungIndexLabel">
+                    <i class="bi bi-x-circle-fill fs-4"></i> Tolak Pengajuan Warung
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formModalTolakWarungIndex" action="" method="POST">
+                @csrf
+                @method('PATCH')
+                <div class="modal-body py-3">
+                    <p class="text-dark small mb-3">
+                        Anda akan menolak pengajuan warung: <strong id="modalNamaWarungIndex" class="text-danger"></strong>. 
+                        Sertakan catatan/alasan penolakan di bawah agar pemilik warung dapat memperbaikinya:
+                    </p>
+
+                    <!-- Quick Preset Reasons -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-muted mb-1">Pilih Alasan Cepat (Opsional):</label>
+                        <div class="d-flex flex-wrap gap-1">
+                            <button type="button" class="btn btn-sm btn-light border rounded-pill px-2 py-1 small btn-preset-reason" style="font-size: 11px;" onclick="setAlasanTolakIndex(this.innerText)">Foto warung buram / tidak sesuai</button>
+                            <button type="button" class="btn btn-sm btn-light border rounded-pill px-2 py-1 small btn-preset-reason" style="font-size: 11px;" onclick="setAlasanTolakIndex(this.innerText)">Alamat atau lokasi kurang jelas</button>
+                            <button type="button" class="btn btn-sm btn-light border rounded-pill px-2 py-1 small btn-preset-reason" style="font-size: 11px;" onclick="setAlasanTolakIndex(this.innerText)">Nomor telepon tidak dapat dihubungi</button>
+                            <button type="button" class="btn btn-sm btn-light border rounded-pill px-2 py-1 small btn-preset-reason" style="font-size: 11px;" onclick="setAlasanTolakIndex(this.innerText)">Bukan kategori kuliner Bali</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold text-dark">Alasan / Catatan Penolakan <span class="text-danger">*</span></label>
+                        <textarea name="alasan_penolakan" id="modalAlasanPenolakanIndex" class="form-control rounded-3" rows="3" placeholder="Tuliskan catatan alasan penolakan untuk pemilik warung..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger rounded-pill px-4 fw-semibold">
+                        <i class="bi bi-x-lg me-1"></i> Tolak Pengajuan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+function setAlasanTolakIndex(text) {
+    const textarea = document.getElementById('modalAlasanPenolakanIndex');
+    if (textarea) {
+        textarea.value = text;
+        textarea.focus();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const modalEl = document.getElementById('modalTolakWarungIndex');
+    const modalInstance = modalEl ? new bootstrap.Modal(modalEl) : null;
+    const formReject = document.getElementById('formModalTolakWarungIndex');
+    const namaLabel = document.getElementById('modalNamaWarungIndex');
+    const textareaAlasan = document.getElementById('modalAlasanPenolakanIndex');
+
+    document.querySelectorAll('.btn-action-reject-index').forEach(function (button) {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const nama = this.getAttribute('data-nama') || 'Warung';
+            const action = this.getAttribute('data-action') || '';
+
+            if (formReject) formReject.action = action;
+            if (namaLabel) namaLabel.textContent = nama;
+            if (textareaAlasan) textareaAlasan.value = '';
+
+            if (modalInstance) {
+                modalInstance.show();
+            }
+        });
+    });
+});
+</script>
+@endpush
 
 @endsection

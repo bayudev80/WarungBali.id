@@ -159,6 +159,12 @@ Route::middleware(['auth'])
         Route::delete('menu/{id}', [PemilikMenuController::class, 'destroy'])
             ->name('menu.destroy');
 
+        // Profil & Foto Profil Pemilik Warung
+        Route::put('profile', [PemilikDashboardController::class, 'updateProfile'])
+            ->name('profile.update');
+        Route::delete('profile/foto', [PemilikDashboardController::class, 'removeFoto'])
+            ->name('profile.remove-foto');
+
         // Keamanan & Ganti Password Pemilik Warung
         Route::get('password', [PemilikDashboardController::class, 'password'])
             ->name('password.edit');
