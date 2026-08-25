@@ -6,14 +6,14 @@
 
 <div class="content-box">
 
-    <div class="alert alert-success d-flex align-items-center gap-3 rounded-4 p-3 mb-4 shadow-sm border-0" style="background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); border-left: 4px solid #10B981 !important;">
-        <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; font-size: 20px;">
-            <i class="bi bi-patch-check-fill"></i>
+    <div class="rounded-4 p-3 mb-4 d-flex align-items-center gap-3 shadow-sm border" style="background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); border-left: 5px solid #10B981 !important; border-color: #A7F3D0;">
+        <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm" style="width: 42px; height: 42px; font-size: 20px;">
+            <i class="bi bi-shop"></i>
         </div>
         <div>
-            <h6 class="fw-bold mb-1 text-success-emphasis">Selamat Datang, {{ auth()->user()->nama }}!</h6>
-            <p class="mb-0 small text-success-emphasis">
-                Akun pemilik warung Anda telah diverifikasi oleh admin. Silakan lengkapi formulir pendaftaran data warung Anda di bawah ini agar dapat segera ditinjau dan ditayangkan di website WarungBali.id.
+            <h6 class="fw-bold mb-1 text-success-emphasis">Pendaftaran Warung Kuliner — {{ auth()->user()->nama }}</h6>
+            <p class="mb-0 small text-success-emphasis" style="line-height: 1.5;">
+                Silakan lengkapi data profil warung Anda di bawah ini. Setelah dikirim, data warung akan ditinjau oleh tim admin WarungBali.id sebelum resmi ditayangkan di direktori publik.
             </p>
         </div>
     </div>

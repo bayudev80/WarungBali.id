@@ -318,16 +318,19 @@
             }
         }, true);
 
-        // Auto-dismiss Flash Alerts (Otomatis menghilang setelah 4 detik secara halus)
-        document.addEventListener('DOMContentLoaded', function() {
-            const alerts = document.querySelectorAll('.alert:not(.alert-permanent):not(.no-auto-dismiss)');
+        // Auto-dismiss Flash Alerts (Otomatis menghilang setelah 3.5 detik secara halus)
+        function initAutoDismissAlerts() {
+            const alerts = document.querySelectorAll('.alert:not(.alert-permanent):not(.no-auto-dismiss):not(.alert-static)');
             alerts.forEach(function(alert) {
-                alert.style.transition = 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.5s ease, margin 0.5s ease, padding 0.5s ease';
+                if (alert.dataset.autoDismissInit) return;
+                alert.dataset.autoDismissInit = 'true';
+
+                alert.style.transition = 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), max-height 0.4s ease, margin 0.4s ease, padding 0.4s ease';
                 alert.style.overflow = 'hidden';
                 
                 let timeoutId = setTimeout(function() {
                     dismissAlert(alert);
-                }, 4000);
+                }, 3500);
 
                 // Jeda timer jika kursor berada di atas notifikasi
                 alert.addEventListener('mouseenter', function() {
@@ -337,7 +340,7 @@
                 alert.addEventListener('mouseleave', function() {
                     timeoutId = setTimeout(function() {
                         dismissAlert(alert);
-                    }, 2000);
+                    }, 1500);
                 });
             });
 
@@ -346,17 +349,25 @@
                 alert.style.transform = 'translateY(-8px)';
                 setTimeout(function() {
                     alert.style.maxHeight = '0px';
-                    alert.style.paddingTop = '0px';
-                    alert.style.paddingBottom = '0px';
-                    alert.style.marginTop = '0px';
-                    alert.style.marginBottom = '0px';
+                    alert.style.padding = '0px';
+                    alert.style.margin = '0px';
                     alert.style.border = 'none';
+                    alert.style.outline = 'none';
+                    alert.style.boxShadow = 'none';
                     setTimeout(function() {
-                        alert.remove();
-                    }, 500);
-                }, 300);
+                        if (alert.parentNode) {
+                            alert.remove();
+                        }
+                    }, 350);
+                }, 250);
             }
-        });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAutoDismissAlerts);
+        } else {
+            initAutoDismissAlerts();
+        }
     </script>
 
     @stack('scripts')

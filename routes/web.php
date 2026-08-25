@@ -120,6 +120,9 @@ Route::middleware(['auth'])
         Route::get('/', [PemilikDashboardController::class, 'index'])
             ->name('dashboard');
 
+        Route::get('warung/panduan', [PemilikWarungController::class, 'panduan'])
+            ->name('warung.panduan');
+
         Route::get('warung/create', [PemilikWarungController::class, 'create'])
             ->name('warung.create');
         Route::post('warung', [PemilikWarungController::class, 'store'])
@@ -155,6 +158,14 @@ Route::middleware(['auth'])
             ->name('menu.update');
         Route::delete('menu/{id}', [PemilikMenuController::class, 'destroy'])
             ->name('menu.destroy');
+
+        // Keamanan & Ganti Password Pemilik Warung
+        Route::get('password', [PemilikDashboardController::class, 'password'])
+            ->name('password.edit');
+        Route::put('password', [PemilikDashboardController::class, 'updatePassword'])
+            ->name('password.update');
+        Route::post('password/email', [PemilikDashboardController::class, 'requestPasswordEmail'])
+            ->name('password.email');
     });
 
 // =========================

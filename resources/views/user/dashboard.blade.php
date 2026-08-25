@@ -830,8 +830,8 @@
                                         <p class="text-secondary small mb-3">
                                             Dapatkan kemudahan menampilkan daftar menu lezat, lokasi cabang, jam buka, dan menerima ulasan langsung dari pencinta kuliner tanpa biaya pendaftaran!
                                         </p>
-                                        <a href="{{ route('pemilik.warung.create') }}" class="btn btn-wb-primary px-4 py-2">
-                                            <i class="bi bi-plus-circle me-1"></i> Daftarkan Warung Kuliner Sekarang
+                                        <a href="{{ route('pemilik.warung.panduan') }}" class="btn btn-wb-primary px-4 py-2">
+                                            <i class="bi bi-info-circle me-1"></i> Panduan & Pendaftaran Warung
                                         </a>
                                     </div>
                                     <div class="col-md-4 text-center">

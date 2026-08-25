@@ -253,13 +253,45 @@ body:not(.has-hero) {
 }
 
 @media (max-width: 991.98px) {
-    .main-navbar.navbar-scrolled .navbar-collapse {
+    .main-navbar .navbar-collapse {
         background: #FFF7EF !important;
-        border-radius: 18px;
-        padding: 18px;
-        margin-top: 10px;
-        border: 1px solid rgba(200, 92, 46, 0.12);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        border-radius: 20px;
+        padding: 20px;
+        margin-top: 12px;
+        border: 1px solid rgba(200, 92, 46, 0.15);
+        box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12);
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .main-navbar .navbar-collapse .nav-custom-link {
+        color: #2D201C !important;
+        text-shadow: none !important;
+        padding: 10px 16px !important;
+        margin-bottom: 4px;
+        font-weight: 600;
+    }
+
+    .main-navbar .navbar-collapse .nav-custom-link:hover,
+    .main-navbar .navbar-collapse .nav-custom-link.active {
+        background: #FCE8CC !important;
+        color: #C85C2E !important;
+        border-color: transparent !important;
+    }
+
+    .main-navbar .navbar-collapse .auth-link-text {
+        color: #2D201C !important;
+        text-shadow: none !important;
+    }
+
+    .main-navbar .navbar-collapse .auth-btn-register {
+        color: #C85C2E !important;
+        border-color: #C85C2E !important;
+        background: transparent !important;
+    }
+
+    .main-navbar .navbar-collapse .auth-divider {
+        border-color: rgba(45, 32, 28, 0.15) !important;
     }
 }
 

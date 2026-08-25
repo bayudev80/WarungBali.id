@@ -11,6 +11,23 @@ use Illuminate\Support\Facades\File;
 
 class WarungController extends Controller
 {
+    /**
+     * Halaman panduan & penjelasan alur kemitraan bagi pengguna yang sudah login.
+     */
+    public function panduan()
+    {
+        if (auth()->user()->role === 'admin') {
+            abort(403, 'Akun admin tidak dapat mendaftarkan warung.');
+        }
+
+        // Jika sudah memiliki warung, langsung arahkan ke dashboard pemilik
+        if (auth()->user()->warung) {
+            return redirect()->route('pemilik.dashboard');
+        }
+
+        return view('pemilik.warung.panduan');
+    }
+
     public function create()
     {
         // Admin tidak mendaftarkan warung untuk dirinya sendiri.

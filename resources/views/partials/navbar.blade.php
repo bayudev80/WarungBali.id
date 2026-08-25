@@ -113,7 +113,7 @@
 
                 @auth
                     @if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'pemilik')
-                        <a href="{{ route('pemilik.warung.create') }}"
+                        <a href="{{ route('pemilik.warung.panduan') }}"
                             class="btn btn-sm rounded-pill text-white px-3 py-2 me-2 d-flex align-items-center gap-2 shadow-sm cta-warung-btn"
                             style="background: linear-gradient(135deg, #C85C2E, #d97706); font-size:13.5px; font-weight:600; border:none;">
                             <i class="bi bi-shop"></i> Daftarkan Warung
