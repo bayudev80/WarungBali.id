@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\FavoritController as AdminFavoritController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\PemilikAkunController;
+use App\Http\Controllers\Admin\StatisticController;
 use App\Http\Controllers\Pemilik\DashboardController as PemilikDashboardController;
 use App\Http\Controllers\Pemilik\WarungController as PemilikWarungController;
 use App\Http\Controllers\Pemilik\MenuController as PemilikMenuController;
@@ -100,6 +101,11 @@ Route::middleware(['auth', 'role:admin'])
             ->name('favorit.index');
         Route::delete('favorit/{id}', [AdminFavoritController::class, 'destroy'])
             ->name('favorit.destroy');
+
+        // Kelola Statistik Website
+        Route::get('statistik', [StatisticController::class, 'index'])->name('statistik.index');
+        Route::post('statistik/update-all', [StatisticController::class, 'updateAll'])->name('statistik.update-all');
+        Route::post('statistik/reset', [StatisticController::class, 'resetDefaults'])->name('statistik.reset');
     });
 
 // =========================

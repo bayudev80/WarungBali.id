@@ -260,6 +260,22 @@
         @endif
     @endif
 
+    <!-- Banner Kontak Bantuan / Perubahan Data Manual oleh Admin -->
+    <div class="p-3.5 p-md-4 rounded-4 border bg-white shadow-sm mt-5 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success shadow-sm" style="width: 48px; height: 48px; font-size: 24px;">
+                <i class="bi bi-whatsapp"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold mb-0 text-dark">Perlu Perubahan Data Warung atau Bantuan Khusus?</h6>
+                <small class="text-muted">Jika membutuhkan penyesuaian data sensitif warung atau bantuan verifikasi manual, silakan hubungi Layanan Admin WarungBali.id.</small>
+            </div>
+        </div>
+        <a href="https://wa.me/6282146789679?text=Halo%20Admin%20WarungBali.id,%20saya%20pemilik%20warung%20membutuhkan%20bantuan%20perubahan%20data" target="_blank" rel="noopener" class="btn btn-success rounded-pill px-4 py-2 text-nowrap fw-semibold shadow-sm d-flex align-items-center gap-2">
+            <i class="bi bi-whatsapp"></i> Hubungi Admin (0821-4678-9679)
+        </a>
+    </div>
+
 </div>
 
 @endsection

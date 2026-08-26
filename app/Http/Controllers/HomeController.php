@@ -221,13 +221,15 @@ class HomeController extends Controller
         $totalUlasan = Review::count();
         $totalKabupaten = \App\Models\Kabupaten::count();
         $totalPengunjungBulanIni = \App\Models\PageVisit::countThisMonth();
+        $publicStatistics = \App\Models\SiteStatistic::getPublicStatistics();
 
         return view('home', array_merge($hasil, compact(
             'kategori',
             'totalWarung',
             'totalUlasan',
             'totalKabupaten',
-            'totalPengunjungBulanIni'
+            'totalPengunjungBulanIni',
+            'publicStatistics'
         ), [
             'urutanOptions' => $this->urutanOptions(),
             'icons' => $this->iconMap(),

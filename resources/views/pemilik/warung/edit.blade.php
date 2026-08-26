@@ -132,6 +132,21 @@
             <small class="text-muted">Kosongkan jika tidak ingin mengubah foto.</small>
         </div>
 
+        <div class="p-3 bg-light rounded-4 border mb-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="rounded-circle d-flex align-items-center justify-content-center bg-white shadow-sm text-success" style="width: 42px; height: 42px; font-size: 22px;">
+                    <i class="bi bi-whatsapp"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 13.5px;">Butuh Bantuan Perubahan Data Warung oleh Admin?</h6>
+                    <small class="text-muted">Jika membutuhkan bantuan verifikasi cepat atau penyesuaian khusus, hubungi Admin WarungBali.id.</small>
+                </div>
+            </div>
+            <a href="https://wa.me/6282146789679?text=Halo%20Admin%20WarungBali.id,%20saya%20pemilik%20warung%20membutuhkan%20bantuan%20data%20warung" target="_blank" rel="noopener" class="btn btn-success btn-sm rounded-pill px-3 py-2 text-nowrap fw-semibold shadow-sm d-flex align-items-center gap-2">
+                <i class="bi bi-whatsapp"></i> Hubungi Admin (0821-4678-9679)
+            </a>
+        </div>
+
         <button class="btn btn-primary">Simpan Perubahan</button>
         <a href="{{ route('pemilik.dashboard') }}" class="btn btn-secondary">Kembali</a>
 

@@ -105,26 +105,26 @@
     </div>
 
     <!-- CTA -->
-    <div class="tentang-cta">
+    <div class="tentang-cta" style="background: linear-gradient(rgba(30,20,15,.65), rgba(30,20,15,.65)), url('{{ asset('images/hero10.png') }}') center/cover no-repeat; border-radius: 24px; padding: 60px 40px; text-align: center; color: #fff;">
 
-        <h4>Siap Mendaftarkan Warung Anda?</h4>
+        <h4 style="color: #fff; font-weight: 800; font-size: 2rem; margin-bottom: 12px;">Siap Mendaftarkan Warung Anda?</h4>
 
-        <p>Gratis selamanya untuk warung lokal Bali. Bergabunglah sekarang!</p>
+        <p style="color: rgba(255,255,255,0.9); font-size: 1.05rem; margin-bottom: 24px;">Gratis selamanya untuk warung lokal Bali. Bergabunglah sekarang!</p>
 
         @guest
-            <a href="{{ route('register', ['role' => 'pemilik']) }}" class="btn">
-                Daftarkan Warung Saya
+            <a href="{{ route('register', ['role' => 'pemilik']) }}" class="btn btn-warning btn-lg rounded-pill px-4 fw-bold shadow">
+                <i class="bi bi-plus-circle me-1"></i> Daftarkan Warung Saya
             </a>
         @endguest
 
         @auth
             @if (Auth::user()->role === 'pemilik')
-                <a href="{{ route('pemilik.dashboard') }}" class="btn">
-                    Kelola Warung Saya
+                <a href="{{ route('pemilik.dashboard') }}" class="btn btn-warning btn-lg rounded-pill px-4 fw-bold shadow">
+                    <i class="bi bi-shop me-1"></i> Kelola Warung Saya
                 </a>
             @else
-                <a href="{{ route('pemilik.warung.create') }}" class="btn">
-                    Daftarkan Warung Saya
+                <a href="{{ route('pemilik.warung.create') }}" class="btn btn-warning btn-lg rounded-pill px-4 fw-bold shadow">
+                    <i class="bi bi-plus-circle me-1"></i> Daftarkan Warung Saya
                 </a>
             @endif
         @endauth

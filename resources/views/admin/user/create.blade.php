@@ -1,37 +1,93 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Tambah Kategori')
+@section('title', 'Tambah Pengguna')
 
 @section('content')
 
-<div class="content-box">
+<style>
+    .modern-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        background-color: #ffffff;
+    }
+    .modern-card-body {
+        padding: 1.5rem;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+</style>
 
-    <h3 class="fw-bold mb-4">Tambah Kategori</h3>
+<div class="d-flex justify-content-between align-items-center mb-4 pt-2">
+    <div>
+        <h4 class="fw-bold mb-0 text-dark">Tambah Pengguna</h4>
+        <p class="text-muted small mb-0 mt-1">Daftarkan akun pemilik warung atau pengguna baru ke sistem.</p>
+    </div>
+    <a href="{{ route('admin.user.index') }}" class="btn btn-light text-secondary border rounded-pill px-4 shadow-sm" style="transition: 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        <i class="bi bi-arrow-left me-1"></i> Kembali
+    </a>
+</div>
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+@if($errors->any())
+    <div class="alert alert-danger rounded-4 border-0 shadow-sm">
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+                <li><i class="bi bi-exclamation-triangle-fill me-2"></i> {{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
-    <form action="{{ route('admin.kategori.store') }}" method="POST">
-        @csrf
+<div class="card modern-card">
+    <div class="modern-card-body">
+        <form action="{{ route('admin.user.store') }}" method="POST">
+            @csrf
 
-        <div class="mb-3">
-            <label class="form-label">Nama Kategori</label>
-            <input type="text" name="nama_kategori" class="form-control" value="{{ old('nama_kategori') }}" required>
-            @error('nama_kategori') <div class="text-danger small">{{ $message }}</div> @enderror
-        </div>
+            <div class="mb-4">
+                <label class="form-label">Nama Lengkap</label>
+                <input type="text" name="nama" class="form-control" value="{{ old('nama') }}" placeholder="Masukkan nama lengkap pengguna" required>
+                @error('nama') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+            </div>
 
-        <button class="btn btn-success">Simpan</button>
-        <a href="{{ route('admin.kategori.index') }}" class="btn btn-secondary">Kembali</a>
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="contoh@email.com" required>
+                    @error('email') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                </div>
 
-    </form>
+                <div class="col-md-6">
+                    <label class="form-label">Role</label>
+                    <select name="role" class="form-select" required>
+                        <option value="">-- Pilih Role --</option>
+                        <option value="pemilik" {{ old('role') == 'pemilik' ? 'selected' : '' }}>Pemilik Warung</option>
+                        <option value="user" {{ old('role', 'user') == 'user' ? 'selected' : '' }}>User (Pembeli)</option>
+                    </select>
+                    @error('role') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                </div>
+            </div>
 
+            <div class="mb-5">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Minimal 6 karakter" required>
+                <div class="form-text text-muted">Minimal 6 karakter.</div>
+                @error('password') <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+            </div>
+
+            <hr class="mb-4">
+
+            <div class="d-flex justify-content-end gap-3">
+                <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm" style="transition: 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <i class="bi bi-save me-1"></i> Simpan Pengguna
+                </button>
+            </div>
+
+        </form>
+    </div>
 </div>
 
 @endsection

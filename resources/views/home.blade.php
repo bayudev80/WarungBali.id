@@ -96,31 +96,33 @@
 </section>
 
 @if(!$sedangFilter)
- <section class="statistik">
-    <div class="container">
-        <div class="statistik-wrapper">
+    @php
+        $hasStatsTable = class_exists(\App\Models\SiteStatistic::class) && \Illuminate\Support\Facades\Schema::hasTable('site_statistics');
+        $statsToDisplay = $hasStatsTable
+            ? ($publicStatistics ?? collect())
+            : collect([
+                (object)['formatted' => $totalWarung . '+', 'label' => 'Warung Terdaftar'],
+                (object)['formatted' => $totalUlasan . '+', 'label' => 'Ulasan Pengguna'],
+                (object)['formatted' => (string)$totalKabupaten, 'label' => 'Kabupaten/Kota'],
+                (object)['formatted' => number_format($totalPengunjungBulanIni), 'label' => 'Pengunjung Bulan Ini'],
+            ]);
+    @endphp
 
-        <div class="stat-item">
-            <h2>{{ $totalWarung }}+</h2>
-            <p>Warung Terdaftar</p>
-        </div>
+    @if($statsToDisplay->isNotEmpty())
+        <section class="statistik">
+            <div class="container">
+                <div class="statistik-wrapper">
+                    @foreach($statsToDisplay as $stat)
+                        <div class="stat-item">
+                            <h2>{{ method_exists($stat, 'getFormattedValue') ? $stat->getFormattedValue() : $stat->formatted }}</h2>
+                            <p>{{ $stat->label }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
 
-        <div class="stat-item">
-            <h2>{{ $totalUlasan }}+</h2>
-            <p>Ulasan Pengguna</p>
-        </div>
-
-        <div class="stat-item">
-            <h2>{{ $totalKabupaten }}</h2>
-            <p>Kabupaten/Kota</p>
-        </div>
-
-        <div class="stat-item">
-            <h2>{{ number_format($totalPengunjungBulanIni) }}</h2>
-            <p>Pengunjung Bulan Ini</p>
-        </div>
-    </div>
-</section>
 <!-- KATEGORI -->
 <section class="py-5 bg-light" id="kategori-section">
 

@@ -284,10 +284,14 @@
                   <!-- BADGES FITUR & LAYANAN -->
                   <div class="mb-4">
                     <h6 class="fw-bold mb-2 small text-uppercase text-muted" style="letter-spacing: 0.05em;">Layanan & Keunggulan</h6>
-                    <div class="d-flex flex-wrap">
+                    <div class="d-flex flex-wrap gap-2">
                       @if($item->menerima_catering)
                         <span class="detail-tag-pill tag-catering">
-                          <i class="bi bi-check-circle-fill"></i> Menerima Pesanan Katering
+                          <i class="{{ $item->layanan_icon }}"></i> {{ $item->layanan_label }}
+                        </span>
+                      @else
+                        <span class="detail-tag-pill bg-light text-muted border">
+                          <i class="bi bi-x-circle text-secondary me-1"></i> Tidak {{ $item->layanan_label }}
                         </span>
                       @endif
 
@@ -402,7 +406,6 @@
                       <form class="review-form" data-warung-id="{{ $item->id_warung }}">
                         @csrf
                         <div class="mb-3">
-                          <label class="form-label small fw-bold text-muted mb-1">Beri Rating Bintang</label>
                           <div class="star-rating d-inline-block" data-target="rating-input-{{ $item->id_warung }}">
                             @for ($i = 1; $i <= 5; $i++)
                               <span class="star" data-value="{{ $i }}" style="font-size:1.8rem;cursor:pointer;color:#d1d5db;transition:color 0.2s;">★</span>
@@ -412,7 +415,7 @@
                         </div>
 
                         <div class="mb-3">
-                          <textarea name="komentar" class="form-control rounded-3" rows="3" placeholder="Ceritakan rasa masakan, suasana, dan pelayanan di warung ini..." style="font-size:14px;border-color:#e5e7eb;">{{ $ulasanSaya->komentar ?? '' }}</textarea>
+                          <textarea name="komentar" class="form-control rounded-3" rows="3" placeholder="{{ $item->review_placeholder }}" style="font-size:14px;border-color:#e5e7eb;">{{ $ulasanSaya->komentar ?? '' }}</textarea>
                         </div>
 
                         <button type="submit" class="btn btn-submit-review">

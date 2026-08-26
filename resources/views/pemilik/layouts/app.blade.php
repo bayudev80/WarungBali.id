@@ -68,8 +68,8 @@
 
                 <a href="{{ route('pemilik.password.edit') }}"
                     class="{{ request()->routeIs('pemilik.password.*') ? 'active' : '' }}">
-                    <i class="bi bi-shield-lock"></i>
-                    <span>Keamanan Akun</span>
+                    <i class="bi bi-person-gear"></i>
+                    <span>Profil & Keamanan Akun</span>
                 </a>
 
             @else
@@ -82,8 +82,8 @@
 
                 <a href="{{ route('pemilik.password.edit') }}"
                     class="{{ request()->routeIs('pemilik.password.*') ? 'active' : '' }}">
-                    <i class="bi bi-shield-lock"></i>
-                    <span>Keamanan Akun</span>
+                    <i class="bi bi-person-gear"></i>
+                    <span>Profil & Keamanan Akun</span>
                 </a>
 
             @endif
@@ -129,41 +129,41 @@
                     $pemilikInitial = strtoupper(substr(trim($pemilikUser->nama ?: 'P'), 0, 1));
                 @endphp
 
-                <div class="d-flex align-items-center gap-3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="text-end d-none d-md-block">
-                        <span class="d-block fw-bold text-dark mb-0 lh-1" style="font-size: 14px;">{{ $pemilikUser->nama }}</span>
-                        <span class="text-muted small" style="font-size: 12px;">Pemilik Warung</span>
+                <div class="topbar-profile-btn" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="text-end d-none d-md-block lh-sm">
+                        <span class="d-block fw-bold text-dark mb-0" style="font-size: 13.5px; letter-spacing: -0.2px;">{{ $pemilikUser->nama }}</span>
+                        <span class="text-muted small" style="font-size: 11px; font-weight: 500;">Pemilik Warung</span>
                     </div>
                     @if($hasPemilikFoto)
-                        <img src="{{ $pemilikFotoUrl }}" alt="{{ $pemilikUser->nama }}" class="rounded-circle shadow-sm" style="width: 42px; height: 42px; object-fit: cover; border: 2px solid #C85C2E;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="rounded-circle align-items-center justify-content-center fw-bold shadow-sm text-white" style="width: 42px; height: 42px; font-size: 16px; background-color: #C85C2E; display:none;">
+                        <img src="{{ $pemilikFotoUrl }}" alt="{{ $pemilikUser->nama }}" class="topbar-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('d-none'); this.nextElementSibling.classList.add('d-flex');">
+                        <div class="topbar-avatar-circle d-none">
                             {{ $pemilikInitial }}
                         </div>
                     @else
-                        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm text-white" style="width: 42px; height: 42px; font-size: 16px; background-color: #C85C2E;">
+                        <div class="topbar-avatar-circle">
                             {{ $pemilikInitial }}
                         </div>
                     @endif
-                    <i class="bi bi-chevron-down text-muted small"></i>
+                    <i class="bi bi-chevron-down text-muted" style="font-size: 11px;"></i>
                 </div>
 
-                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2" style="min-width: 220px;">
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2" style="min-width: 220px; padding: 8px;">
                     <li>
-                        <a class="dropdown-item py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('pemilik.password.edit') }}">
-                            <i class="bi bi-person-gear"></i> Profil & Keamanan Akun
+                        <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('pemilik.password.edit') }}" style="font-size: 13.5px;">
+                            <i class="bi bi-person-gear text-warning"></i> Profil & Keamanan Akun
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('home') }}" target="_blank">
-                            <i class="bi bi-globe2"></i> Ke Website Utama
+                        <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('home') }}" target="_blank" style="font-size: 13.5px;">
+                            <i class="bi bi-globe2 text-primary"></i> Ke Website Utama
                         </a>
                     </li>
-                    <li><hr class="dropdown-divider opacity-25"></li>
+                    <li><hr class="dropdown-divider my-1 opacity-25"></li>
                     <li>
                         <form method="POST" action="{{ route('logout') }}" class="m-0">
                             @csrf
-                            <button type="submit" class="dropdown-item py-2 d-flex align-items-center gap-2 text-danger fw-medium">
-                                <i class="bi bi-box-arrow-right"></i> Keluar
+                            <button type="submit" class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2 text-danger fw-medium" style="font-size: 13.5px;">
+                                <i class="bi bi-box-arrow-right"></i> Logout
                             </button>
                         </form>
                     </li>

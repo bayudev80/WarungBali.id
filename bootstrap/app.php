@@ -16,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
 
-        $middleware->web(append: [
+        $middleware->web(prepend: [
+            \App\Http\Middleware\EnsureLocalhostDomain::class,
+        ], append: [
             \App\Http\Middleware\RecordPageVisit::class,
         ]);
     })

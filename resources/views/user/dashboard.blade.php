@@ -12,8 +12,8 @@
     }
 
     .user-dash-container {
-        padding-top: 2rem;
-        padding-bottom: 4rem;
+        padding-top: 1.25rem;
+        padding-bottom: 3.5rem;
         background: #faf7f2;
         min-height: calc(100vh - 80px);
     }
@@ -350,8 +350,8 @@
                 <div class="col-auto">
                     <div class="avatar-wrapper">
                         @if($hasUserFoto)
-                            <img src="{{ $userFotoUrl }}" alt="{{ $user->nama }}" class="avatar-img-main" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="avatar-initial-main" style="display:none;">
+                            <img src="{{ $userFotoUrl }}" alt="{{ $user->nama }}" class="avatar-img-main" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('d-none');">
+                            <div class="avatar-initial-main d-none">
                                 {{ $initialDepan }}
                             </div>
                         @else
@@ -369,9 +369,6 @@
                                 <i class="bi bi-google text-danger me-1"></i> Akun Google
                             </span>
                         @endif
-                        <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50 rounded-pill px-3 py-1 small fw-semibold">
-                            <i class="bi bi-patch-check-fill me-1"></i> Pecinta Kuliner Bali
-                        </span>
                     </div>
                     <p class="mb-2 text-white-50 small">
                         <i class="bi bi-envelope me-1"></i> {{ $user->email }}
@@ -482,13 +479,15 @@
                             <i class="bi bi-chat-left-quote"></i> Ulasan Saya
                             <span class="badge bg-white text-dark ms-auto rounded-pill px-2">{{ $totalReview }}</span>
                         </button>
-                        <button class="nav-link {{ $activeTab === 'mitra' ? 'active' : '' }}" 
-                                id="v-pills-mitra-tab" 
-                                data-bs-toggle="pill" 
-                                data-bs-target="#v-pills-mitra" 
-                                type="button" role="tab" aria-selected="{{ $activeTab === 'mitra' ? 'true' : 'false' }}">
-                            <i class="bi bi-shop-window"></i> Kemitraan Warung
-                        </button>
+                        @if($user->role !== 'admin')
+                            <button class="nav-link {{ $activeTab === 'mitra' ? 'active' : '' }}" 
+                                    id="v-pills-mitra-tab" 
+                                    data-bs-toggle="pill" 
+                                    data-bs-target="#v-pills-mitra" 
+                                    type="button" role="tab" aria-selected="{{ $activeTab === 'mitra' ? 'true' : 'false' }}">
+                                <i class="bi bi-shop-window"></i> Kemitraan Warung
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -696,6 +695,22 @@
                                 @csrf
                                 @method('DELETE')
                             </form>
+
+                            <!-- Info Bantuan Perubahan Data Manual oleh Admin -->
+                            <div class="p-3 bg-light rounded-4 border mt-4 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-white shadow-sm text-success" style="width: 42px; height: 42px; font-size: 22px;">
+                                        <i class="bi bi-whatsapp"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 13.5px;">Butuh Bantuan Perubahan Data Khusus?</h6>
+                                        <small class="text-muted">Hubungi kontak Admin jika memerlukan perubahan data manual pada akun Anda.</small>
+                                    </div>
+                                </div>
+                                <a href="https://wa.me/6282146789679?text=Halo%20Admin%20WarungBali.id,%20saya%20memerlukan%20bantuan%20perubahan%20data%20akun%20saya" target="_blank" rel="noopener" class="btn btn-success btn-sm rounded-pill px-3 py-2 text-nowrap fw-semibold shadow-sm d-flex align-items-center gap-2">
+                                    <i class="bi bi-whatsapp"></i> Hubungi Admin (0821-4678-9679)
+                                </a>
+                            </div>
                         </div>
                     </div>
 
@@ -748,9 +763,9 @@
                                         <div class="col-md-6">
                                             <label class="form-label fw-semibold small text-dark">Konfirmasi Password Baru <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <span class="input-group-text bg-white text-muted"><i class="bi bi-shield-check"></i></span>
-                                                <input type="password" name="password_confirmation" id="confPass" class="form-control" placeholder="Ketik ulang password baru" required>
-                                                <button class="btn btn-outline-secondary bg-white text-muted" type="button" onclick="togglePassField('confPass', this)">
+                                                <span class="input-group-text bg-white text-muted"><i class="bi bi-check2-circle"></i></span>
+                                                <input type="password" name="password_confirmation" id="newPassConf" class="form-control" placeholder="Ulangi password baru" required>
+                                                <button class="btn btn-outline-secondary bg-white text-muted" type="button" onclick="togglePassField('newPassConf', this)">
                                                     <i class="bi bi-eye"></i>
                                                 </button>
                                             </div>
@@ -766,7 +781,7 @@
                             <hr class="my-4">
 
                             <!-- Opsi 2: Minta Password Baru via Email -->
-                            <div class="security-notice-box">
+                            <div class="security-notice-box mb-4">
                                 <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
                                     <div>
                                         <h6 class="fw-bold text-dark mb-1">
@@ -785,6 +800,22 @@
                                         </form>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Info Bantuan Kontak Admin -->
+                            <div class="p-3 bg-light rounded-4 border d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center bg-white shadow-sm text-success" style="width: 42px; height: 42px; font-size: 22px;">
+                                        <i class="bi bi-whatsapp"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 13.5px;">Kendala Akun atau Perubahan Data Manual?</h6>
+                                        <small class="text-muted">Jika Anda tidak bisa mengakses email atau mengalami masalah akun, hubungi kontak Admin.</small>
+                                    </div>
+                                </div>
+                                <a href="https://wa.me/6282146789679?text=Halo%20Admin%20WarungBali.id,%20saya%20memerlukan%20bantuan%20manual%20akun%20saya" target="_blank" rel="noopener" class="btn btn-success btn-sm rounded-pill px-3 py-2 text-nowrap fw-semibold shadow-sm d-flex align-items-center gap-2">
+                                    <i class="bi bi-whatsapp"></i> Chat Admin (0821-4678-9679)
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -888,6 +919,7 @@
                         </div>
                     </div>
 
+                    @if($user->role !== 'admin')
                     <!-- ================= TAB 6: KEMITRAAN WARUNG ================= -->
                     <div class="tab-pane fade {{ $activeTab === 'mitra' ? 'show active' : '' }}" id="v-pills-mitra" role="tabpanel">
                         <div class="dash-main-card">
@@ -934,6 +966,7 @@
                             @endif
                         </div>
                     </div>
+                    @endif
 
                 </div>
             </div>

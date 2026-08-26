@@ -239,6 +239,63 @@ class Warung extends Model
     }
 
     /**
+     * Placeholder deskripsi ulasan dinamis sesuai dengan jenis/kategori warung.
+     * Makanan: rasa masakan, suasana, dan pelayanan
+     * Non-makanan: kelengkapan produk/barang, harga, kualitas cetak, pulsa, dsb.
+     */
+    public function getReviewPlaceholderAttribute()
+    {
+        $kategoriNama = strtolower($this->kategori->nama_kategori ?? '');
+
+        if ($this->is_kuliner || str_contains($kategoriNama, 'makan') || str_contains($kategoriNama, 'minum') || str_contains($kategoriNama, 'cafe') || str_contains($kategoriNama, 'resto') || str_contains($kategoriNama, 'kopi')) {
+            return 'Ceritakan rasa masakan, suasana, dan pelayanan di warung ini...';
+        }
+        if (str_contains($kategoriNama, 'atk') || str_contains($kategoriNama, 'fotokopi') || str_contains($kategoriNama, 'cetak')) {
+            return 'Ceritakan kelengkapan barang ATK, hasil fotokopi/cetak, dan pelayanannya...';
+        }
+        if (str_contains($kategoriNama, 'pulsa') || str_contains($kategoriNama, 'ppob') || str_contains($kategoriNama, 'hp') || str_contains($kategoriNama, 'counter')) {
+            return 'Ceritakan kecepatan transaksi, kelengkapan layanan pulsa/tagihan, dan pelayanannya...';
+        }
+        if (str_contains($kategoriNama, 'sembako') || str_contains($kategoriNama, 'kelontong') || str_contains($kategoriNama, 'toko')) {
+            return 'Ceritakan kelengkapan kebutuhan harian, harga, dan keramahan pelayanannya...';
+        }
+        if (str_contains($kategoriNama, 'oleh-oleh') || str_contains($kategoriNama, 'bali') || str_contains($kategoriNama, 'souvenir') || str_contains($kategoriNama, 'kerajinan')) {
+            return 'Ceritakan pilihan oleh-oleh, kualitas produk khas Bali, dan pengalaman belanja di sini...';
+        }
+        if (str_contains($kategoriNama, 'buah') || str_contains($kategoriNama, 'sayur')) {
+            return 'Ceritakan kesegaran buah/sayur, kualitas produk, dan pelayanannya...';
+        }
+        if (str_contains($kategoriNama, 'herbal') || str_contains($kategoriNama, 'jamu')) {
+            return 'Ceritakan khasiat produk, konsultasi penjual, dan pengalaman belanja di sini...';
+        }
+
+        return 'Ceritakan kualitas produk/jasa, kesesuaian harga, dan pelayanan di warung ini...';
+    }
+
+    /**
+     * Petunjuk ringkas ulasan sesuai kategori.
+     */
+    public function getReviewPromptAttribute()
+    {
+        $kategoriNama = strtolower($this->kategori->nama_kategori ?? '');
+
+        if ($this->is_kuliner || str_contains($kategoriNama, 'makan') || str_contains($kategoriNama, 'minum')) {
+            return 'rasa masakan, suasana, dan pelayanan';
+        }
+        if (str_contains($kategoriNama, 'atk') || str_contains($kategoriNama, 'fotokopi')) {
+            return 'kelengkapan barang, hasil cetak, dan pelayanan';
+        }
+        if (str_contains($kategoriNama, 'pulsa') || str_contains($kategoriNama, 'ppob')) {
+            return 'kecepatan transaksi, kelengkapan tagihan, dan pelayanan';
+        }
+        if (str_contains($kategoriNama, 'sembako') || str_contains($kategoriNama, 'kelontong')) {
+            return 'kelengkapan barang harian, harga, dan pelayanan';
+        }
+
+        return 'kualitas produk/jasa, harga, dan pelayanan';
+    }
+
+    /**
      * Link WhatsApp (wa.me) dari nomor telepon warung, siap diklik.
      * Nomor lokal yang diawali "0" otomatis diubah ke format internasional "62".
      * Sudah disertai pesan pembuka otomatis.
@@ -264,14 +321,25 @@ class Warung extends Model
 
     /**
      * Link Google Maps berdasarkan nama warung + alamat.
-     * Pakai endpoint pencarian resmi Google Maps supaya tidak perlu
-     * simpan koordinat (latitude/longitude) di database.
+     * 1. Jika alamat sudah berupa tautan URL Google Maps langsung, gunakan URL tersebut.
+     * 2. Jika berupa teks, cari berdasarkan nama warung dan alamatnya.
      */
     public function getMapsLinkAttribute()
     {
-        $query = $this->nama_warung . ', ' . $this->alamat;
+        $alamat = trim($this->alamat ?? '');
+
+        if (empty($alamat)) {
+            return null;
+        }
+
+        // Jika alamat sudah berupa URL tautan Google Maps langsung
+        if (str_starts_with($alamat, 'http://') || str_starts_with($alamat, 'https://')) {
+            return $alamat;
+        }
+
+        $query = $this->nama_warung . ', ' . $alamat;
 
         return 'https://www.google.com/maps/search/?api=1&query=' . urlencode($query);
     }
-    }
+}
 

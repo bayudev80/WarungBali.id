@@ -127,6 +127,12 @@
                 <span>Kelola Favorit</span>
             </a>
 
+            <a href="{{ route('admin.statistik.index') }}"
+                class="{{ request()->routeIs('admin.statistik.*') ? 'active' : '' }}">
+                <i class="bi bi-bar-chart-line"></i>
+                <span>Kelola Statistik</span>
+            </a>
+
         </nav>
 
     </aside>
@@ -150,30 +156,52 @@
             </div>
 
             <div class="profile dropdown">
+                @php
+                    $adminUser = Auth::user();
+                    $hasAdminFoto = false;
+                    $adminFotoUrl = '';
+                    if (!empty($adminUser->foto)) {
+                        if (filter_var($adminUser->foto, FILTER_VALIDATE_URL)) {
+                            $hasAdminFoto = true;
+                            $adminFotoUrl = $adminUser->foto;
+                        } elseif (file_exists(public_path('images/avatars/' . $adminUser->foto))) {
+                            $hasAdminFoto = true;
+                            $adminFotoUrl = asset('images/avatars/' . $adminUser->foto);
+                        }
+                    }
+                    $adminInitial = strtoupper(substr(trim($adminUser->nama ?: 'A'), 0, 1));
+                @endphp
 
-                <div class="d-flex align-items-center gap-3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="text-end d-none d-md-block">
-                        <span class="d-block fw-bold text-dark mb-0 lh-1" style="font-size: 14px;">{{ Auth::user()->nama }}</span>
-                        <span class="text-muted small" style="font-size: 12px;">Administrator</span>
+                <div class="topbar-profile-btn" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="text-end d-none d-md-block lh-sm">
+                        <span class="d-block fw-bold text-dark mb-0" style="font-size: 13.5px; letter-spacing: -0.2px;">{{ $adminUser->nama }}</span>
+                        <span class="text-muted small" style="font-size: 11px; font-weight: 500;">Administrator</span>
                     </div>
-                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm text-white" style="width: 42px; height: 42px; font-size: 16px; background-color: #C85C2E;">
-                        {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
-                    </div>
-                    <i class="bi bi-chevron-down text-muted small"></i>
+                    @if($hasAdminFoto)
+                        <img src="{{ $adminFotoUrl }}" alt="{{ $adminUser->nama }}" class="topbar-avatar-img" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('d-none'); this.nextElementSibling.classList.add('d-flex');">
+                        <div class="topbar-avatar-circle d-none">
+                            {{ $adminInitial }}
+                        </div>
+                    @else
+                        <div class="topbar-avatar-circle">
+                            {{ $adminInitial }}
+                        </div>
+                    @endif
+                    <i class="bi bi-chevron-down text-muted" style="font-size: 11px;"></i>
                 </div>
 
-                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2" style="min-width: 200px;">
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2" style="min-width: 210px; padding: 8px;">
                     <li>
-                        <a class="dropdown-item py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('home') }}" target="_blank">
-                            <i class="bi bi-globe2"></i> Ke Website Utama
+                        <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('home') }}" target="_blank" style="font-size: 13.5px;">
+                            <i class="bi bi-globe2 text-primary"></i> Ke Website Utama
                         </a>
                     </li>
-                    <li><hr class="dropdown-divider opacity-25"></li>
+                    <li><hr class="dropdown-divider my-1 opacity-25"></li>
                     <li>
                         <form method="POST" action="{{ route('logout') }}" class="m-0">
                             @csrf
-                            <button type="submit" class="dropdown-item py-2 d-flex align-items-center gap-2 text-danger fw-medium">
-                                <i class="bi bi-box-arrow-right"></i> Keluar
+                            <button type="submit" class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2 text-danger fw-medium" style="font-size: 13.5px;">
+                                <i class="bi bi-box-arrow-right"></i> Logout
                             </button>
                         </form>
                     </li>

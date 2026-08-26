@@ -150,9 +150,9 @@
                             @endphp
 
                             @if($hasNavFoto)
-                                <img src="{{ $navFotoUrl }}" alt="{{ $authUser->nama }}" class="rounded-circle shadow-sm me-2" style="width:34px;height:34px;object-fit:cover;border:1.5px solid rgba(200,92,46,0.2);" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <span class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold shadow-sm me-2"
-                                    style="width:34px;height:34px;background:linear-gradient(135deg, #C85C2E, #d97706);font-size:14px;display:none;">
+                                <img src="{{ $navFotoUrl }}" alt="{{ $authUser->nama }}" class="rounded-circle shadow-sm me-2" style="width:34px;height:34px;object-fit:cover;border:1.5px solid rgba(200,92,46,0.2);" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('d-none'); this.nextElementSibling.classList.add('d-flex');">
+                                <span class="d-none align-items-center justify-content-center rounded-circle text-white fw-bold shadow-sm me-2"
+                                    style="width:34px;height:34px;background:linear-gradient(135deg, #C85C2E, #d97706);font-size:14px;">
                                     {{ $navInitial }}
                                 </span>
                             @else
@@ -204,13 +204,7 @@
 
                             <li>
                                 <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="{{ route('user.dashboard') }}" style="font-size:13.5px;">
-                                    <i class="bi bi-person-circle text-primary"></i> Dashboard Pengguna
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="{{ route('user.dashboard', ['tab' => 'keamanan']) }}" style="font-size:13.5px;">
-                                    <i class="bi bi-shield-lock text-success"></i> Keamanan & Password
+                                    <i class="bi bi-person-gear text-primary"></i> Kelola Profil
                                 </a>
                             </li>
 

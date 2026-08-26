@@ -45,6 +45,13 @@
         border-color: #C85C2E;
         box-shadow: 0 0 0 0.25rem rgba(200, 92, 46, 0.15);
     }
+    /* Sembunyikan ikon mata bawaan browser Edge / IE */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
 </style>
 
 <div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">

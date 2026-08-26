@@ -15,9 +15,10 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = User::orderBy('id_user', 'ASC')->get();
+        $user = User::where('role', '!=', 'admin')->orderBy('id_user', 'ASC')->get();
+        $deletionLogs = \App\Models\UserDeletionLog::orderBy('created_at', 'DESC')->get();
 
-        return view('admin.user.index', compact('user'));
+        return view('admin.user.index', compact('user', 'deletionLogs'));
     }
 
     public function create()
@@ -31,7 +32,7 @@ class UserController extends Controller
             'nama'        => 'required|max:100',
             'email'       => 'required|email|unique:users,email',
             'password'    => 'required|min:6',
-            'role'        => 'required|in:admin,user,pemilik',
+            'role'        => 'required|in:user,pemilik',
             'status_akun' => 'nullable|in:pending,verified',
         ]);
 
@@ -62,7 +63,7 @@ class UserController extends Controller
             'nama'        => 'required|max:100',
             'email'       => 'required|email|unique:users,email,' . $user->id_user . ',id_user',
             'password'    => 'nullable|min:6',
-            'role'        => 'required|in:admin,user,pemilik',
+            'role'        => 'required|in:user,pemilik',
             'status_akun' => 'nullable|in:pending,verified',
         ]);
 
@@ -83,7 +84,7 @@ class UserController extends Controller
             ->with('success', 'Pengguna berhasil diubah.');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
@@ -92,10 +93,25 @@ class UserController extends Controller
                 ->with('error', 'Tidak bisa menghapus akun yang sedang login.');
         }
 
+        $alasanKategori = $request->input('alasan_kategori', 'Melanggar Ketentuan Layanan');
+        $alasanDetail = $request->input('alasan_detail');
+
+        // Catat riwayat audit log penghapusan pengguna
+        \App\Models\UserDeletionLog::create([
+            'id_user'         => $user->id_user,
+            'nama'            => $user->nama,
+            'email'           => $user->email,
+            'role'            => $user->role,
+            'alasan_kategori' => $alasanKategori,
+            'alasan_detail'   => $alasanDetail,
+            'deleted_by_name' => auth()->user()->nama ?? 'Admin',
+            'created_at'      => now(),
+        ]);
+
         $user->delete();
 
         return redirect()->route('admin.user.index')
-            ->with('success', 'Pengguna berhasil dihapus.');
+            ->with('success', 'Pengguna "' . $user->nama . '" berhasil dihapus. Alasan penghapusan telah tercatat.');
     }
 
     /**
