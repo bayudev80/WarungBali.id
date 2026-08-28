@@ -52,6 +52,8 @@ Route::middleware(['auth', 'role:admin'])
             ->name('dashboard');
 
         Route::resource('kategori', KategoriController::class);
+        Route::patch('kategori/{id}/approve', [KategoriController::class, 'approve'])
+            ->name('kategori.approve');
 
         Route::resource('warung', WarungController::class);
 

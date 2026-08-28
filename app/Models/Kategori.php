@@ -12,8 +12,19 @@ class Kategori extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'nama_kategori'
+        'nama_kategori',
+        'status'
     ];
+
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
 
     /**
      * Slug URL kategori, dibuat otomatis dari nama_kategori

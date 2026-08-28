@@ -55,7 +55,10 @@
             <a href="{{ route('admin.kategori.index') }}"
                 class="{{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}">
                 <i class="bi bi-grid"></i>
-                <span>Kelola Kategori</span>
+                <span class="flex-grow-1">Kelola Kategori</span>
+                @if(isset($pendingKategoriCount) && $pendingKategoriCount > 0)
+                    <span class="sidebar-badge">{{ $pendingKategoriCount }}</span>
+                @endif
             </a>
 
             <a href="{{ route('admin.warung.index') }}"
@@ -190,18 +193,75 @@
                     <i class="bi bi-chevron-down text-muted" style="font-size: 11px;"></i>
                 </div>
 
-                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2" style="min-width: 210px; padding: 8px;">
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2 p-2" style="min-width: 260px; box-shadow: 0 10px 30px rgba(0,0,0,0.12) !important;">
+                    {{-- User Info Header --}}
+                    <li class="px-3 py-2.5 rounded-3 mb-2" style="background: #F8FAFC; border: 1px solid #E2E8F0;">
+                        <div class="d-flex align-items-center gap-2 mb-1.5">
+                            @if($hasAdminFoto)
+                                <img src="{{ $adminFotoUrl }}" alt="{{ $adminUser->nama }}" class="rounded-circle shadow-xs" style="width:36px;height:36px;object-fit:cover;">
+                            @else
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-xs" style="width:36px;height:36px;background:linear-gradient(135deg, #1e293b, #334155);font-size:14px;">
+                                    {{ $adminInitial }}
+                                </div>
+                            @endif
+                            <div class="text-truncate" style="max-width: 170px;">
+                                <div class="fw-bold text-dark text-truncate" style="font-size:13.5px; letter-spacing: -0.2px;">{{ $adminUser->nama }}</div>
+                                <div class="text-muted small text-truncate" style="font-size:11.5px;">{{ $adminUser->email }}</div>
+                            </div>
+                        </div>
+                        <div class="pt-1.5 border-top border-light-subtle d-flex align-items-center justify-content-between">
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-0.5" style="font-size: 10px; font-weight: 600;">
+                                <i class="bi bi-shield-check me-1"></i> Administrator
+                            </span>
+                            <span class="text-muted small" style="font-size: 10.5px; font-weight: 500;">WarungBali.id</span>
+                        </div>
+                    </li>
+
+                    {{-- Menu Items --}}
                     <li>
-                        <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('home') }}" target="_blank" style="font-size: 13.5px;">
-                            <i class="bi bi-globe2 text-primary"></i> Ke Website Utama
+                        <a class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-dark fw-semibold {{ request()->routeIs('admin.dashboard') ? 'bg-light text-primary' : '' }}" 
+                           href="{{ route('admin.dashboard') }}" style="font-size: 13.5px; transition: all 0.2s;">
+                            <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #FEF2F2; color: #DC2626;">
+                                <i class="bi bi-speedometer2"></i>
+                            </span>
+                            <span>Dashboard Admin</span>
+                            @if(request()->routeIs('admin.dashboard'))
+                                <i class="bi bi-check2 text-primary ms-auto"></i>
+                            @endif
                         </a>
                     </li>
-                    <li><hr class="dropdown-divider my-1 opacity-25"></li>
+
+                    <li>
+                        <a class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-dark fw-semibold" 
+                           href="{{ route('user.dashboard') }}" style="font-size: 13.5px; transition: all 0.2s;">
+                            <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #EFF6FF; color: #2563EB;">
+                                <i class="bi bi-person-gear"></i>
+                            </span>
+                            <span>Kelola Profil & Keamanan</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-dark fw-semibold" 
+                           href="{{ route('home') }}" target="_blank" style="font-size: 13.5px; transition: all 0.2s;">
+                            <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #F0FDF4; color: #16A34A;">
+                                <i class="bi bi-globe2"></i>
+                            </span>
+                            <span>Lihat Website Utama</span>
+                            <i class="bi bi-box-arrow-up-right ms-auto text-muted" style="font-size: 11px;"></i>
+                        </a>
+                    </li>
+
+                    <li><hr class="dropdown-divider my-1.5 opacity-25"></li>
+
                     <li>
                         <form method="POST" action="{{ route('logout') }}" class="m-0">
                             @csrf
-                            <button type="submit" class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2 text-danger fw-medium" style="font-size: 13.5px;">
-                                <i class="bi bi-box-arrow-right"></i> Logout
+                            <button type="submit" class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-danger fw-bold" style="font-size: 13.5px; transition: all 0.2s;">
+                                <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #FFF1F2; color: #E11D48;">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                </span>
+                                <span>Keluar / Logout</span>
                             </button>
                         </form>
                     </li>

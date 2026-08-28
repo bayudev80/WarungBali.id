@@ -170,11 +170,16 @@ class WarungController extends Controller
 
     public function approve($id)
     {
-        $warung = Warung::findOrFail($id);
+        $warung = Warung::with('kategori')->findOrFail($id);
         $warung->update([
             'status'           => 'approved',
             'alasan_penolakan' => null,
         ]);
+
+        // Jika kategori warung ini diajukan baru (pending), otomatis setujui kategorinya
+        if ($warung->kategori && $warung->kategori->status === 'pending') {
+            $warung->kategori->update(['status' => 'approved']);
+        }
 
         return redirect()->back()
             ->with('success', 'Warung "' . $warung->nama_warung . '" disetujui dan sekarang tayang di website.');

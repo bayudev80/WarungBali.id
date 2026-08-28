@@ -582,6 +582,38 @@ RESPONSIVE
 }
 
 /* ===========================
+DROPDOWN MENU ENHANCEMENTS
+=========================== */
+.topbar .dropdown-menu {
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    animation: dropdownFadeIn 0.18s ease-out;
+}
+
+.topbar .dropdown-item {
+    transition: all 0.18s ease-in-out;
+}
+
+.topbar .dropdown-item:hover {
+    background-color: #f8fafc;
+    transform: translateX(3px);
+}
+
+.topbar .dropdown-item:active {
+    background-color: #f1f5f9;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===========================
 DASHBOARD ENHANCEMENTS
 =========================== */
 

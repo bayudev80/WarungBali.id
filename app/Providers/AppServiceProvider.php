@@ -39,11 +39,13 @@ class AppServiceProvider extends ServiceProvider
             $view->with('navbarKategori', \App\Models\Kategori::orderBy('nama_kategori', 'asc')->get());
         });
 
-        \Illuminate\Support\Facades\View::composer(['admin.layouts.app', 'admin.pemilik-akun.index', 'admin.warung.verifikasi'], function ($view) {
+        \Illuminate\Support\Facades\View::composer(['admin.layouts.app', 'admin.pemilik-akun.index', 'admin.warung.verifikasi', 'admin.kategori.index'], function ($view) {
             $pendingAkunCount = \App\Models\User::where('role', 'pemilik')->where('status_akun', 'pending')->count();
             $pendingWarungCount = \App\Models\Warung::where('status', 'pending')->count();
+            $pendingKategoriCount = \App\Models\Kategori::where('status', 'pending')->count();
             $view->with('pendingAkunCount', $pendingAkunCount)
                  ->with('pendingWarungCount', $pendingWarungCount)
+                 ->with('pendingKategoriCount', $pendingKategoriCount)
                  ->with('totalPendingVerifikasi', $pendingAkunCount + $pendingWarungCount);
         });
     }

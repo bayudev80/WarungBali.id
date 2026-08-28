@@ -20,7 +20,8 @@ class FavoritController extends Controller
                 'menu',
                 'review.user',
                 'favorit',
-                'kategori'
+                'kategori',
+                'kabupaten'
             ])
             ->whereHas('favorit', function ($q) use ($user) {
                 $q->where('id_user', $user->id_user);

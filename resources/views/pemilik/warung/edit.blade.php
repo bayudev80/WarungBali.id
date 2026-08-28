@@ -44,7 +44,10 @@
 
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label class="form-label">Kategori</label>
+                <label class="form-label d-flex justify-content-between align-items-center">
+                    <span>Kategori</span>
+                    <span class="text-muted small" style="font-size: 11.5px;">Tidak ada di daftar? Pilih <i>Ajukan Kategori Baru</i></span>
+                </label>
                 <select name="id_kategori" id="id_kategori" class="form-select" required>
                     <option value="">-- Pilih Kategori --</option>
                     @foreach($kategori as $k)
@@ -55,10 +58,30 @@
                         <option value="{{ $k->id_kategori }}" 
                                 data-layanan="{{ $tempWarung->layanan_label }}" 
                                 {{ old('id_kategori', $warung->id_kategori) == $k->id_kategori ? 'selected' : '' }}>
-                            {{ $k->nama_kategori }}
+                            {{ $k->nama_kategori }} {{ $k->status === 'pending' ? '(Sedang Diajukan)' : '' }}
                         </option>
                     @endforeach
+                    <option value="lainnya" {{ old('id_kategori') == 'lainnya' || old('kategori_baru') ? 'selected' : '' }} style="color: #C85C2E; font-weight: 600;">
+                        ➕ + Ajukan Kategori Baru Sendiri...
+                    </option>
                 </select>
+
+                <!-- Input Kategori Baru (Muncul jika pilih 'lainnya') -->
+                <div id="container_kategori_baru" class="mt-2.5 p-3 rounded-3 border {{ old('id_kategori') == 'lainnya' || old('kategori_baru') ? '' : 'd-none' }}" style="background: #FFFDF9; border-color: #FED7AA !important;">
+                    <label class="form-label small fw-bold text-dark mb-1">
+                        <i class="bi bi-pencil-square text-warning me-1"></i> Tulis Nama Kategori Baru yang Diinginkan <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" 
+                           name="kategori_baru" 
+                           id="kategori_baru" 
+                           class="form-control form-control-sm rounded-2" 
+                           placeholder="Misal: Warung Sate Plecing Khas Bali" 
+                           value="{{ old('kategori_baru') }}"
+                           maxlength="100">
+                    <div class="small text-muted mt-1.5" style="font-size: 11.5px; line-height: 1.4;">
+                        <i class="bi bi-info-circle text-primary me-1"></i> Kategori baru ini akan ditinjau dan diverifikasi oleh Admin bersamaan dengan verifikasi warung Anda.
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-6 mb-3">
@@ -161,21 +184,42 @@
 document.addEventListener('DOMContentLoaded', function () {
     const kategoriSelect = document.getElementById('id_kategori');
     const labelLayanan = document.getElementById('label_layanan_checkbox');
+    const containerKategoriBaru = document.getElementById('container_kategori_baru');
+    const inputKategoriBaru = document.getElementById('kategori_baru');
 
-    function updateCheckboxLabel() {
-        if (!kategoriSelect || !labelLayanan) return;
-        const selectedOption = kategoriSelect.options[kategoriSelect.selectedIndex];
-        if (selectedOption && selectedOption.value) {
-            const label = selectedOption.getAttribute('data-layanan');
-            labelLayanan.textContent = label;
-        } else {
-            labelLayanan.textContent = 'Menerima Layanan Khusus';
+    function updateKategoriState() {
+        if (!kategoriSelect) return;
+        const val = kategoriSelect.value;
+        const isLainnya = (val === 'lainnya');
+
+        if (containerKategoriBaru) {
+            if (isLainnya) {
+                containerKategoriBaru.classList.remove('d-none');
+                if (inputKategoriBaru) {
+                    inputKategoriBaru.required = true;
+                }
+            } else {
+                containerKategoriBaru.classList.add('d-none');
+                if (inputKategoriBaru) {
+                    inputKategoriBaru.required = false;
+                }
+            }
+        }
+
+        if (labelLayanan) {
+            const selectedOption = kategoriSelect.options[kategoriSelect.selectedIndex];
+            if (selectedOption && selectedOption.value && !isLainnya) {
+                const label = selectedOption.getAttribute('data-layanan');
+                labelLayanan.textContent = label || 'Menerima Layanan Khusus';
+            } else {
+                labelLayanan.textContent = 'Menerima Layanan Khusus';
+            }
         }
     }
 
     if (kategoriSelect) {
-        kategoriSelect.addEventListener('change', updateCheckboxLabel);
-        updateCheckboxLabel();
+        kategoriSelect.addEventListener('change', updateKategoriState);
+        updateKategoriState();
     }
 });
 </script>

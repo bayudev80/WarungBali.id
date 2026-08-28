@@ -69,6 +69,23 @@
             <div class="hero-search-divider"></div>
 
             <div class="hero-search-select-group">
+                <i class="bi bi-grid-fill hero-search-kat-icon"></i>
+                <select name="kategori" class="hero-search-select" aria-label="Pilih Kategori">
+                    <option value="">Semua Kategori</option>
+                    @php
+                        $listKategori = $kategoriList ?? $kategori ?? [];
+                    @endphp
+                    @foreach($listKategori as $kat)
+                        <option value="{{ $kat->id_kategori }}" {{ (string)request('kategori') === (string)$kat->id_kategori ? 'selected' : '' }}>
+                            {{ $kat->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="hero-search-divider"></div>
+
+            <div class="hero-search-select-group">
                 <i class="bi bi-geo-alt-fill hero-search-geo-icon"></i>
                 <select name="kabupaten" class="hero-search-select" aria-label="Pilih Kabupaten atau Kota">
                     <option value="">Semua Wilayah</option>
@@ -518,8 +535,11 @@
                     const input = heroSearchForm.querySelector('input[name="search"]');
                     if (input) input.value = urlAjax.searchParams.get('search') || '';
 
-                    const select = heroSearchForm.querySelector('select[name="kabupaten"]');
-                    if (select) select.value = urlAjax.searchParams.get('kabupaten') || '';
+                    const selectKat = heroSearchForm.querySelector('select[name="kategori"]');
+                    if (selectKat) selectKat.value = activeFilters.kategori || urlAjax.searchParams.get('kategori') || '';
+
+                    const selectKab = heroSearchForm.querySelector('select[name="kabupaten"]');
+                    if (selectKab) selectKab.value = urlAjax.searchParams.get('kabupaten') || '';
                 }
 
                 initWarungSliders();
@@ -542,18 +562,29 @@
         heroSearchForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const searchInput = heroSearchForm.querySelector('input[name="search"]');
+            const kategoriSelect = heroSearchForm.querySelector('select[name="kategori"]');
             const kabupatenSelect = heroSearchForm.querySelector('select[name="kabupaten"]');
             const params = new URLSearchParams();
+
+            // Ambil kategori dari select form hero atau activeFilters
+            const selectedKat = kategoriSelect ? kategoriSelect.value : activeFilters.kategori;
+            if (selectedKat) {
+                params.set('kategori', selectedKat);
+                activeFilters.kategori = selectedKat;
+            } else {
+                activeFilters.kategori = '';
+            }
 
             // Ambil kabupaten dari select form hero atau activeFilters
             const selectedKab = kabupatenSelect ? kabupatenSelect.value : activeFilters.kabupaten;
             if (selectedKab) {
                 params.set('kabupaten', selectedKab);
                 activeFilters.kabupaten = selectedKab;
+            } else {
+                activeFilters.kabupaten = '';
             }
 
-            if (activeFilters.urutan)    params.set('urutan',    activeFilters.urutan);
-            if (activeFilters.kategori)  params.set('kategori',  activeFilters.kategori);
+            if (activeFilters.urutan) params.set('urutan', activeFilters.urutan);
 
             // Set kata kunci pencarian
             if (searchInput && searchInput.value.trim() !== '') {
@@ -563,6 +594,13 @@
             const url = '{{ route("home") }}' + (params.toString() ? '?' + params.toString() : '');
             muatHasilWarung(url);
         });
+
+        const kategoriSelect = heroSearchForm.querySelector('select[name="kategori"]');
+        if (kategoriSelect) {
+            kategoriSelect.addEventListener('change', function() {
+                activeFilters.kategori = this.value;
+            });
+        }
 
         const kabupatenSelect = heroSearchForm.querySelector('select[name="kabupaten"]');
         if (kabupatenSelect) {

@@ -24,8 +24,10 @@
         {{-- GAMBAR --}}
         <div class="warung-card__img-wrap position-relative">
 
-            <img src="{{ asset('images/warung/'.$item->foto) }}"
-                 class="warung-card__img" alt="{{ $item->nama_warung }}">
+            <img src="{{ $item->foto ? asset('images/warung/'.$item->foto) : asset('images/hero.jpeg') }}"
+                 class="warung-card__img" 
+                 alt="{{ $item->nama_warung }}"
+                 onerror="this.onerror=null;this.src='{{ asset('images/hero.jpeg') }}';">
 
             {{-- Overlay gradient bawah --}}
             <div class="warung-card__img-overlay"></div>
@@ -130,7 +132,9 @@
 
             <!-- HERO HEADER -->
             <div class="detail-modal-hero">
-              <img src="{{ asset('images/warung/'.$item->foto) }}" alt="{{ $item->nama_warung }}">
+              <img src="{{ $item->foto ? asset('images/warung/'.$item->foto) : asset('images/hero.jpeg') }}" 
+                   alt="{{ $item->nama_warung }}"
+                   onerror="this.onerror=null;this.src='{{ asset('images/hero.jpeg') }}';">
 
               <button type="button" class="btn-close-modal" data-bs-dismiss="modal" aria-label="Tutup">
                 <i class="bi bi-x-lg"></i>
@@ -367,7 +371,9 @@
                       <div class="col-md-6">
                         <div class="detail-menu-card">
                           <div class="detail-menu-img-wrap">
-                            <img src="{{ asset('images/menu/'.$menu->foto_menu) }}" alt="{{ $menu->nama_menu }}">
+                            <img src="{{ $menu->foto_menu ? asset('images/menu/'.$menu->foto_menu) : asset('images/hero.jpeg') }}" 
+                                 alt="{{ $menu->nama_menu }}"
+                                 onerror="this.onerror=null;this.src='{{ asset('images/hero.jpeg') }}';">
                             <span class="detail-menu-price-tag">
                               Rp{{ number_format($menu->harga, 0, ',', '.') }}
                             </span>
@@ -492,7 +498,9 @@
 
                 <!-- HERO HEADER -->
                 <div class="detail-modal-hero">
-                  <img src="{{ asset('images/warung/'.$cabang->foto) }}" alt="{{ $cabang->nama_warung }}">
+                  <img src="{{ $cabang->foto ? asset('images/warung/'.$cabang->foto) : asset('images/hero.jpeg') }}" 
+                       alt="{{ $cabang->nama_warung }}"
+                       onerror="this.onerror=null;this.src='{{ asset('images/hero.jpeg') }}';">
 
                   <button type="button" class="btn-close-modal" data-bs-dismiss="modal" aria-label="Tutup">
                     <i class="bi bi-x-lg"></i>
@@ -647,7 +655,9 @@
                           <div class="col-md-6">
                             <div class="detail-menu-card">
                               <div class="detail-menu-img-wrap">
-                                <img src="{{ asset('images/menu/'.$menu->foto_menu) }}" alt="{{ $menu->nama_menu }}">
+                                <img src="{{ $menu->foto_menu ? asset('images/menu/'.$menu->foto_menu) : asset('images/hero.jpeg') }}" 
+                                     alt="{{ $menu->nama_menu }}"
+                                     onerror="this.onerror=null;this.src='{{ asset('images/hero.jpeg') }}';">
                                 <span class="detail-menu-price-tag">
                                   Rp{{ number_format($menu->harga, 0, ',', '.') }}
                                 </span>

@@ -147,23 +147,82 @@
                     <i class="bi bi-chevron-down text-muted" style="font-size: 11px;"></i>
                 </div>
 
-                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2" style="min-width: 220px; padding: 8px;">
+                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2 p-2" style="min-width: 260px; box-shadow: 0 10px 30px rgba(0,0,0,0.12) !important;">
+                    {{-- User Info Header --}}
+                    <li class="px-3 py-2.5 rounded-3 mb-2" style="background: #FFFDF9; border: 1px solid #FED7AA;">
+                        <div class="d-flex align-items-center gap-2 mb-1.5">
+                            @if($hasPemilikFoto)
+                                <img src="{{ $pemilikFotoUrl }}" alt="{{ $pemilikUser->nama }}" class="rounded-circle shadow-xs" style="width:36px;height:36px;object-fit:cover;">
+                            @else
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-xs" style="width:36px;height:36px;background:linear-gradient(135deg, #d97706, #b45309);font-size:14px;">
+                                    {{ $pemilikInitial }}
+                                </div>
+                            @endif
+                            <div class="text-truncate" style="max-width: 170px;">
+                                <div class="fw-bold text-dark text-truncate" style="font-size:13.5px; letter-spacing: -0.2px;">{{ $pemilikUser->nama }}</div>
+                                <div class="text-muted small text-truncate" style="font-size:11.5px;">{{ $pemilikUser->email }}</div>
+                            </div>
+                        </div>
+                        <div class="pt-1.5 border-top border-light-subtle d-flex flex-column gap-1">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-0.5" style="font-size: 10px; font-weight: 600;">
+                                    <i class="bi bi-shop me-1"></i> Pemilik Warung
+                                </span>
+                                <span class="text-success small" style="font-size: 10.5px; font-weight: 600;"><i class="bi bi-check-circle-fill me-1"></i>Terverifikasi</span>
+                            </div>
+                            @if(!empty($pemilikUser->warung?->nama_warung))
+                                <div class="text-dark small fw-semibold text-truncate" style="font-size: 11px;">
+                                    <i class="bi bi-geo-alt text-danger me-1"></i>{{ $pemilikUser->warung->nama_warung }}
+                                </div>
+                            @endif
+                        </div>
+                    </li>
+
+                    {{-- Menu Items --}}
                     <li>
-                        <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('pemilik.password.edit') }}" style="font-size: 13.5px;">
-                            <i class="bi bi-person-gear text-warning"></i> Profil & Keamanan Akun
+                        <a class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-dark fw-semibold {{ request()->routeIs('pemilik.dashboard') ? 'bg-light text-warning' : '' }}" 
+                           href="{{ route('pemilik.dashboard') }}" style="font-size: 13.5px; transition: all 0.2s;">
+                            <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #FEF3C7; color: #D97706;">
+                                <i class="bi bi-speedometer2"></i>
+                            </span>
+                            <span>Dashboard Pemilik</span>
+                            @if(request()->routeIs('pemilik.dashboard'))
+                                <i class="bi bi-check2 text-warning ms-auto"></i>
+                            @endif
                         </a>
                     </li>
+
                     <li>
-                        <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2 text-secondary" href="{{ route('home') }}" target="_blank" style="font-size: 13.5px;">
-                            <i class="bi bi-globe2 text-primary"></i> Ke Website Utama
+                        <a class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-dark fw-semibold {{ request()->routeIs('pemilik.password.edit') ? 'bg-light text-primary' : '' }}" 
+                           href="{{ route('pemilik.password.edit') }}" style="font-size: 13.5px; transition: all 0.2s;">
+                            <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #EFF6FF; color: #2563EB;">
+                                <i class="bi bi-person-gear"></i>
+                            </span>
+                            <span>Kelola Profil & Keamanan</span>
                         </a>
                     </li>
-                    <li><hr class="dropdown-divider my-1 opacity-25"></li>
+
+                    <li>
+                        <a class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-dark fw-semibold" 
+                           href="{{ route('home') }}" target="_blank" style="font-size: 13.5px; transition: all 0.2s;">
+                            <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #F0FDF4; color: #16A34A;">
+                                <i class="bi bi-globe2"></i>
+                            </span>
+                            <span>Lihat Website Utama</span>
+                            <i class="bi bi-box-arrow-up-right ms-auto text-muted" style="font-size: 11px;"></i>
+                        </a>
+                    </li>
+
+                    <li><hr class="dropdown-divider my-1.5 opacity-25"></li>
+
                     <li>
                         <form method="POST" action="{{ route('logout') }}" class="m-0">
                             @csrf
-                            <button type="submit" class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2 text-danger fw-medium" style="font-size: 13.5px;">
-                                <i class="bi bi-box-arrow-right"></i> Logout
+                            <button type="submit" class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-danger fw-bold" style="font-size: 13.5px; transition: all 0.2s;">
+                                <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #FFF1F2; color: #E11D48;">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                </span>
+                                <span>Keluar / Logout</span>
                             </button>
                         </form>
                     </li>

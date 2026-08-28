@@ -40,7 +40,7 @@ class WarungController extends Controller
             return redirect()->route('pemilik.dashboard');
         }
 
-        $kategori  = Kategori::orderBy('nama_kategori')->get();
+        $kategori  = Kategori::approved()->orderBy('nama_kategori')->get();
         $kabupaten = Kabupaten::orderBy('nama_kabupaten')->get();
 
         return view('pemilik.warung.create', compact('kategori', 'kabupaten'));
@@ -56,35 +56,49 @@ class WarungController extends Controller
             return redirect()->route('pemilik.dashboard');
         }
 
+        $idKategoriInput = $request->input('id_kategori');
+        $isKategoriBaru  = ($idKategoriInput === 'lainnya' || $request->filled('kategori_baru'));
+
         $request->validate([
-            'nama_warung'  => 'required|max:150',
-            'id_kategori'  => 'required|exists:kategori,id_kategori',
-            'id_kabupaten' => 'required|exists:kabupaten,id_kabupaten',
-            'alamat'       => 'required',
-            'deskripsi'    => 'nullable|string',
-            'telepon'      => 'nullable|max:20',
-            'jam_buka'     => 'nullable',
-            'jam_tutup'    => 'nullable',
-            'harga_min'    => 'nullable|integer|min:0',
-            'harga_max'    => 'nullable|integer|min:0',
-            'foto'         => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
+            'nama_warung'       => 'required|max:150',
+            'id_kategori'       => $isKategoriBaru ? 'nullable' : 'required|exists:kategori,id_kategori',
+            'kategori_baru'     => $isKategoriBaru ? 'required|string|max:100' : 'nullable',
+            'id_kabupaten'      => 'required|exists:kabupaten,id_kabupaten',
+            'alamat'            => 'required',
+            'deskripsi'         => 'nullable|string',
+            'telepon'           => 'nullable|max:20',
+            'jam_buka'          => 'nullable',
+            'jam_tutup'         => 'nullable',
+            'harga_min'         => 'nullable|integer|min:0',
+            'harga_max'         => 'nullable|integer|min:0',
+            'foto'              => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
             'menerima_catering' => 'nullable|boolean',
         ]);
 
-        // Whitelist eksplisit: jangan pernah pakai except() untuk data yang
-        // langsung di-mass-assign, karena field seperti "status", "id_user",
-        // dan "id_warung_induk" ada di $fillable dan bisa disisipkan lewat
-        // request oleh user. Warung yang didaftarkan lewat form ini SELALU
-        // warung utama/berdiri sendiri -- kalau pemilik nanti mau buka
-        // cabang, itu dilakukan lewat menu "Tambah Cabang" di dashboard,
-        // bukan dengan memilih induk sendiri di form ini.
+        if ($isKategoriBaru) {
+            $namaKat = trim($request->input('kategori_baru'));
+            $existingKat = Kategori::whereRaw('LOWER(nama_kategori) = ?', [strtolower($namaKat)])->first();
+            if ($existingKat) {
+                $idKategori = $existingKat->id_kategori;
+            } else {
+                $newKat = Kategori::create([
+                    'nama_kategori' => $namaKat,
+                    'status'        => 'pending',
+                ]);
+                $idKategori = $newKat->id_kategori;
+            }
+        } else {
+            $idKategori = (int) $request->id_kategori;
+        }
+
         $data = $request->only([
-            'nama_warung', 'id_kategori', 'id_kabupaten', 'alamat',
+            'nama_warung', 'id_kabupaten', 'alamat',
             'deskripsi', 'telepon', 'jam_buka', 'jam_tutup',
             'harga_min', 'harga_max',
         ]);
-        $data['id_user'] = auth()->id();
-        $data['status']  = 'pending';
+        $data['id_kategori'] = $idKategori;
+        $data['id_user']     = auth()->id();
+        $data['status']      = 'pending';
         $data['menerima_catering'] = $request->boolean('menerima_catering');
 
         if ($request->hasFile('foto')) {
@@ -115,7 +129,10 @@ class WarungController extends Controller
             return redirect()->route('pemilik.warung.create');
         }
 
-        $kategori  = Kategori::orderBy('nama_kategori')->get();
+        $kategori  = Kategori::where('status', 'approved')
+            ->orWhere('id_kategori', $warung->id_kategori)
+            ->orderBy('nama_kategori')
+            ->get();
         $kabupaten = Kabupaten::orderBy('nama_kabupaten')->get();
 
         return view('pemilik.warung.edit', compact('warung', 'kategori', 'kabupaten'));
@@ -133,30 +150,47 @@ class WarungController extends Controller
             return redirect()->route('pemilik.warung.create');
         }
 
+        $idKategoriInput = $request->input('id_kategori');
+        $isKategoriBaru  = ($idKategoriInput === 'lainnya' || $request->filled('kategori_baru'));
+
         $request->validate([
-            'nama_warung'  => 'required|max:150',
-            'id_kategori'  => 'required|exists:kategori,id_kategori',
-            'id_kabupaten' => 'required|exists:kabupaten,id_kabupaten',
-            'alamat'       => 'required',
-            'deskripsi'    => 'nullable|string',
-            'telepon'      => 'nullable|max:20',
-            'jam_buka'     => 'nullable',
-            'jam_tutup'    => 'nullable',
-            'harga_min'    => 'nullable|integer|min:0',
-            'harga_max'    => 'nullable|integer|min:0',
-            'foto'         => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
+            'nama_warung'       => 'required|max:150',
+            'id_kategori'       => $isKategoriBaru ? 'nullable' : 'required|exists:kategori,id_kategori',
+            'kategori_baru'     => $isKategoriBaru ? 'required|string|max:100' : 'nullable',
+            'id_kabupaten'      => 'required|exists:kabupaten,id_kabupaten',
+            'alamat'            => 'required',
+            'deskripsi'         => 'nullable|string',
+            'telepon'           => 'nullable|max:20',
+            'jam_buka'          => 'nullable',
+            'jam_tutup'         => 'nullable',
+            'harga_min'         => 'nullable|integer|min:0',
+            'harga_max'         => 'nullable|integer|min:0',
+            'foto'              => 'nullable|mimes:jpg,jpeg,png,webp|max:5120',
             'menerima_catering' => 'nullable|boolean',
         ]);
 
-        // Whitelist eksplisit -- lihat catatan di store(). Ini juga menutup
-        // celah di mana pemilik bisa menyisipkan field "status", "id_user",
-        // atau "id_warung_induk" ke request untuk melewati proses verifikasi
-        // admin atau mengubah warung utamanya sendiri jadi cabang.
+        if ($isKategoriBaru) {
+            $namaKat = trim($request->input('kategori_baru'));
+            $existingKat = Kategori::whereRaw('LOWER(nama_kategori) = ?', [strtolower($namaKat)])->first();
+            if ($existingKat) {
+                $idKategori = $existingKat->id_kategori;
+            } else {
+                $newKat = Kategori::create([
+                    'nama_kategori' => $namaKat,
+                    'status'        => 'pending',
+                ]);
+                $idKategori = $newKat->id_kategori;
+            }
+        } else {
+            $idKategori = (int) $request->id_kategori;
+        }
+
         $data = $request->only([
-            'nama_warung', 'id_kategori', 'id_kabupaten', 'alamat',
+            'nama_warung', 'id_kabupaten', 'alamat',
             'deskripsi', 'telepon', 'jam_buka', 'jam_tutup',
             'harga_min', 'harga_max',
         ]);
+        $data['id_kategori']       = $idKategori;
         $data['menerima_catering'] = $request->boolean('menerima_catering');
 
         // Jika warung sebelumnya berstatus approved atau rejected, ubah menjadi pending

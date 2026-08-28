@@ -98,7 +98,16 @@
                         <div class="text-muted small">{{ $item->user->email ?? '' }}</div>
                     </td>
 
-                    <td>{{ $item->kategori->nama_kategori ?? '-' }}</td>
+                    <td>
+                        <span class="fw-semibold text-dark">{{ $item->kategori->nama_kategori ?? '-' }}</span>
+                        @if($item->kategori && $item->kategori->status === 'pending')
+                            <div class="mt-1">
+                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" style="font-size: 10.5px;">
+                                    <i class="bi bi-clock-history me-1"></i> Kategori Baru
+                                </span>
+                            </div>
+                        @endif
+                    </td>
 
                     <td>{{ $item->kabupaten->nama_kabupaten ?? '-' }}</td>
 

@@ -37,39 +37,6 @@
                     </a>
                 </li>
 
-                <!-- Dropdown Kategori -->
-                <li class="nav-item dropdown mx-1">
-                    <a class="nav-link dropdown-toggle px-3 py-2 rounded-pill nav-custom-link {{ request()->routeIs('kategori.show') ? 'active' : '' }}" 
-                        href="#" 
-                        role="button" 
-                        data-bs-toggle="dropdown" 
-                        aria-expanded="false">
-                        Kategori
-                    </a>
-                    <ul class="dropdown-menu border-0 shadow mt-2 p-2" style="font-size:13.5px; border-radius: 14px; min-width: 200px;">
-                        @if(isset($navbarKategori) && $navbarKategori->count() > 0)
-                            @foreach($navbarKategori as $kat)
-                                <li>
-                                    <a class="dropdown-item rounded-3 py-2 mb-1 kategori-ajax-link {{ request()->is('kategori/'.$kat->slug) ? 'bg-light text-primary fw-medium' : '' }}" 
-                                        href="{{ route('kategori.show', array_merge(['slug' => $kat->slug], array_filter(['search' => request('search'), 'kabupaten' => request('kabupaten'), 'urutan' => request('urutan')]))) }}"
-                                        data-kategori-id="{{ $kat->id_kategori }}"
-                                        data-kategori-slug="{{ $kat->slug }}">
-                                        {{ $kat->nama_kategori }}
-                                    </a>
-                                </li>
-                            @endforeach
-                            <li><hr class="dropdown-divider my-1"></li>
-                        @endif
-                        <li>
-                            <a class="dropdown-item rounded-3 py-2 fw-bold text-center mt-1" 
-                                style="color:#C85C2E;"
-                                href="{{ route('home') }}#kategori-section">
-                                <i class="bi bi-grid-fill me-1"></i> Lihat Semua
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
                 <li class="nav-item mx-1">
                     <a class="nav-link px-3 py-2 rounded-pill nav-custom-link {{ request()->routeIs('favorit.index') ? 'active' : '' }}"
                         href="{{ route('favorit.index') }}">
@@ -167,56 +134,104 @@
                             </span>
                         </a>
 
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2"
-                            style="min-width:240px;border-radius:16px;padding:8px;">
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 mt-2 p-2"
+                            style="min-width: 260px; box-shadow: 0 10px 30px rgba(0,0,0,0.12) !important;">
 
-                            <li class="px-3 py-2">
-                                <div class="fw-semibold text-truncate" style="font-size:14px;color:#2D201C;">
-                                    {{ Auth::user()->nama }}
-                                </div>
-                                <div class="text-muted small" style="font-size:12px;">
-                                    {{ ucfirst(Auth::user()->role) }} • {{ Auth::user()->email }}
-                                </div>
-                                @if(Auth::user()->role === 'pemilik' && !empty(Auth::user()->warung?->nama_warung))
-                                    <div class="mt-1">
-                                        <span class="badge rounded-pill bg-warning text-dark px-2 py-0.5 small fw-semibold" style="font-size: 10.5px;">
-                                            <i class="bi bi-shop me-1"></i> {{ Auth::user()->warung->nama_warung }}
-                                        </span>
+                            {{-- User Info Header --}}
+                            <li class="px-3 py-2.5 rounded-3 mb-2" style="background: #FFFDF9; border: 1px solid #FED7AA;">
+                                <div class="d-flex align-items-center gap-2 mb-1.5">
+                                    @if($hasNavFoto)
+                                        <img src="{{ $navFotoUrl }}" alt="{{ $authUser->nama }}" class="rounded-circle shadow-xs" style="width:36px;height:36px;object-fit:cover;">
+                                    @else
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-xs" style="width:36px;height:36px;background:linear-gradient(135deg, #C85C2E, #d97706);font-size:14px;">
+                                            {{ $navInitial }}
+                                        </div>
+                                    @endif
+                                    <div class="text-truncate" style="max-width: 170px;">
+                                        <div class="fw-bold text-dark text-truncate" style="font-size:13.5px; letter-spacing: -0.2px;">{{ $authUser->nama }}</div>
+                                        <div class="text-muted small text-truncate" style="font-size:11.5px;">{{ $authUser->email }}</div>
                                     </div>
-                                @endif
+                                </div>
+                                <div class="pt-1.5 border-top border-light-subtle d-flex flex-column gap-1">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        @if($authUser->role === 'admin')
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-0.5" style="font-size: 10px; font-weight: 600;">
+                                                <i class="bi bi-shield-check me-1"></i> Administrator
+                                            </span>
+                                        @elseif($authUser->role === 'pemilik')
+                                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-0.5" style="font-size: 10px; font-weight: 600;">
+                                                <i class="bi bi-shop me-1"></i> Pemilik Warung
+                                            </span>
+                                        @else
+                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-0.5" style="font-size: 10px; font-weight: 600;">
+                                                <i class="bi bi-person me-1"></i> Pengunjung / Pengguna
+                                            </span>
+                                        @endif
+                                        <span class="text-success small" style="font-size: 10.5px; font-weight: 600;"><i class="bi bi-check-circle-fill me-1"></i>Aktif</span>
+                                    </div>
+                                    @if($authUser->role === 'pemilik' && !empty($authUser->warung?->nama_warung))
+                                        <div class="text-dark small fw-semibold text-truncate" style="font-size: 11px;">
+                                            <i class="bi bi-geo-alt text-danger me-1"></i>{{ $authUser->warung->nama_warung }}
+                                        </div>
+                                    @endif
+                                </div>
                             </li>
 
-                            <li><hr class="dropdown-divider my-1"></li>
-
+                            {{-- Menu Items --}}
                             @if(Auth::user()->role === 'admin')
                                 <li>
-                                    <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="{{ route('admin.dashboard') }}" style="font-size:13.5px;">
-                                        <i class="bi bi-speedometer2 text-danger"></i> Dashboard Admin
+                                    <a class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-dark fw-semibold" 
+                                       href="{{ route('admin.dashboard') }}" style="font-size: 13.5px; transition: all 0.2s;">
+                                        <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #FEF2F2; color: #DC2626;">
+                                            <i class="bi bi-speedometer2"></i>
+                                        </span>
+                                        <span>Dashboard Admin</span>
                                     </a>
                                 </li>
                             @elseif(Auth::user()->role === 'pemilik')
                                 <li>
-                                    <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="{{ route('pemilik.dashboard') }}" style="font-size:13.5px;">
-                                        <i class="bi bi-shop text-warning"></i> Dashboard Pemilik
+                                    <a class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-dark fw-semibold" 
+                                       href="{{ route('pemilik.dashboard') }}" style="font-size: 13.5px; transition: all 0.2s;">
+                                        <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #FEF3C7; color: #D97706;">
+                                            <i class="bi bi-speedometer2"></i>
+                                        </span>
+                                        <span>Dashboard Pemilik</span>
                                     </a>
                                 </li>
                             @endif
 
                             <li>
-                                <a class="dropdown-item rounded-3 py-2 d-flex align-items-center gap-2" href="{{ route('user.dashboard') }}" style="font-size:13.5px;">
-                                    <i class="bi bi-person-gear text-primary"></i> Kelola Profil
+                                <a class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-dark fw-semibold" 
+                                   href="{{ route('user.dashboard') }}" style="font-size: 13.5px; transition: all 0.2s;">
+                                    <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #EFF6FF; color: #2563EB;">
+                                        <i class="bi bi-person-gear"></i>
+                                    </span>
+                                    <span>Kelola Profil & Aktivitas</span>
                                 </a>
                             </li>
 
-                            <li><hr class="dropdown-divider my-1"></li>
+                            @if(Auth::user()->role === 'pemilik')
+                                <li>
+                                    <a class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-dark fw-semibold" 
+                                       href="{{ route('pemilik.password.edit') }}" style="font-size: 13.5px; transition: all 0.2s;">
+                                        <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #FFF7ED; color: #C85C2E;">
+                                            <i class="bi bi-shield-lock"></i>
+                                        </span>
+                                        <span>Keamanan Akun Pemilik</span>
+                                    </a>
+                                </li>
+                            @endif
+
+                            <li><hr class="dropdown-divider my-1.5 opacity-25"></li>
 
                             <li>
                                 <form action="{{ route('logout') }}" method="POST" class="m-0">
                                     @csrf
-                                    <button type="submit"
-                                        class="dropdown-item rounded-3 py-2 text-danger d-flex align-items-center gap-2"
-                                        style="font-size:13.5px;">
-                                        <i class="bi bi-box-arrow-right"></i> Logout
+                                    <button type="submit" class="dropdown-item rounded-3 py-2 px-2.5 d-flex align-items-center gap-2.5 text-danger fw-bold" style="font-size: 13.5px; transition: all 0.2s;">
+                                        <span class="d-flex align-items-center justify-content-center rounded-2" style="width: 28px; height: 28px; background: #FFF1F2; color: #E11D48;">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                        </span>
+                                        <span>Keluar / Logout</span>
                                     </button>
                                 </form>
                             </li>

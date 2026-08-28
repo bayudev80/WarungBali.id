@@ -18,9 +18,17 @@
                     <form action="{{ route('admin.kategori.update',$kategori->id_kategori) }}" method="POST">
                         @csrf
                         @method('PUT')
-                        <div class="mb-4">
+                        <div class="mb-3">
                             <label class="form-label fw-bold text-secondary">Nama Kategori <span class="text-danger">*</span></label>
-                            <input type="text" name="nama_kategori" class="form-control form-control-lg rounded-3" value="{{ $kategori->nama_kategori }}" placeholder="Masukkan nama kategori" required autofocus>
+                            <input type="text" name="nama_kategori" class="form-control form-control-lg rounded-3" value="{{ old('nama_kategori', $kategori->nama_kategori) }}" placeholder="Masukkan nama kategori" required autofocus>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary">Status Kategori <span class="text-danger">*</span></label>
+                            <select name="status" class="form-select rounded-3">
+                                <option value="approved" {{ old('status', $kategori->status) === 'approved' ? 'selected' : '' }}>Disetujui (Approved / Aktif)</option>
+                                <option value="pending" {{ old('status', $kategori->status) === 'pending' ? 'selected' : '' }}>Menunggu Verifikasi (Pending)</option>
+                            </select>
                         </div>
                         
                         <div class="d-flex gap-2 pt-2">

@@ -39,7 +39,7 @@ class HomeController extends Controller
             }
 
             // Deteksi Kategori
-            $kategoris = Kategori::all();
+            $kategoris = Kategori::approved()->get();
             foreach ($kategoris as $kat) {
                 $namaKat = strtolower($kat->nama_kategori);
                 if (str_contains($searchLower, $namaKat)) {
@@ -201,10 +201,10 @@ class HomeController extends Controller
         $kabupatenList = \App\Models\Kabupaten::orderBy('nama_kabupaten')->get();
         $kabupatenAktif = $kabupatenList->firstWhere('id_kabupaten', (int) $request->input('kabupaten'));
 
-        $kategoriList = Kategori::all();
+        $kategoriList = Kategori::approved()->orderBy('nama_kategori')->get();
         $kategoriAktif = $kategoriList->firstWhere('id_kategori', (int) $request->input('kategori'));
 
-        return compact('warungPilihan', 'sedangFilter', 'kabupatenAktif', 'kategoriAktif', 'urutan', 'kabupatenList');
+        return compact('warungPilihan', 'sedangFilter', 'kabupatenAktif', 'kategoriAktif', 'urutan', 'kabupatenList', 'kategoriList');
     }
 
     public function index(Request $request)
@@ -215,7 +215,7 @@ class HomeController extends Controller
         $hasil = $this->buildHasil($request);
 
         // Semua kategori (untuk bagian Kategori Populer)
-        $kategori = Kategori::orderBy('nama_kategori')->get();
+        $kategori = Kategori::approved()->orderBy('nama_kategori')->get();
 
         $totalWarung = Warung::where('status', 'approved')->count();
         $totalUlasan = Review::count();
@@ -244,7 +244,8 @@ class HomeController extends Controller
      */
     public function kategori(Request $request, string $slug)
     {
-        $kategori = Kategori::get()
+        $kategori = Kategori::approved()
+            ->get()
             ->first(fn ($k) => $k->slug === $slug);
 
         abort_unless($kategori, 404);
@@ -309,7 +310,7 @@ class HomeController extends Controller
 
     public function kategoriRandom()
     {
-        $kategori = Kategori::inRandomOrder()->first();
+        $kategori = Kategori::approved()->inRandomOrder()->first();
 
         if (!$kategori) {
             return redirect()->route('home');
